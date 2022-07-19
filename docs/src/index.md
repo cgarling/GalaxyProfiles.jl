@@ -1,0 +1,4 @@
+# GalaxyProfiles.jl Index
+
+```@index
+```
