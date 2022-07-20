@@ -2,3 +2,9 @@ name = "GalaxyProfiles"
 uuid = "c7b03836-40d9-4a07-b42e-f60785744864"
 authors = ["cgarling <chris.t.garling@gmail.com>"]
 version = "0.1.0"
+
+[deps]
+LambertW = "984bce1d-4616-540c-a9ee-88d1112d94c9"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+Roots = "f2b01f46-fcfa-551c-844a-d8ac1e96c665"
+SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
