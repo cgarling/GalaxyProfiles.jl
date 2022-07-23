@@ -1,4 +1,4 @@
-# Defined Methods
+# [Defined Methods](@id methods)
 These common methods are defined for most density profiles, when possible.
 
 ```@docs
@@ -6,6 +6,7 @@ These common methods are defined for most density profiles, when possible.
 invρ
 ∇ρ
 ρmean
+invρmean
 Σ
 invΣ
 ∇Σ

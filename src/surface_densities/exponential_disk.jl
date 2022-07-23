@@ -3,7 +3,7 @@
     ExponentialDisk(Σ0::Real,rs::Real)
     ExponentialDisk(rs::Real;Σ0=nothing,M=nothing)
 
-Type descibring projected isotropic exponential surface density profiles with central surface density `Σ0` and scale radius `rs`. The surface density profile is
+Type describing projected isotropic exponential surface density profiles with central surface density `Σ0` and scale radius `rs`. The surface density profile is
 
 ```math
 \\Sigma(r) = \\rho_0 \\times \\exp \\left( \\frac{-r}{R_s} \\right)
@@ -18,8 +18,9 @@ struct ExponentialDisk{T<:Real} <: AbstractSurfaceDensity
 end
 ExponentialDisk(Σ0::Real,rs::Real) = ExponentialDisk(promote(Σ0,rs)...)
 # exponential_disk_from_M(M::T,rs::T) where {T<:Real} = ExponentialDisk(M/(8π*rs^3), rs)
-exponential_disk_from_M(M::T,rs::T) where {T<:Real} = ExponentialDisk(M/(2π*rs^2), rs)
-exponential_disk_from_M(M::Real,rs::Real) = exponential_disk_from_M(promote(M,rs)...)
+# exponential_disk_from_M(M::T,rs::T) where {T<:Real} = ExponentialDisk(M/(2π*rs^2), rs)
+# exponential_disk_from_M(M::Real,rs::Real) = exponential_disk_from_M(promote(M,rs)...)
+exponential_disk_from_M(M::Real,rs::Real) = ExponentialDisk(M/(2π*rs^2), rs)
 ExponentialDisk(rs::Real;M=nothing,Σ0=nothing) = isnothing(M) ? (@assert !isnothing(Σ0); ExponentialDisk(Σ0,rs)) : exponential_disk_from_M(M,rs)
 
 #### Parameters
@@ -34,7 +35,7 @@ scale_radius(d::ExponentialDisk) = d.rs
 
 #### Evaluation
 
-function Σ(d::ExponentialDisk,r::Number)#r::Real)
+function Σ(d::ExponentialDisk,r::Real)
     Σ0,rs = params(d)
     Σ0 * exp(-r/rs)
 end

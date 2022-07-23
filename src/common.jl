@@ -26,6 +26,14 @@ Evaluate the density of `d` at radius `r`.
 """
 ρ(d::AbstractDensity,r::Real)
 """
+    invρ(d::AbstractMassProfile, x::Real)
+    invρ(d::AbstractMassProfile, r::Unitful.Quantity)
+    invρ(d::AbstractMassProfile, x::Real, interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))
+
+Solve for the radius `r` at which the density is `x` for profile `d`. Requires `x>0`. When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `ρ(d,r)` be defined.
+"""
+invρ(d::AbstractMassProfile,x::Real,interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))) = x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->ρ(d,y)-x,interval)
+"""
     ∇ρ(d::AbstractDensity, r::Real)
     ∇ρ(d::AbstractDensity, r::Unitful.Quantity)
 
@@ -34,18 +42,17 @@ The gradient of `ρ(d,r)` evaluated at radius `r`.
 ∇ρ(d::AbstractDensity,r::Real)
 """
     ρmean(d::AbstractDensity,r::Real)
+    ρmean(d::AbstractDensity,r::Unitful.Quantity)
 
 The average density inside `r`; defaults to enclosed mass divided by volume; `M(d,r) * 3 / (4π*r^3)`. 
 """
 ρmean(d::AbstractDensity,r::Real) = M(d,r) * 3 / (4π*r^3)
 """
-    invρ(d::AbstractMassProfile, x::Real)
-    invρ(d::AbstractMassProfile, r::Unitful.Quantity)
-    invρ(d::AbstractMassProfile, x::Real, interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))
+    invρmean(d::AbstractDensity,x::Real)
 
-Solve for the radius `r` at which the density is `x` for profile `d`. Requires `x>0`. When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `ρ(d,r)` be defined.
+Solve for the radius `r` inside which the average density is `x`. Requires `x>0`. When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `ρmean(d,r)` or `M(d,r)` be defined.
 """
-invρ(d::AbstractMassProfile,x::Real,interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))) = x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->ρ(d,y)-x,interval)
+invρmean(d::AbstractDensity,x::Real,interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))) = x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->ρmean(d,y)-x,interval)
 """
     Σ(d::AbstractMassProfile, r::Real)
     Σ(d::AbstractMassProfile, r::Unitful.Quantity)
@@ -72,6 +79,7 @@ The gradient of `Σ(d,r)` evaluated at radius `r`.
 ∇Σ(d::AbstractMassProfile,r::Real)
 """
     Σmean(d::AbstractMassProfile,r::Real)
+    Σmean(d::AbstractMassProfile,r::Unitful.Quantity)
 
 Evaluates the mean projected surface density inside the radius `r`; defaults to `Mproj(d::AbstractMassProfile,r::Real) / (π * r^2)`.
 """

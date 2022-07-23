@@ -1,4 +1,4 @@
-# Defined Types
+# [Defined Types](@id types)
 ## Abstract Types
 The highest level type defined in this package is the abstract type [`AbstractMassProfile`](@ref GalaxyProfiles.AbstractMassProfile), which all other profiles are subtyped from. Below these are [`AbstractDensity`](@ref GalaxyProfiles.AbstractDensity) and [`AbstractSurfaceDensity`](@ref GalaxyProfiles.AbstractSurfaceDensity); the latter is defined only as a surface density and will have no 3D quantities defined (e.g., [`ρ`](@ref)), while the former represents 3D density profiles.
 ```@docs
@@ -13,6 +13,7 @@ The following concrete types, representing specific density profiles, are curren
 ```@docs
 ExponentialDisk
 GeneralIsothermal
+NFW
 ```
 
 ## Retrieving Parameters

@@ -9,6 +9,6 @@ makedocs(
     modules = [GalaxyProfiles],
     format = Documenter.HTML(;prettyurls = get(ENV, "CI", nothing) == "true"),
     authors = "Chris Garling",
-    pages = ["types.md","methods.md","index.md"],#,"api.md"],
+    pages = ["types.md","methods.md","guide.md","index.md"],#,"api.md"],
     doctest=true
 )

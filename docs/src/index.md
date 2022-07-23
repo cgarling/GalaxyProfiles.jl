@@ -1,4 +1,4 @@
-# Index
+# [Index](@id index)
 
 ```@index
 Modules = [GalaxyProfiles]

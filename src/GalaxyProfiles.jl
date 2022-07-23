@@ -5,6 +5,7 @@ import Roots:find_zero
 import LambertW:lambertw
 import SpecialFunctions:gamma
 import QuadGK:quadgk
+import Requires:@require
 
 """ Supertype for all mass profiles. """
 abstract type AbstractMassProfile end
@@ -30,8 +31,14 @@ include("densities/densities.jl")
 # generic random sampling
 include("generic_rand.jl")
 
+function __init__()
+    @require Unitful="1986cc42-f94f-5a68-af5c-568840ba703d" begin
+        @require UnitfulAstro="6112ee07-acf9-5e0f-b108-d242c714bf9f" include("units.jl")
+    end
+end
+
 export ExponentialDisk
-export GeneralIsothermal, SIS
-export params, scale_radius, ρ, ρmean, ∇ρ, invρ, Σ, invΣ, ∇Σ, Σmean, M, ∇M, invM, Mtot, Mproj, ∇Mproj, invMproj, cdf, ccdf, quantile, cquantile, Vcirc, Vesc, Φ, ∇Φ, ∇∇Φ, rand, rand!
+export GeneralIsothermal, SIS, NFW
+export params, scale_radius, ρ, ρmean, invρmean, ∇ρ, invρ, Σ, invΣ, ∇Σ, Σmean, M, ∇M, invM, Mtot, Mproj, ∇Mproj, invMproj, cdf, ccdf, quantile, cquantile, Vcirc, Vesc, Φ, ∇Φ, ∇∇Φ, rand, rand!
 
 end # module

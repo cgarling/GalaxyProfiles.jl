@@ -3,7 +3,7 @@
     GeneralIsothermal(ρ0::Real,rs::Real,α::Real)
     GeneralIsothermal(rs::Real,α::Real,M::Real,Rmax::Real)
 
-Type describing general isothermal density profiles with scale radius `rs`, power-law index `α`, and central density `ρ0`. The surface density profile is
+Type describing general isothermal density profiles with scale radius `rs`, power-law index `α`, and density at `rs` of `ρ0`. The density profile is
 
 ```math
 \\rho(r) = \\rho_0 \\times \\left( \\frac{r}{R_s} \\right)^{-\\alpha}
@@ -91,6 +91,10 @@ end
 function M(d::GeneralIsothermal,r::Real)
     ρ0,rs,α=params(d)
     α >= 3 ? throw(DomainError(α,"Enclosed mass is only finite for α<3.")) : 4π * ρ0 * rs^α * r^(3-α) / (3 - α)
+end
+function invM(d::GeneralIsothermal,x::Real)
+    ρ0,rs,α=params(d)
+    α >= 3 ? throw(DomainError(α,"Enclosed mass is only finite for α<3.")) : (x * (3 - α) / (4π * ρ0 * rs^α))^(1/(3-α))
 end
 function ∇M(d::GeneralIsothermal,r::Real)
     ρ0,rs,α=params(d)
