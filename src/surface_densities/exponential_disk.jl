@@ -39,14 +39,15 @@ function Σ(d::ExponentialDisk,r::Real)
     Σ0,rs = params(d)
     Σ0 * exp(-r/rs)
 end
-function invΣ(d::ExponentialDisk,x::Real)
-    Σ0,rs = params(d)
-    x<=0 ? throw(DomainError(x,"x must be greater 0")) : rs * log(Σ0/x)
-end
 function ∇Σ(d::ExponentialDisk,r::Real)
     Σ0,rs=params(d)
     # 2π * r * Σ0 * exp(-r/rs)
     - Σ0 * exp(-r/rs) / rs
+end
+# Σmean
+function invΣ(d::ExponentialDisk,x::Real)
+    Σ0,rs = params(d)
+    x<=0 ? throw(DomainError(x,"x must be greater 0")) : rs * log(Σ0/x)
 end
 function Mproj(d::ExponentialDisk,r::Real)
     isinf(r) && (return Mtot(d))

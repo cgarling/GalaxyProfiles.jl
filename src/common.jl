@@ -1,10 +1,14 @@
 module constants
-const Gkpc = 4.5171030498949647e-39     # G in kpc^3/solMass/s^2
-const Gpc = 4.5171030498949647e-30      # G in pc^3/solMass/s^2
-const Gvelkpc = 4.30091727003628e-6     # G in kpc*km^2/solMass/s^2, for velocity calculations
-const Gvelkpc2 = 1.3938323614347172e-22 # G in kpc^2*km/solMass/s^2, for velocity calculations
-const Gvelpc = 4.30091727003628e-3      # G in kpc*km^2/solMass/s^2
-# const Gvelkm = 1.3271244e11           # G in km^3/solMass/s^2
+# const Gkpc = 4.5171030498949647e-39     # G in kpc^3/solMass/s^2
+# const Gpc = 4.5171030498949647e-30      # G in pc^3/solMass/s^2
+# const Gvelkpc = 4.30091727003628e-6     # G in kpc*km^2/solMass/s^2, for velocity calculations
+# const Gvelkpc2 = 1.3938323614347172e-22 # G in kpc^2*km/solMass/s^2, for velocity calculations
+# const Gvelpc = 4.30091727003628e-3      # G in kpc*km^2/solMass/s^2
+const Gkpc = big"4.517103049894965029489870560544420380775973240960280169677794680278054678900598e-39" # G in kpc^3/solMass/s^2
+const Gpc = big"4.517103049894965632856118045698970338735168159241032233763499248446748879359808e-30"  # G in pc^3/solMass/s^2
+const Gvelkpc = big"4.3009172700362805113763897679746150970458984375e-6"   # G in kpc*km^2/solMass/s^2, for velocity calculations
+const Gvelkpc2 = big"1.393832361434717359905559114367183944790625806098294248158708796836435794830327e-22" # G in kpc^2*km/solMass/s^2, for velocity calculations
+const Gvelpc = big"4.3009172700362805113763897679746150970458984375e-6"
 end
 """
     params(d::AbstractMassProfile)
@@ -20,29 +24,37 @@ Returns the characteristic scale radius of the profile; used for some default me
 scale_radius(d::AbstractMassProfile)
 """
     ρ(d::AbstractDensity, r::Real)
-    ρ(d::AbstractDensity, r::Unitful.Quantity)
+    ρ(uu::Unitful.DensityUnits, d::AbstractDensity, r::Real)
+    ρ(d::AbstractDensity, r::Unitful.Length)
+    ρ(uu::Unitful.DensityUnits, d::AbstractDensity, r::Unitful.Length)
 
 Evaluate the density of `d` at radius `r`.
 """
 ρ(d::AbstractDensity,r::Real)
 """
     invρ(d::AbstractMassProfile, x::Real)
-    invρ(d::AbstractMassProfile, r::Unitful.Quantity)
+    invρ(uu::Unitful.LengthUnits, d::AbstractMassProfile, x::Real)
+    invρ(d::AbstractMassProfile, x::Unitful.Density)
+    invρ(uu::Unitful.LengthUnits, d::AbstractMassProfile, x::Unitful.Density)
     invρ(d::AbstractMassProfile, x::Real, interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))
 
 Solve for the radius `r` at which the density is `x` for profile `d`. Requires `x>0`. When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `ρ(d,r)` be defined.
 """
-invρ(d::AbstractMassProfile,x::Real,interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))) = x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->ρ(d,y)-x,interval)
+invρ(d::AbstractDensity,x::Real,interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))) = x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->ρ(d,y)-x,interval)
 """
     ∇ρ(d::AbstractDensity, r::Real)
-    ∇ρ(d::AbstractDensity, r::Unitful.Quantity)
+    ∇ρ(uu::GalaxyProfiles.∇ρdimensionUnits, d::AbstractDensity, r::Real)
+    ∇ρ(d::AbstractDensity, r::Unitful.Length)
+    ∇ρ(uu::GalaxyProfiles.∇ρdimensionUnits, d::AbstractDensity, r::Unitful.Length)
 
 The gradient of `ρ(d,r)` evaluated at radius `r`.
 """
 ∇ρ(d::AbstractDensity,r::Real)
 """
     ρmean(d::AbstractDensity,r::Real)
-    ρmean(d::AbstractDensity,r::Unitful.Quantity)
+    ρmean(uu::Unitful.DensityUnits,d::AbstractDensity,r::Real)
+    ρmean(d::AbstractDensity,r::Unitful.Length)
+    ρmean(uu::Unitful.DensityUnits,d::AbstractDensity,r::Unitful.Length)
 
 The average density inside `r`; defaults to enclosed mass divided by volume; `M(d,r) * 3 / (4π*r^3)`. 
 """
@@ -236,3 +248,6 @@ The second order gradient of the potential `Φ(d,r)` evaluated at radius `r`.
 By default uses `G` in units such that if the length units of `d.rs`, `r`, and `d.ρ0` are kpc, the derivative of the potential is returned as `[km^2/s^2/kpc^2]`.
 """
 ∇∇Φ(d::AbstractDensity,r::Real)
+
+
+# check_vals(d::AbstractMassProfile,a::Number,T::DataType,S::DataType) = (promote_type(T,S), promote(params(d)...,a))
