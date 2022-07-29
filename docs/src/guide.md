@@ -53,4 +53,4 @@ nothing # hide
 
 We avoid accessing the fields of the types directly and use `params` and `scale_radius` instead so that internal fields of the types can be refactored later if necessary without having to redefine all the accompanying methods.
 
-When you are done writing your methods, you should define methods for your type that allow for `Unitful` quantities in the `src/units.jl` file. You should be able to follow the examples there with little problem. You should then edit `src/GalaxyProfiles.jl` to export your new type, in this example `SingularIsothermalSphere`. 
+When you are done writing your methods, you should define methods for your type that allow for `Unitful` quantities in the `src/units.jl` file. You should be able to follow the examples there with little problem. You should write tests under `GalaxyProfiles.jl/test` to validate the behavior of your type and methods. It is recommended that you make a new file, e.g. `test/mytype.jl`, then add `include("mytype.jl")` to the `test/runtests.jl` file. You should then edit `src/GalaxyProfiles.jl` to export your new type, in this example `SingularIsothermalSphere`. 

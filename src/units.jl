@@ -1,10 +1,14 @@
 import .UnitfulAstro as ua
 import .Unitful as u
 
-# Define a dimensionality for surface densities
+# Define dimensionalities for dispatch
+# 1*ua.Msun/ua.pc^2 isa GalaxyProfiles.SurfaceDensity
+# ua.Msun/ua.pc^2 isa GalaxyProfiles.SurfaceDensityUnits
+# This ...Units is created automatically by @derived_dimension.
 u.@derived_dimension SurfaceDensity u.𝐌/u.𝐋^2
 u.@derived_dimension ∇ρdimension u.𝐌/u.𝐋^4
 u.@derived_dimension Φdimension u.𝐋^2/u.𝐓^2
+u.@derived_dimension ∇∇Φdimension u.𝐓^-2
 u.@derived_dimension ∇mdimension u.𝐌/u.𝐋
 # u.@derived_dimension ∇Φdimension u.𝐋/u.𝐓^2  # this is just u.AccelerationUnits
 
@@ -80,19 +84,27 @@ NFW(ρ0::u.Density,rs::u.Length) = NFW(homogenize_units(ρ0),homogenize_units(rs
 #     @eval ∇Φ($f,r::u.Length,args...;kws...) = ∇Φ($f,u.ustrip(r|>defaultunits.length),args...;kws...)
 # end
 # return quantities with units on them when requesting a different unit f(uu...), or providing a unit on an argument to the method f(d,[kpc])
-for f in (:ExponentialDisk,:GeneralIsothermal) # common quantities for both 3D densities and 2D SurfaceDensities
-    @eval Σ(uu::SurfaceDensityUnits,$f,args...;kws...) = Σ($f,args...;kws...) * defaultunits.surfacedensity |> uu
-    @eval Σ(uu::SurfaceDensityUnits,$f,r::u.Length,args...;kws...) = Σ($f,homogenize_units(r),args...;kws...) * defaultunits.surfacedensity |> uu
-    @eval Σ($f,r::u.Length,args...;kws...) = Σ($f,homogenize_units(r),args...;kws...) * defaultunits.surfacedensity
-    @eval ∇Σ(uu::u.DensityUnits,$f,args...;kws...) = ∇Σ($f,args...;kws...) * defaultunits.density |> uu
-    @eval ∇Σ(uu::u.DensityUnits,$f,r::u.Length,args...;kws...) = ∇Σ($f,homogenize_units(r),args...;kws...) * defaultunits.density |> uu
-    @eval ∇Σ($f,r::u.LengthUnits,args...;kws...) = ∇Σ($f,homogenize_units(r),args...;kws...) * defaultunits.density
-    # Σmean
-    @eval invΣ(uu::u.LengthUnits,$f,args...;kws...) = invΣ($f,args...;kws...) * defaultunits.length |> uu
-    @eval invΣ(uu::u.LengthUnits,$f,x::SurfaceDensity,args...;kws...) = invΣ($f,homogenize_units(x),args...;kws...) * defaultunits.length |> uu
-    @eval invΣ($f,x::SurfaceDensity,args...;kws...) = invΣ($f,homogenize_units(x),args...;kws...) * defaultunits.length
-end
-for f in (:GeneralIsothermal,) # quantities requiring 3D densities
+# for f in (:ExponentialDisk,:GeneralIsothermal) # common quantities for both 3D densities and 2D SurfaceDensities
+#     @eval Σ(uu::SurfaceDensityUnits,$f,args...;kws...) = Σ($f,args...;kws...) * defaultunits.surfacedensity |> uu
+#     @eval Σ(uu::SurfaceDensityUnits,$f,r::u.Length,args...;kws...) = Σ($f,homogenize_units(r),args...;kws...) * defaultunits.surfacedensity |> uu
+#     @eval Σ($f,r::u.Length,args...;kws...) = Σ($f,homogenize_units(r),args...;kws...) * defaultunits.surfacedensity
+#     @eval ∇Σ(uu::u.DensityUnits,$f,args...;kws...) = ∇Σ($f,args...;kws...) * defaultunits.density |> uu
+#     @eval ∇Σ(uu::u.DensityUnits,$f,r::u.Length,args...;kws...) = ∇Σ($f,homogenize_units(r),args...;kws...) * defaultunits.density |> uu
+#     @eval ∇Σ($f,r::u.LengthUnits,args...;kws...) = ∇Σ($f,homogenize_units(r),args...;kws...) * defaultunits.density
+#     # Σmean
+#     @eval invΣ(uu::u.LengthUnits,$f,args...;kws...) = invΣ($f,args...;kws...) * defaultunits.length |> uu
+#     @eval invΣ(uu::u.LengthUnits,$f,x::SurfaceDensity,args...;kws...) = invΣ($f,homogenize_units(x),args...;kws...) * defaultunits.length |> uu
+#     @eval invΣ($f,x::SurfaceDensity,args...;kws...) = invΣ($f,homogenize_units(x),args...;kws...) * defaultunits.length
+# end
+
+# These definitions should allow MOST AbstractMassProfiles to have their unitful methods auto-generated.
+# However, the args... are pointless in this context because we are specifying a specific signature with hasmethod.
+# If the same methods are defined on other types which take more than one argument (or a single argument that is not a Real)
+# then additional hasmethod branches will need to be defined.
+for f in (:ExponentialDisk,:GeneralIsothermal) # quantities requiring 3D densities
+    @eval if hasmethod(scale_radius,($f,))
+        scale_radius(uu::u.LengthUnits,$f,args...;kws...) = scale_radius($f,args...;kws...) * defaultunits.length |> uu
+    end
     @eval if hasmethod(ρ,($f,Real)) # check if this method is defined for the current type
         @eval ρ(uu::u.DensityUnits,$f,args...;kws...) = ρ($f,args...;kws...) * defaultunits.density |> uu
         @eval ρ(uu::u.DensityUnits,$f,r::u.Length,args...;kws...) = ρ($f,homogenize_units(r),args...;kws...) * defaultunits.density |> uu
@@ -108,35 +120,92 @@ for f in (:GeneralIsothermal,) # quantities requiring 3D densities
         @eval ∇ρ(uu::∇ρdimensionUnits,$f,r::u.Length,args...;kws...) = ∇ρ($f,homogenize_units(r),args...;kws...) * defaultunits.∇density |> uu
         @eval ∇ρ($f,r::u.Length,args...;kws...) = ∇ρ($f,homogenize_units(r),args...;kws...) * defaultunits.∇density
     end
-    # ρmean
-    # invρmean
-    # Σ is above
-    # ∇Σ is above
-    # Σmean is above
-    # invΣ is above
-    @eval M(uu::u.MassUnits,$f,args...;kws...) = M($f,args...;kws...) * defaultunits.mass |> uu
-    @eval M(uu::u.MassUnits,$f,r::u.Length,args...;kws...) = M($f,homogenize_units(r),args...;kws...) * defaultunits.mass |> uu
-    @eval M($f,r::u.Length,args...;kws...) = M($f,homogenize_units(r),args...;kws...) * defaultunits.mass
-    @eval ∇M(uu::∇mdimensionUnits,$f,args...;kws...) = ∇M($f,args...;kws...) * defaultunits.∇mass |> uu
-    @eval ∇M(uu::∇mdimensionUnits,$f,r::u.Length,args...;kws...) = ∇M($f,homogenize_units(r),args...;kws...) * defaultunits.∇mass |> uu
-    @eval ∇M($f,r::u.Length,args...;kws...) = ∇M($f,homogenize_units(r),args...;kws...) * defaultunits.∇mass
-    @eval invM(uu::u.LengthUnits,$f,args...;kws...) = invM($f,args...;kws...) * defaultunits.length |> uu
-    @eval invM(uu::u.LengthUnits,$f,x::u.Mass,args...;kws...) = invM($f,homogenize_units(x),args...;kws...) * defaultunits.length |> uu
-    @eval invM($f,x::u.Mass,args...;kws...) = invM($f,homogenize_units(x),args...;kws...) * defaultunits.length
-    # Mtot
-    @eval Φ(uu::ΦdimensionUnits,$f,args...;kws...) = Φ($f,args...;kws...) * defaultunits.Φunit |> uu
-    @eval Φ(uu::ΦdimensionUnits,$f,r::u.Length,args...;kws...) = Φ($f,homogenize_units(r),args...;kws...) * defaultunits.Φunit |> uu
-    @eval Φ($f,r::u.Length,args...;kws...) = Φ($f,homogenize_units(r),args...;kws...) * defaultunits.Φunit
-    @eval ∇Φ(uu::u.AccelerationUnits,$f,args...;kws...) = ∇Φ($f,args...;kws...) * defaultunits.∇Φunit |> uu
-    @eval ∇Φ(uu::u.AccelerationUnits,$f,r::u.Length,args...;kws...) = ∇Φ($f,homogenize_units(r),args...;kws...) * defaultunits.∇Φunit |> uu
-    @eval ∇Φ($f,r::u.Length,args...;kws...) = ∇Φ($f,homogenize_units(r),args...;kws...) * defaultunits.∇Φunit
+    @eval if hasmethod(ρmean,($f,Real))
+        @eval ρmean(uu::u.DensityUnits,$f,args...;kws...) = ρmean($f,args...;kws...) * defaultunits.density |> uu
+        @eval ρmean(uu::u.DensityUnits,$f,r::u.Length,args...;kws...) = ρmean($f,homogenize_units(r),args...;kws...) * defaultunits.density |> uu
+        @eval ρmean($f,r::u.Length,args...;kws...) = ρmean($f,homogenize_units(r),args...;kws...) * defaultunits.density
+    end
+    @eval if hasmethod(invρmean,($f,Real)) # check if this method is defined for the current type
+        @eval invρmean(uu::u.LengthUnits,$f,args...;kws...) = invρmean($f,args...;kws...) * defaultunits.length |> uu
+        @eval invρmean(uu::u.LengthUnits,$f,x::u.Density,args...;kws...) = invρmean($f,homogenize_units(x),args...;kws...) * defaultunits.length |> uu
+        @eval invρmean($f,x::u.Density,args...;kws...) = invρmean($f,homogenize_units(x),args...;kws...) * defaultunits.length
+    end
+    @eval if hasmethod(Σ,($f,Real)) # check if this method is defined for the current type
+        @eval Σ(uu::SurfaceDensityUnits,$f,args...;kws...) = Σ($f,args...;kws...) * defaultunits.surfacedensity |> uu
+        @eval Σ(uu::SurfaceDensityUnits,$f,r::u.Length,args...;kws...) = Σ($f,homogenize_units(r),args...;kws...) * defaultunits.surfacedensity |> uu
+        @eval Σ($f,r::u.Length,args...;kws...) = Σ($f,homogenize_units(r),args...;kws...) * defaultunits.surfacedensity
+    end
+    @eval if hasmethod(∇Σ,($f,Real)) # check if this method is defined for the current type
+        @eval ∇Σ(uu::u.DensityUnits,$f,args...;kws...) = ∇Σ($f,args...;kws...) * defaultunits.density |> uu
+        @eval ∇Σ(uu::u.DensityUnits,$f,r::u.Length,args...;kws...) = ∇Σ($f,homogenize_units(r),args...;kws...) * defaultunits.density |> uu
+        @eval ∇Σ($f,r::u.LengthUnits,args...;kws...) = ∇Σ($f,homogenize_units(r),args...;kws...) * defaultunits.density
+    end
+    @eval if hasmethod(Σmean,($f,Real)) # check if this method is defined for the current type
+        @eval Σmean(uu::SurfaceDensityUnits,$f,args...;kws...) = Σmean($f,args...;kws...) * defaultunits.surfacedensity |> uu
+        @eval Σmean(uu::SurfaceDensityUnits,$f,r::u.Length,args...;kws...) = Σmean($f,homogenize_units(r),args...;kws...) * defaultunits.surfacedensity |> uu
+        @eval Σmean($f,r::u.Length,args...;kws...) = Σmean($f,homogenize_units(r),args...;kws...) * defaultunits.surfacedensity
+    end
+    @eval if hasmethod(invΣ,($f,Real)) # check if this method is defined for the current type
+        @eval invΣ(uu::u.LengthUnits,$f,args...;kws...) = invΣ($f,args...;kws...) * defaultunits.length |> uu
+        @eval invΣ(uu::u.LengthUnits,$f,x::SurfaceDensity,args...;kws...) = invΣ($f,homogenize_units(x),args...;kws...) * defaultunits.length |> uu
+        @eval invΣ($f,x::SurfaceDensity,args...;kws...) = invΣ($f,homogenize_units(x),args...;kws...) * defaultunits.length
+    end
+    @eval if hasmethod(M,($f,Real)) # check if this method is defined for the current type
+        @eval M(uu::u.MassUnits,$f,args...;kws...) = M($f,args...;kws...) * defaultunits.mass |> uu
+        @eval M(uu::u.MassUnits,$f,r::u.Length,args...;kws...) = M($f,homogenize_units(r),args...;kws...) * defaultunits.mass |> uu
+        @eval M($f,r::u.Length,args...;kws...) = M($f,homogenize_units(r),args...;kws...) * defaultunits.mass
+    end
+    @eval if hasmethod(∇M,($f,Real)) # check if this method is defined for the current type
+        @eval ∇M(uu::∇mdimensionUnits,$f,args...;kws...) = ∇M($f,args...;kws...) * defaultunits.∇mass |> uu
+        @eval ∇M(uu::∇mdimensionUnits,$f,r::u.Length,args...;kws...) = ∇M($f,homogenize_units(r),args...;kws...) * defaultunits.∇mass |> uu
+        @eval ∇M($f,r::u.Length,args...;kws...) = ∇M($f,homogenize_units(r),args...;kws...) * defaultunits.∇mass
+    end
+    @eval if hasmethod(invM,($f,Real)) # check if this method is defined for the current type
+        @eval invM(uu::u.LengthUnits,$f,args...;kws...) = invM($f,args...;kws...) * defaultunits.length |> uu
+        @eval invM(uu::u.LengthUnits,$f,x::u.Mass,args...;kws...) = invM($f,homogenize_units(x),args...;kws...) * defaultunits.length |> uu
+        @eval invM($f,x::u.Mass,args...;kws...) = invM($f,homogenize_units(x),args...;kws...) * defaultunits.length
+    end
+    @eval if hasmethod(Mtot,($f,)) # check if this method is defined for the current type
+        @eval Mtot(uu::u.MassUnits,$f,args...;kws...) = Mtot($f,args...;kws...) * defaultunits.mass |> uu
+    end
+    @eval if hasmethod(Mproj,($f,Real)) # check if this method is defined for the current type
+        @eval Mproj(uu::u.MassUnits,$f,args...;kws...) = Mproj($f,args...;kws...) * defaultunits.mass |> uu
+        @eval Mproj(uu::u.MassUnits,$f,r::u.Length,args...;kws...) = Mproj($f,homogenize_units(r),args...;kws...) * defaultunits.mass |> uu
+        @eval Mproj($f,r::u.Length,args...;kws...) = Mproj($f,homogenize_units(r),args...;kws...) * defaultunits.mass
+    end
+    @eval if hasmethod(∇Mproj,($f,Real)) # check if this method is defined for the current type
+        @eval ∇Mproj(uu::∇mdimensionUnits,$f,args...;kws...) = ∇Mproj($f,args...;kws...) * defaultunits.∇mass |> uu
+        @eval ∇Mproj(uu::∇mdimensionUnits,$f,r::u.Length,args...;kws...) = ∇Mproj($f,homogenize_units(r),args...;kws...) * defaultunits.∇mass |> uu
+        @eval ∇Mproj($f,r::u.Length,args...;kws...) = ∇Mproj($f,homogenize_units(r),args...;kws...) * defaultunits.∇mass
+    end
+    @eval if hasmethod(invMproj,($f,Real)) # check if this method is defined for the current type
+        @eval invMproj(uu::u.LengthUnits,$f,args...;kws...) = invMproj($f,args...;kws...) * defaultunits.length |> uu
+        @eval invMproj(uu::u.LengthUnits,$f,x::u.Mass,args...;kws...) = invMproj($f,homogenize_units(x),args...;kws...) * defaultunits.length |> uu
+        @eval invMproj($f,x::u.Mass,args...;kws...) = invMproj($f,homogenize_units(x),args...;kws...) * defaultunits.length
+    end
+    @eval if hasmethod(Vcirc,($f,Real))
+        @eval Vcirc(uu::u.VelocityUnits,$f,args...;kws...) = Vcirc($f,args...;kws...) * defaultunits.velocity |> uu
+        @eval Vcirc(uu::u.VelocityUnits,$f,r::u.Length,args...;kws...) = Vcirc($f,homogenize_units(r),args...;kws...) * defaultunits.velocity |> uu
+        @eval Vcirc($f,r::u.Length,args...;kws...) = Vcirc($f,homogenize_units(r),args...;kws...) * defaultunits.velocity       
+    end
+    @eval if hasmethod(Vesc,($f,Real))
+        @eval Vesc(uu::u.VelocityUnits,$f,args...;kws...) = Vesc($f,args...;kws...) * defaultunits.velocity |> uu
+        @eval Vesc(uu::u.VelocityUnits,$f,r::u.Length,args...;kws...) = Vesc($f,homogenize_units(r),args...;kws...) * defaultunits.velocity |> uu
+        @eval Vesc($f,r::u.Length,args...;kws...) = Vesc($f,homogenize_units(r),args...;kws...) * defaultunits.velocity       
+    end
+    @eval if hasmethod(Φ,($f,Real)) # check if this method is defined for the current type
+        @eval Φ(uu::ΦdimensionUnits,$f,args...;kws...) = Φ($f,args...;kws...) * defaultunits.Φunit |> uu
+        @eval Φ(uu::ΦdimensionUnits,$f,r::u.Length,args...;kws...) = Φ($f,homogenize_units(r),args...;kws...) * defaultunits.Φunit |> uu
+        @eval Φ($f,r::u.Length,args...;kws...) = Φ($f,homogenize_units(r),args...;kws...) * defaultunits.Φunit
+    end
+    @eval if hasmethod(∇Φ,($f,Real)) # check if this method is defined for the current type
+        @eval ∇Φ(uu::u.AccelerationUnits,$f,args...;kws...) = ∇Φ($f,args...;kws...) * defaultunits.∇Φunit |> uu
+        @eval ∇Φ(uu::u.AccelerationUnits,$f,r::u.Length,args...;kws...) = ∇Φ($f,homogenize_units(r),args...;kws...) * defaultunits.∇Φunit |> uu
+        @eval ∇Φ($f,r::u.Length,args...;kws...) = ∇Φ($f,homogenize_units(r),args...;kws...) * defaultunits.∇Φunit
+    end
+    @eval if hasmethod(∇∇Φ,($f,Real)) # check if this method is defined for the current type
+        @eval ∇∇Φ(uu::∇∇ΦdimensionUnits,$f,args...;kws...) = ∇∇Φ($f,args...;kws...) * defaultunits.∇∇Φunit |> uu
+        @eval ∇∇Φ(uu::∇∇ΦdimensionUnits,$f,r::u.Length,args...;kws...) = ∇∇Φ($f,homogenize_units(r),args...;kws...) * defaultunits.∇∇Φunit |> uu
+        @eval ∇∇Φ($f,r::u.Length,args...;kws...) = ∇∇Φ($f,homogenize_units(r),args...;kws...) * defaultunits.∇∇Φunit
+    end
 end
-# this ALMOST works ... need to do functions with different dimensionalities separately, or define some
-# functions that will return the correct units depending on the function or the output
-# for t in (:ExponentialDisk,:GeneralIsothermal)
-#     for f in (:Σ,:∇Σ)
-#         @eval $f(uu::u.Unitlike,$t,args...;kws...) = $f($t,args...;kws...) * u.ustrip(uu,1*ua.Msun/ua.kpc^2)
-#         @eval $f(uu::u.Unitlike,$t,r::u.Length,args...;kws...) = $f($t,u.ustrip(ua.kpc,r),args...;kws...) * u.ustrip(uu,1*ua.Msun/ua.kpc^2)
-#         @eval $f($t,r::u.Length,args...;kws...) = $f($t,u.ustrip(ua.kpc,r),args...;kws...)
-#     end
-# end

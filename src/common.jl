@@ -18,6 +18,7 @@ Get the fields of the struct as expected by its defined methods.
 params(d::AbstractMassProfile)
 """
     scale_radius(d::AbstractMassProfile)
+    scale_radius(uu::Unitful.LengthUnits,d::AbstractMassProfile)
 
 Returns the characteristic scale radius of the profile; used for some default methods. An example is `rs` for the [`ExponentialDisk`](@ref) model. You should generally use `params` instead.
 """

@@ -1,5 +1,6 @@
 """
     NFW(ρ0::Real,rs::Real)
+    NFW(ρ0::Unitful.Density,rs::Unitful.Length)
 
 Type describing the Navarro-Frenk-White (NFW) density profile with scale radius `rs` and characteristic density `ρ0`. The surface density profile is
 
