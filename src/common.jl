@@ -33,11 +33,11 @@ Evaluate the density of `d` at radius `r`.
 """
 ρ(d::AbstractDensity,r::Real)
 """
-    invρ(d::AbstractMassProfile, x::Real)
+    invρ(d::AbstractMassProfile, x::Real
+    invρ(d::AbstractMassProfile, x::Real, interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))
     invρ(uu::Unitful.LengthUnits, d::AbstractMassProfile, x::Real)
     invρ(d::AbstractMassProfile, x::Unitful.Density)
     invρ(uu::Unitful.LengthUnits, d::AbstractMassProfile, x::Unitful.Density)
-    invρ(d::AbstractMassProfile, x::Real, interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))
 
 Solve for the radius `r` at which the density is `x` for profile `d`. Requires `x>0`. When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `ρ(d,r)` be defined.
 """
@@ -52,23 +52,29 @@ The gradient of `ρ(d,r)` evaluated at radius `r`.
 """
 ∇ρ(d::AbstractDensity,r::Real)
 """
-    ρmean(d::AbstractDensity,r::Real)
-    ρmean(uu::Unitful.DensityUnits,d::AbstractDensity,r::Real)
-    ρmean(d::AbstractDensity,r::Unitful.Length)
-    ρmean(uu::Unitful.DensityUnits,d::AbstractDensity,r::Unitful.Length)
+    ρmean(d::AbstractDensity, r::Real)
+    ρmean(uu::Unitful.DensityUnits, d::AbstractDensity,r::Real)
+    ρmean(d::AbstractDensity, r::Unitful.Length)
+    ρmean(uu::Unitful.DensityUnits, d::AbstractDensity, r::Unitful.Length)
 
 The average density inside `r`; defaults to enclosed mass divided by volume; `M(d,r) * 3 / (4π*r^3)`. 
 """
 ρmean(d::AbstractDensity,r::Real) = M(d,r) * 3 / (4π*r^3)
 """
-    invρmean(d::AbstractDensity,x::Real)
+    invρmean(d::AbstractDensity, x::Real)
+    invρmean(d::AbstractDensity, x::Real, interval::Tuple=(scale_radius(d)/100,100*scale_radius(d)))
+    invρmean(uu::Unitful.LengthUnits, d::AbstractDensity, x::Real)
+    invρmean(d::AbstractDensity, x::Unitful.Density)
+    invρmean(uu::Unitful.LengthUnits, d::AbstractDensity, x::Unitful.Density)
 
 Solve for the radius `r` inside which the average density is `x`. Requires `x>0`. When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `ρmean(d,r)` or `M(d,r)` be defined.
 """
 invρmean(d::AbstractDensity,x::Real,interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))) = x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->ρmean(d,y)-x,interval)
 """
     Σ(d::AbstractMassProfile, r::Real)
-    Σ(d::AbstractMassProfile, r::Unitful.Quantity)
+    Σ(uu::GalaxyProfiles.SurfaceDensityUnits, d::AbstractMassProfile, r::Real)
+    Σ(d::AbstractMassProfile, r::Unitful.Length)
+    Σ(uu::GalaxyProfiles.SurfaceDensityUnits, d::AbstractMassProfile, r::Unitful.Length)
 
 Evaluate the surface density of `d` profile at radius `r`. For 3D density profiles (i.e., [`AbstractDensity`](@ref GalaxyProfiles.AbstractDensity)), this will be the projected surface density, which (for spherical systems) is defined via the Abel integral 
 
@@ -85,29 +91,37 @@ which has an inverse of
 Σ(d::AbstractMassProfile,r::Real) = 2 * quadgk(x->x*ρ(d,x)/sqrt(x^2-r^2),r,Inf)[1]
 """
     ∇Σ(d::AbstractMassProfile, r::Real)
-    ∇Σ(d::AbstractMassProfile, r::Unitful.Quantity)
+    ∇Σ(uu::Unitful.DensityUnits, d::AbstractMassProfile, r::Real)
+    ∇Σ(d::AbstractMassProfile, r::Unitful.Length)
+    ∇Σ(uu::Unitful.DensityUnits, d::AbstractMassProfile, r::Unitful.Length)
 
 The gradient of `Σ(d,r)` evaluated at radius `r`.
 """
 ∇Σ(d::AbstractMassProfile,r::Real)
 """
-    Σmean(d::AbstractMassProfile,r::Real)
-    Σmean(d::AbstractMassProfile,r::Unitful.Quantity)
+    Σmean(d::AbstractMassProfile, r::Real)
+    Σmean(uu::GalaxyProfiles.SurfaceDensityUnits, d::AbstractMassProfile, r::Real)
+    Σmean(d::AbstractMassProfile, r::Unitful.Length)
+    Σmean(uu::GalaxyProfiles.SurfaceDensityUnits, d::AbstractMassProfile, r::Unitful.Length)
 
 Evaluates the mean projected surface density inside the radius `r`; defaults to `Mproj(d::AbstractMassProfile,r::Real) / (π * r^2)`.
 """
 Σmean(d::AbstractMassProfile,r::Real) = Mproj(d,r) / (π * r^2)
 """
     invΣ(d::AbstractMassProfile, x::Real)
-    invΣ(d::AbstractMassProfile, r::Unitful.Quantity)
     invΣ(d::AbstractMassProfile, x::Real, interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))
+    invΣ(uu::Unitful.LengthUnits, d::AbstractMassProfile, x::Real)
+    invΣ(d::AbstractMassProfile, r::Unitful.Length)
+    invΣ(uu::Unitful.LengthUnits, d::AbstractMassProfile, r::Unitful.Length)
 
 Solve for the radius `r` at which the surface density is `x` for profile `d`. Requires `x>0`. When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `Σ(d,r)` be defined.
 """
 invΣ(d::AbstractMassProfile,x::Real,interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))) = x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->Σ(d,y)-x,interval)
 """
     M(d::AbstractMassProfile, r::Real)
-    M(d::AbstractMassProfile, r::Unitful.Quantity)
+    M(uu::Unitful.MassUnits, d::AbstractMassProfile, r::Real)
+    M(d::AbstractMassProfile, r::Unitful.Length)
+    M(uu::Unitful.MassUnits, d::AbstractMassProfile, r::Unitful.Length)
 
 Evaluate the total mass enclosed within a radius `r` for the profile `d`. For spherical systems this is given by the integral
 ```math
@@ -117,29 +131,35 @@ M(\\lt R) = 4\\pi \\int_0^R r^2 ρ(r) dr
 M(d::AbstractMassProfile,r::Real)
 """
     ∇M(d::AbstractMassProfile, r::Real)
-    ∇M(d::AbstractMassProfile, r::Unitful.Quantity)
+    ∇M(uu::GalaxyProfiles.∇mdimensionUnits, d::AbstractMassProfile, r::Real)
+    ∇M(d::AbstractMassProfile, r::Unitful.Length)
+    ∇M(uu::GalaxyProfiles.∇mdimensionUnits, d::AbstractMassProfile, r::Unitful.Length)
 
 The gradient of `M(d,r)` evaluated at radius `r`.
 """
 ∇M(d::AbstractMassProfile,r::Real)
 """
     invM(d::AbstractMassProfile, x::Real)
-    invM(d::AbstractMassProfile, r::Unitful.Quantity)
     invM(d::AbstractMassProfile, x::Real, interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))
+    invM(uu::Unitful.LengthUnits, d::AbstractMassProfile, x::Real)
+    invM(d::AbstractMassProfile, x::Unitful.Mass)
+    invM(uu::Unitful.LengthUnits, d::AbstractMassProfile, x::Unitful.Mass)
 
 Solve for the radius `r` at which the enclosed mass is `x` for profile `d`. Requires `x>0`. When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `M(d,r)` be defined.
 """
 invM(d::AbstractMassProfile,x::Real,interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))) = x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->M(d,y)-x,interval)
 """
-    Mtot(d::AbstractMassProfile, r::Real)
-    Mtot(d::AbstractMassProfile, r::Unitful.Quantity)
+    Mtot(d::AbstractMassProfile)
+    Mtot(uu::Unitful.MassUnits, d::AbstractMassProfile)
 
 Evaluate the total mass of `d`. Should give same answer as `M(d,Inf)`. 
 """
-Mtot(d::AbstractMassProfile,r::Real)
+Mtot(d::AbstractMassProfile)
 """
     Mproj(d::AbstractMassProfile, r::Real)
-    Mproj(d::AbstractMassProfile, r::Unitful.Quantity)
+    Mproj(uu::Unitful.MassUnits, d::AbstractMassProfile, r::Real)
+    Mproj(d::AbstractMassProfile, r::Unitful.Length)
+    Mproj(uu::Unitful.MassUnits, d::AbstractMassProfile, r::Unitful.Length)
 
 Evaluate the total line-of-sight projected mass enclosed within a radius `r` for the profile `d`. For spherical systems this is given by the integral
 ```math
@@ -149,15 +169,18 @@ M_{\\text{proj}}(\\lt R) = 2\\pi \\int_0^R r \\, \\Sigma(r) dr = 2\\pi \\int_0^R
 Mproj(d::AbstractMassProfile,r::Real) = 2π * quadgk(x->x * Σ(d,x),0,r)[1]
 """
     ∇Mproj(d::AbstractMassProfile, r::Real)
-    ∇Mproj(d::AbstractMassProfile, r::Unitful.Quantity)
+    ∇Mproj(uu::GalaxyProfiles.∇mdimensionUnits, d::AbstractMassProfile, r::Real)
+    ∇Mproj(d::AbstractMassProfile, r::Unitful.Length)
+    ∇Mproj(uu::GalaxyProfiles.∇mdimensionUnits, d::AbstractMassProfile, r::Unitful.Length)
 
 The gradient of `Mproj(d,r)` evaluated at radius `r`.
 """
 ∇Mproj(d::AbstractMassProfile,r::Real)
 """
     invMproj(d::AbstractMassProfile, x::Real)
-    invMproj(d::AbstractMassProfile, r::Unitful.Quantity)
     invMproj(d::AbstractMassProfile, x::Real, interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))
+    invMproj(d::AbstractMassProfile, x::Unitful.Mass)
+    invMproj(uu::Unitful.LengthUnits, d::AbstractMassProfile, x::Unitful.Mass)
 
 Solve for the radius `r` at which the line-of-sight projected enclosed mass is `x` for profile `d`. Requires `x>0`. When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `M(d,r)` be defined.
 """
@@ -192,7 +215,9 @@ Evaluate the complementary quantile (i.e., `quantile(d,1-r)`) of the profile `d`
 cquantile(d::AbstractMassProfile,r::Real)
 """
     Vcirc(d::AbstractDensity, r::Real)
-    Vcirc(d::AbstractDensity, r::Unitful.Quantity)
+    Vcirc(uu::Unitful.VelocityUnits, d::AbstractDensity, r::Real)
+    Vcirc(d::AbstractDensity, r::Unitful.Length)
+    Vcirc(uu::Unitful.VelocityUnits, d::AbstractDensity, r::Unitful.Length)
 
 Evaluate the circular velocity at `r`, defined as the speed of a particle of insignificant mass in a circular orbit at radius `r`. This is calculated as
 
@@ -205,7 +230,9 @@ By default uses `G` in units such that if `rs` and `r` are in kpc, the velocity 
 Vcirc(d::AbstractDensity,r::Real)
 """
     Vesc(d::AbstractDensity, r::Real)
-    Vesc(d::AbstractDensity, r::Unitful.Quantity)
+    Vesc(uu::Unitful.VelocityUnits, d::AbstractDensity, r::Real)
+    Vesc(d::AbstractDensity, r::Unitful.Length)
+    Vesc(uu::Unitful.VelocityUnits, d::AbstractDensity, r::Unitful.Length)
 
 Evaluate the escape velocity at `r`, calculated as
 ```math
@@ -218,7 +245,9 @@ By default uses `G` in units such that if `rs` and `r` are in kpc, the velocity 
 Vesc(d::AbstractDensity,r::Real)
 """
     Φ(d::AbstractDensity, r::Real)
-    Φ(d::AbstractDensity, r::Unitful.Quantity)
+    Φ(uu::GalaxyProfiles.ΦdimensionUnits, d::AbstractDensity, r::Real)
+    Φ(d::AbstractDensity, r::Unitful.Length)
+    Φ(uu::GalaxyProfiles.ΦdimensionUnits, d::AbstractDensity, r::Unitful.Length)
 
 Evaluate the potential of the density distribution at `r`. This is typically defined as
 ```math
@@ -235,7 +264,9 @@ By default uses `G` in units such that if `rs` and `r` are in kpc, the potential
 Φ(d::AbstractDensity,r::Real)
 """
     ∇Φ(d::AbstractDensity, r::Real)
-    ∇Φ(d::AbstractDensity, r::Unitful.Quantity)
+    ∇Φ(uu::u.AccelerationUnits, d::AbstractDensity, r::Real)
+    ∇Φ(d::AbstractDensity, r::Unitful.Length)
+    ∇Φ(uu::u.AccelerationUnits, d::AbstractDensity, r::Unitful.Length)
 
 The gradient of the potential `Φ(d,r)` evaluated at radius `r`.
 By default uses `G` in units such that if the length units of `d.rs`, `r`, and `d.ρ0` are kpc, the derivative of the potential is returned as `[km^2/s^2/kpc]`.
@@ -243,7 +274,9 @@ By default uses `G` in units such that if the length units of `d.rs`, `r`, and `
 ∇Φ(d::AbstractDensity,r::Real)
 """
     ∇∇Φ(d::AbstractDensity, r::Real)
-    ∇∇Φ(d::AbstractDensity, r::Unitful.Quantity)
+    ∇∇Φ(uu::GalaxyProfiles.∇∇ΦdimensionUnits, d::AbstractDensity, r::Real)
+    ∇∇Φ(d::AbstractDensity, r::Unitful.Length)
+    ∇∇Φ(uu::GalaxyProfiles.∇∇ΦdimensionUnits, d::AbstractDensity, r::Unitful.Length)
 
 The second order gradient of the potential `Φ(d,r)` evaluated at radius `r`.
 By default uses `G` in units such that if the length units of `d.rs`, `r`, and `d.ρ0` are kpc, the derivative of the potential is returned as `[km^2/s^2/kpc^2]`.
