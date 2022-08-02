@@ -24,6 +24,7 @@ quantile
 cquantile
 Vcirc(::GalaxyProfiles.AbstractDensity,::Real)
 Vesc(::GalaxyProfiles.AbstractDensity,::Real)
+Vmax(::GalaxyProfiles.AbstractDensity,::Real)
 Φ(::GalaxyProfiles.AbstractDensity,::Real)
 ∇Φ(::GalaxyProfiles.AbstractDensity,::Real)
 ∇∇Φ(::GalaxyProfiles.AbstractDensity,::Real)

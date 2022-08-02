@@ -25,8 +25,8 @@ const surfacedensity = ua.Msun / ua.kpc^2
 const length = ua.kpc
 const velocity = u.km / u.s
 const Φunit = u.km^2 / u.s^2
-const ∇Φunit = u.km^2 / u.s^2 / ua.kpc
-const ∇∇Φunit = u.km^2 / u.s^2 / ua.kpc^2
+const ∇Φunit = u.km/u.s^2 # u.km^2 / u.s^2 / ua.kpc
+const ∇∇Φunit = u.km/u.s^2/ua.kpc # u.km^2 / u.s^2 / ua.kpc^2
 end
 
 # General functions for converting units
@@ -49,9 +49,11 @@ function ExponentialDisk(rs::u.Length;M=nothing,Σ0=nothing)
         ExponentialDisk(Σ0,rs)
     else
         @assert M isa u.Mass
-        ExponentialDisk(M/(2π*rs^2),rs)
+        # ExponentialDisk(M/(2π*rs^2),rs)
+        ExponentialDisk(M / rs^2 / 2 / π,rs)
     end
 end
+ExponentialDiskDHI(DHI::Unitful.Length, MHI::Unitful.Mass, ΣDHI::SurfaceDensity=1*ua.Msun/ua.pc^2) = ExponentialDiskDHI(homogenize_units(DHI), homogenize_units(MHI), homogenize_units(ΣDHI))
 
 GeneralIsothermal(ρ0::u.Density,rs::u.Length,α::Real) = GeneralIsothermal(homogenize_units(ρ0),homogenize_units(rs),α)
 GeneralIsothermal(rs::u.Length,α::Real,M::u.Mass,Rmax::u.Length) = GeneralIsothermal(homogenize_units(rs),α,homogenize_units(M),homogenize_units(Rmax))
@@ -138,7 +140,7 @@ for f in (:ExponentialDisk,:GeneralIsothermal) # quantities requiring 3D densiti
     @eval if hasmethod(∇Σ,($f,Real)) # check if this method is defined for the current type
         @eval ∇Σ(uu::u.DensityUnits,$f,args...;kws...) = ∇Σ($f,args...;kws...) * defaultunits.density |> uu
         @eval ∇Σ(uu::u.DensityUnits,$f,r::u.Length,args...;kws...) = ∇Σ($f,homogenize_units(r),args...;kws...) * defaultunits.density |> uu
-        @eval ∇Σ($f,r::u.LengthUnits,args...;kws...) = ∇Σ($f,homogenize_units(r),args...;kws...) * defaultunits.density
+        @eval ∇Σ($f,r::u.Length,args...;kws...) = ∇Σ($f,homogenize_units(r),args...;kws...) * defaultunits.density
     end
     @eval if hasmethod(Σmean,($f,Real)) # check if this method is defined for the current type
         @eval Σmean(uu::SurfaceDensityUnits,$f,args...;kws...) = Σmean($f,args...;kws...) * defaultunits.surfacedensity |> uu

@@ -15,6 +15,9 @@ The fields of `GeneralIsothermal` are `ρ0, rs, α`. The default units of `Gener
 
 Since the total mass of the `GeneralIsothermal` profile is undefined when ``\\alpha \\geq 3``, we define the the potential [`Φ`](@ref) to be 0 at `rs` for *all* instances of `GeneralIsothermal`.
 
+The following methods are specialized on this type:
+ - [`ρ`](@ref), [`invρ`](@ref), [`∇ρ`](@ref), [`Σ`](@ref), [`∇Σ`](@ref), [`invΣ`](@ref), [`M`](@ref), [`∇M`](@ref), [`invM`](@ref), [`Mproj`](@ref), [`∇Mproj`](@ref), [`invMproj`](@ref), [`Vcirc`](@ref), [`Vesc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), [`∇∇Φ`](@ref)
+
 # See also
  - [`SIS`](@ref)
 """
@@ -188,7 +191,7 @@ function Φ(d::GeneralIsothermal{T},r::S) where {T,S<:Real}
         # 4π * constants.Gvelkpc * ρ0 * (rs^2-(rs^α * r^(2-α))) / ((3 - α)*(α-2))
     end
 end
-function ∇Φ(d::GeneralIsothermal{T},r::S) where {T,S<:Real}
+function ∇Φ(d::GeneralIsothermal{T},r::S) where {T,S<:Real} # returns in km/s^2
     # (PhysicalConstants.CODATA2018.G |> ua.kpc^2*u.km/u.s^2/ua.Msun) * (ua.Msun/ua.kpc^3) * ua.kpc^2 / ua.kpc = u.km/u.s^2
     # (PhysicalConstants.CODATA2018.G |> ua.kpc*u.km^2/u.s^2/ua.Msun) * (ua.Msun/ua.kpc^3) * ua.kpc^2 / ua.kpc = u.km^2/u.s^2/ua.kpc
     U = promote_type(T,S)
@@ -199,20 +202,20 @@ function ∇Φ(d::GeneralIsothermal{T},r::S) where {T,S<:Real}
     α >= 3 && throw(DomainError(α,"Potential is only finite for α<3."))
     if α == 2
         # 4π * constants.Gvelkpc2 * ρ0 * rs^2 / r# / (3 - α) 
-        4 * U(π) * U(constants.Gvelkpc) * ρ0 * rs^2 / r# / (3 - α) 
+        4 * U(π) * U(constants.Gvelkpc2) * ρ0 * rs^2 / r# / (3 - α) 
     else
         # -4π * constants.Gvelkpc2 * ρ0 * r^(1-α) * rs^α * (2-α) / ((3-α)*(α-2))
-        -4 * U(π) * U(constants.Gvelkpc) * ρ0 * r^(1-α) * rs^α * (2-α) / ((3-α)*(α-2))
+        -4 * U(π) * U(constants.Gvelkpc2) * ρ0 * r^(1-α) * rs^α * (2-α) / ((3-α)*(α-2))
     end
 end
-function ∇∇Φ(d::GeneralIsothermal{T},r::S) where {T,S<:Real}
+function ∇∇Φ(d::GeneralIsothermal{T},r::S) where {T,S<:Real} # returns in km/s^2/kpc
     U = promote_type(T,S)
     ρ0,rs,α = params(d)
     ρ0,rs,α,r = promote(ρ0,rs,α,r)
     α >= 3 && throw(DomainError(α,"Potential is only finite for α<3."))
     if α == 2
-        -4 * U(π) * U(constants.Gvelkpc) * ρ0 * rs^2 / r^2# / (3 - α) 
+        -4 * U(π) * U(constants.Gvelkpc2) * ρ0 * rs^2 / r^2# / (3 - α) 
     else
-        -4 * U(π) * U(constants.Gvelkpc) * ρ0 * rs^α * (2-α) * (1-α) / ((3-α)*(α-2)) / r^α
+        -4 * U(π) * U(constants.Gvelkpc2) * ρ0 * rs^α * (2-α) * (1-α) / ((3-α)*(α-2)) / r^α
     end
 end

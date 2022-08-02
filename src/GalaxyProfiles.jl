@@ -37,8 +37,8 @@ function __init__()
     end
 end
 
-export ExponentialDisk
+export ExponentialDisk, ExponentialDiskDHI
 export GeneralIsothermal, SIS, NFW
-export params, scale_radius, ρ, ρmean, invρmean, ∇ρ, invρ, Σ, invΣ, ∇Σ, Σmean, M, ∇M, invM, Mtot, Mproj, ∇Mproj, invMproj, cdf, ccdf, quantile, cquantile, Vcirc, Vesc, Φ, ∇Φ, ∇∇Φ, rand, rand!
+export params, scale_radius, ρ, ρmean, invρmean, ∇ρ, invρ, Σ, invΣ, ∇Σ, Σmean, M, ∇M, invM, Mtot, Mproj, ∇Mproj, invMproj, cdf, ccdf, quantile, cquantile, Vcirc, Vesc, Vmax, Φ, ∇Φ, ∇∇Φ, rand, rand!
 
 end # module

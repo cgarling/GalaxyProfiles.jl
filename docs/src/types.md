@@ -27,4 +27,5 @@ scale_radius(::GalaxyProfiles.AbstractMassProfile)
 We also provide some convenience constructors for other types such as the [`singular isothermal sphere`](@ref SIS), which returns an instance of [`GeneralIsothermal`](@ref) with `α=2`.
 ```@docs
 SIS
+ExponentialDiskDHI
 ```

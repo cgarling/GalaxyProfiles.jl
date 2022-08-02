@@ -9,6 +9,9 @@ Type describing the Navarro-Frenk-White (NFW) density profile with scale radius 
 ```
 
 The fields of `NFW` are `ρ0, rs`. The default units of `NFW` are `[ρ0] = [Msun/kpc^3], [r, rs] = [kpc], [M] = [Msun]`. This is important for quantities like `Vcirc`, `Φ`, `∇Φ` which involve `G`; these will give incorrect results if the fields of `NFW` or the provided `r` are in different units.
+
+The following methods are defined on this type:
+ - [`ρ`](@ref), [`invρ`](@ref), [`∇ρ`](@ref), [`ρmean`](@ref), [`Σ`](@ref), [`M`](@ref), [`∇M`](@ref), [`invM`](@ref), [`Mproj`](@ref), [`∇Mproj`](@ref), [`Vmax`](@ref), [`Vesc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), [`∇∇Φ`](@ref)
 """
 struct NFW{T<:Real} <: AbstractDensity
     ρ0::T
@@ -47,20 +50,7 @@ function ρmean(d::NFW,r::Real)
     3 * rs^3 * ρ0 * (-r + ( r + rs ) * log( ( r + rs ) /
             rs ) ) / (r^3 * ( r + rs ) )
 end
-function M(d::NFW,r::Real)
-    ρ0,rs = params(d)
-    4π * rs^3 * ρ0 * NFWmu(r,rs)
-end
-function invM(d::NFW,x::Real)
-    ρ0,rs = params(d)
-    t = -1/lambertw(-exp(-1-(x/(4π * rs^3 * ρ0))))
-    (t-1)*rs
-end
-function ∇M(d::NFW,r::Real)
-    ρ0,rs = params(d)
-    4π * r * rs * ρ0 / (1+r/rs)^2
-end
-# Mtot
+# invρmean
 function Σ(d::NFW,r::Real)
     ρ0,rs = params(d)
     x = r/rs
@@ -77,6 +67,20 @@ end
 # ∇Σ
 # Σmean
 # invΣ
+function M(d::NFW,r::Real)
+    ρ0,rs = params(d)
+    4 * π * rs^3 * ρ0 * NFWmu(r,rs)
+end
+function ∇M(d::NFW,r::Real)
+    ρ0,rs = params(d)
+    4π * r * rs * ρ0 / (1+r/rs)^2
+end
+function invM(d::NFW,x::Real)
+    ρ0,rs = params(d)
+    t = -1/lambertw(-exp(-1-(x/(4π * rs^3 * ρ0))))
+    (t-1)*rs
+end
+# Mtot
 function Mproj(d::NFW,r::Real)
     ρ0,rs = params(d)
     x = r/rs
@@ -103,3 +107,28 @@ function ∇Mproj(d::NFW,r::Real)
 end
 # invMproj
 # need to think about the potential implementations and whether we want to use units or not
+# Vcirc fallback to common.jl is fine
+# Vesc fallback to common.jl is fine
+function Vmax(d::NFW{T}) where T
+    ρ0,rs = params(d)
+    r = T(constants.nfwvmaxpar) * rs
+    return Vcirc(d,r), r
+end
+function Φ(d::NFW{T},r::S) where {T,S<:Real}
+    U = promote_type(T,S)
+    ρ0,rs = params(d)
+    ρ0,rs,r = promote(ρ0,rs,r)
+    4 * U(π) * U(constants.Gvelkpc) * ρ0 * rs^3 * (log(rs) - log(r+rs)) / r
+end
+function ∇Φ(d::NFW{T},r::S) where {T,S<:Real}
+    U = promote_type(T,S)
+    ρ0,rs = params(d)
+    ρ0,rs,r = promote(ρ0,rs,r)
+    4 * U(π) * constants.Gvelkpc2 * rs^3 * ρ0 * (log(r+rs) - log(rs) - r/(r+rs)) / r^2
+end
+function ∇∇Φ(d::NFW{T},r::S) where {T,S<:Real}
+    U = promote_type(T,S)
+    ρ0,rs = params(d)
+    ρ0,rs,r = promote(ρ0,rs,r)
+    4 * U(π) * constants.Gvelkpc2 * rs^3 * ρ0 * (2*log(rs) - 2*log(r+rs) + (3*r^2 + 2*rs*r)/(r+rs)^2) / r^3
+end

@@ -6,9 +6,10 @@ module constants
 # const Gvelpc = 4.30091727003628e-3      # G in kpc*km^2/solMass/s^2
 const Gkpc = big"4.517103049894965029489870560544420380775973240960280169677794680278054678900598e-39" # G in kpc^3/solMass/s^2
 const Gpc = big"4.517103049894965632856118045698970338735168159241032233763499248446748879359808e-30"  # G in pc^3/solMass/s^2
-const Gvelkpc = big"4.3009172700362805113763897679746150970458984375e-6"   # G in kpc*km^2/solMass/s^2, for velocity calculations
-const Gvelkpc2 = big"1.393832361434717359905559114367183944790625806098294248158708796836435794830327e-22" # G in kpc^2*km/solMass/s^2, for velocity calculations
+const Gvelkpc = big"4.3009172700362805113763897679746150970458984375e-6"   # G in kpc*km^2/solMass/s^2, for velocity and Φ calculations; (G |> ua.kpc*u.km^2/ua.Msun/u.s^2)
+const Gvelkpc2 = big"1.393832361434717359905559114367183944790625806098294248158708796836435794830327e-22" # G in kpc^2*km/solMass/s^2, for ∇Φ calculations; (G |> ua.kpc^2*u.km/ua.Msun/u.s^2)
 const Gvelpc = big"4.3009172700362805113763897679746150970458984375e-6"
+const nfwvmaxpar = big"2.162581587064609834856553669603264573507154023820515448359231774428038693093796" # constant for NFW's Vmax
 end
 """
     params(d::AbstractMassProfile)
@@ -225,9 +226,9 @@ Evaluate the circular velocity at `r`, defined as the speed of a particle of ins
 v_c^2(r) = \\frac{G M(r)}{r} = r \\frac{d\\Phi}{dr} = r\\nabla\\Phi(r)
 ```
 
-By default uses `G` in units such that if `rs` and `r` are in kpc, the velocity ends up in `km/s`. For example, for [`GeneralIsothermal`](@ref) we have `[G] = [kpc * km^2 / Msun / s^2]` so that the velocity ends up in `km/s`. 
+By default uses `G` in units such that if `rs` and `r` are in kpc, the velocity ends up in `km/s`. For example, for [`GeneralIsothermal`](@ref) we have `[G] = [kpc * km^2 / Msun / s^2]` so that the velocity ends up in `km/s`. Falls back to `sqrt( GalaxyProfiles.constants.Gvelkpc * M(d::AbstractDensity,r) / r)`.
 """
-Vcirc(d::AbstractDensity,r::Real)
+Vcirc(d::AbstractDensity,r::T) where {T<:Real} = sqrt( T(constants.Gvelkpc) * M(d,r) / r)
 """
     Vesc(d::AbstractDensity, r::Real)
     Vesc(uu::Unitful.VelocityUnits, d::AbstractDensity, r::Real)
@@ -242,7 +243,19 @@ if ``\\Phi \\to 0`` for ``r \\to \\infty``; see the note for [`Φ`](@ref).
 
 By default uses `G` in units such that if `rs` and `r` are in kpc, the velocity ends up in `km/s`. For example, for [`GeneralIsothermal`](@ref) we have `[G] = [kpc * km^2 / Msun / s^2]` so that the velocity ends up in `km/s`. 
 """
-Vesc(d::AbstractDensity,r::Real)
+Vesc(d::AbstractDensity,r::Real) = sqrt( 2 * abs(Φ(d,r)) )
+"""
+    Vmax(d::AbstractDensity)
+    Vmax(uu::Unitful.VelocityUnits,d::AbstractDensity)
+
+Returns the maximum circular velocity of `d` in [km/s] and the corresponding radius in [kpc]. Can be found by solving
+
+```math
+    \\frac{d v_c(r)}{dr} = 0
+```
+for `r`, where ``v_c`` is the circular velocity, then evaluating the circular velocity at `r`. 
+"""
+Vmax(d::AbstractDensity,r::Real)
 """
     Φ(d::AbstractDensity, r::Real)
     Φ(uu::GalaxyProfiles.ΦdimensionUnits, d::AbstractDensity, r::Real)
@@ -269,7 +282,7 @@ By default uses `G` in units such that if `rs` and `r` are in kpc, the potential
     ∇Φ(uu::u.AccelerationUnits, d::AbstractDensity, r::Unitful.Length)
 
 The gradient of the potential `Φ(d,r)` evaluated at radius `r`.
-By default uses `G` in units such that if the length units of `d.rs`, `r`, and `d.ρ0` are kpc, the derivative of the potential is returned as `[km^2/s^2/kpc]`.
+By default uses `G` in units such that if the length units of `d.rs`, `r`, and `d.ρ0` are kpc, the derivative of the potential is returned as `[km/s^2]`.
 """
 ∇Φ(d::AbstractDensity,r::Real)
 """
@@ -279,7 +292,7 @@ By default uses `G` in units such that if the length units of `d.rs`, `r`, and `
     ∇∇Φ(uu::GalaxyProfiles.∇∇ΦdimensionUnits, d::AbstractDensity, r::Unitful.Length)
 
 The second order gradient of the potential `Φ(d,r)` evaluated at radius `r`.
-By default uses `G` in units such that if the length units of `d.rs`, `r`, and `d.ρ0` are kpc, the derivative of the potential is returned as `[km^2/s^2/kpc^2]`.
+By default uses `G` in units such that if the length units of `d.rs`, `r`, and `d.ρ0` are kpc, the derivative of the potential is returned as `[km/s^2/kpc]`.
 """
 ∇∇Φ(d::AbstractDensity,r::Real)
 
