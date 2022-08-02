@@ -107,7 +107,7 @@ The gradient of `Σ(d,r)` evaluated at radius `r`.
 
 Evaluates the mean projected surface density inside the radius `r`; defaults to `Mproj(d::AbstractMassProfile,r::Real) / (π * r^2)`.
 """
-Σmean(d::AbstractMassProfile,r::Real) = Mproj(d,r) / (π * r^2)
+Σmean(d::AbstractMassProfile,r::T) where T<:Real = Mproj(d,r) / (T(π) * r^2)
 """
     invΣ(d::AbstractMassProfile, x::Real)
     invΣ(d::AbstractMassProfile, x::Real, interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))

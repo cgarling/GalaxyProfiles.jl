@@ -38,7 +38,8 @@ function ρ(d::NFW,r::Real)
 end
 function invρ(d::NFW,x::Real)
     ρ0,rs = params(d)
-    tmp = (2x / (2x + 27ρ0 + 3*sqrt(3ρ0*(27ρ0+4x))))^(1/3)
+    # tmp = (2x / (2x + 27ρ0 + 3*sqrt(3ρ0*(27ρ0+4x))))^(1/3)
+    tmp = (2x / (2x + 27ρ0 + 3*sqrt(3ρ0*(27ρ0+4x)))) |> cbrt # cbrt much more efficient, annoyingly
     rs/3 * (tmp + inv(tmp) - 2) 
 end
 function ∇ρ(d::NFW,r::Real)
@@ -65,44 +66,56 @@ function Σ(d::NFW,r::Real)
     end
 end
 # ∇Σ
-# Σmean
+# Σmean fallback to common.jl is fine
 # invΣ
-function M(d::NFW,r::Real)
+function M(d::NFW{T},r::S) where {T,S<:Real}
+    U = promote_type(T,S)
     ρ0,rs = params(d)
-    4 * π * rs^3 * ρ0 * NFWmu(r,rs)
+    ρ0,rs,r = promote(ρ0,rs,r)
+    4 * U(π) * rs^3 * ρ0 * NFWmu(r,rs)
 end
-function ∇M(d::NFW,r::Real)
+function ∇M(d::NFW{T},r::S) where {T,S<:Real}
+    U = promote_type(T,S)
     ρ0,rs = params(d)
-    4π * r * rs * ρ0 / (1+r/rs)^2
+    ρ0,rs,r = promote(ρ0,rs,r)
+    4 * U(π) * r * rs * ρ0 / (1+r/rs)^2
 end
-function invM(d::NFW,x::Real)
+function invM(d::NFW{T},x::S) where {T,S<:Real}
+    U = promote_type(T,S)
     ρ0,rs = params(d)
-    t = -1/lambertw(-exp(-1-(x/(4π * rs^3 * ρ0))))
+    ρ0,rs,x = promote(ρ0,rs,x)
+    t = -1/lambertw(-exp(-1-(x/(4 * U(π) * rs^3 * ρ0))))
     (t-1)*rs
 end
 # Mtot
-function Mproj(d::NFW,r::Real)
+function Mproj(d::NFW{T},r::S) where {T,S<:Real}
+    U = promote_type(T,S)
     ρ0,rs = params(d)
+    ρ0,rs,r = promote(ρ0,rs,r)
     x = r/rs
     if x ≈ 1
-        4π * ρ0 * rs^3 * ( x + log( x / 2 ) )
+        4 * U(π) * ρ0 * rs^3 * ( x + log( x / 2 ) )
     elseif x<1
-        return 4π * ρ0 * rs^3 * ( acosh( 1 / x ) / sqrt( 1 - x^2 ) + log( x / 2 ) )
+        return 4 * U(π) * ρ0 * rs^3 * ( acosh( 1 / x ) / sqrt( 1 - x^2 ) + log( x / 2 ) )
     else
-        return 4π * ρ0 * rs^3 * ( acos( 1 / x ) / sqrt( x^2 - 1 ) + log( x / 2 ) )
+        return 4 * U(π) * ρ0 * rs^3 * ( acos( 1 / x ) / sqrt( x^2 - 1 ) + log( x / 2 ) )
     end
 end
-function ∇Mproj(d::NFW,r::Real)
+function ∇Mproj(d::NFW{T},r::S) where {T,S<:Real}
+    U = promote_type(T,S)
     ρ0,rs = params(d)
+    ρ0,rs,r = promote(ρ0,rs,r)
     x = r/rs
     if x ≈ 1 
-        4π * ρ0 * rs^2 * (1+inv(x)) / 6
+        4 * U(π) * ρ0 * rs^2 * (1+inv(x)) / 6
     elseif x<1
         ix = inv(x)
-        return 4π * ρ0 * rs^2 * (ix + sqrt(ix+ix^2)/(x-1)/(1+x)^(3/2) + x*asech(x)/(1-x^2)^(3/2))
+        # return 4 * U(π) * ρ0 * rs^2 * (ix + sqrt(ix+ix^2)/(x-1)/(1+x)^(3/2) + x*asech(x)/(1-x^2)^(3/2))
+        return 4 * U(π) * ρ0 * rs^2 * (ix + sqrt(ix+ix^2)/(x-1)/sqrt((1+x)^3) + x*asech(x)/sqrt((1-x^2)^3)) # sqrt(x^3) is much more efficient than x^(3/2), annoyingly
     else
         ix = inv(x)
-        return 4π * ρ0 * rs^2 * ( ix + ix^2/sqrt(1-ix^2)/sqrt(x^2-1) - x*acos(ix)/(x^2-1)^(3/2))
+        # return 4 * U(π) * ρ0 * rs^2 * ( ix + ix^2/sqrt(1-ix^2)/sqrt(x^2-1) - x*acos(ix)/(x^2-1)^(3/2))
+        return 4 * U(π) * ρ0 * rs^2 * ( ix + ix^2/sqrt(1-ix^2)/sqrt(x^2-1) - x*acos(ix)/sqrt((x^2-1)^3))
     end
 end
 # invMproj
@@ -132,3 +145,4 @@ function ∇∇Φ(d::NFW{T},r::S) where {T,S<:Real}
     ρ0,rs,r = promote(ρ0,rs,r)
     4 * U(π) * constants.Gvelkpc2 * rs^3 * ρ0 * (2*log(rs) - 2*log(r+rs) + (3*r^2 + 2*rs*r)/(r+rs)^2) / r^3
 end
+# Could add kinetic energy, line-of-sight velocity dispersion, maybe a few other quantities that could be useful from python/profiles/nfw.py
