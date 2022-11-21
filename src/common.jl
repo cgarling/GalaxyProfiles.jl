@@ -195,33 +195,61 @@ Solve for the radius `r` at which the line-of-sight projected enclosed mass is `
 """
 invMproj(d::AbstractMassProfile, x::T, interval::NTuple{2,S}=(scale_radius(d)/100,100*scale_radius(d)); kws...) where {T<:Real, S<:Real} = (U = promote_type(T, S); x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->Mproj(d,y)-x,(U(interval[1]), U(interval[2])); kws...))
 """
-    cdf(d::AbstractMassProfile, r::Real)
-    cdf(d::AbstractMassProfile, r::Unitful.Quantity)
+    cdf2D(d::AbstractMassProfile, r::Real)
+    cdf2D(d::AbstractMassProfile, r::Unitful.Quantity)
 
-Evaluate the cumulative distribution function of the profile `d` at `r`. This is defined as `M(d,r)/Mtot(d)`. 
+Evaluate the cumulative distribution function of the profile `d` at `r` in two dimensions (i.e., along a line of sight). This is defined as `Σ(d,r)/Mtot(d)`. 
 """
-cdf(d::AbstractMassProfile,r::Real) = M(d,r) / Mtot(d)
+cdf2D(d::AbstractMassProfile, r::Real) = Σ(d,r) / Mtot(d)
 """
-    ccdf(d::AbstractMassProfile, r::Real)
-    ccdf(d::AbstractMassProfile, r::Unitful.Quantity)
+    cdf3D(d::AbstractDensity, r::Real)
+    cdf3D(d::AbstractDensity, r::Unitful.Quantity)
 
-Evaluate the complementary cumulative distribution function of the profile `d` at `r`. This is defined as `1 - cdf(d,r) = 1 - M(d,r)/Mtot(d)`. 
+Evaluate the cumulative distribution function of the profile `d` at `r` in three dimensions. This is defined as `M(d,r)/Mtot(d)`. 
 """
-ccdf(d::AbstractMassProfile,r::Real) = 1 - cdf(d,r)
+cdf3D(d::AbstractDensity, r::Real) = M(d,r) / Mtot(d)
 """
-    quantile(d::AbstractMassProfile, r::Real)
-    quantile(d::AbstractMassProfile, r::Unitful.Quantity)
+    ccdf2D(d::AbstractMassProfile, r::Real)
+    ccdf2D(d::AbstractMassProfile, r::Unitful.Quantity)
 
-Evaluate the inverse cumulative distribution function of the profile `d` at `r`. 
+Evaluate the complementary cumulative distribution function of the profile `d` at `r` in two dimensions (i.e., along a line of sight). This is defined as `1 - cdf2D(d,r) = 1 - Σ(d,r)/Mtot(d)`. 
 """
-quantile(d::AbstractMassProfile,r::Real)
+ccdf2D(d::AbstractMassProfile, r::Real) = 1 - cdf2D(d,r)
 """
-    cquantile(d::AbstractMassProfile, r::Real)
-    cquantile(d::AbstractMassProfile, r::Unitful.Quantity)
+    ccdf3D(d::AbstractMassProfile, r::Real)
+    ccdf3D(d::AbstractMassProfile, r::Unitful.Quantity)
 
-Evaluate the complementary quantile (i.e., `quantile(d,1-r)`) of the profile `d` at `r`. 
+Evaluate the complementary cumulative distribution function of the profile `d` at `r` in three dimensions. This is defined as `1 - cdf3D(d,r) = 1 - M(d,r)/Mtot(d)`. 
 """
-cquantile(d::AbstractMassProfile,r::Real)
+ccdf3D(d::AbstractMassProfile,r::Real) = 1 - cdf3D(d,r)
+"""
+    quantile2D(d::AbstractMassProfile, r::Real)
+    quantile2D(d::AbstractMassProfile, r::Unitful.Quantity)
+
+Evaluate the inverse cumulative distribution function of the profile `d` at `r` in two dimensions (i.e., along a line of sight).
+"""
+quantile2D(d::AbstractMassProfile, r::Real)
+"""
+    quantile3D(d::AbstractDensity, r::Real)
+    quantile3D(d::AbstractDensity, r::Unitful.Quantity)
+
+Evaluate the inverse cumulative distribution function of the profile `d` at `r` in three dimensions.
+"""
+quantile3D(d::AbstractDensity, r::Real)
+"""
+    cquantile2D(d::AbstractMassProfile, r::Real)
+    cquantile2D(d::AbstractMassProfile, r::Unitful.Quantity)
+
+Evaluate the complementary quantile of the profile `d` at `r` in two dimensions (i.e., along a line of sight). This is defined as `quantile2D(d, 1-r)`.
+"""
+cquantile2D(d::AbstractMassProfile, r::Real)
+"""
+    cquantile3D(d::AbstractDensity, r::Real)
+    cquantile3D(d::AbstractDensity, r::Unitful.Quantity)
+
+Evaluate the complementary quantile of the profile `d` at `r` in three dimensions. This is defined as `quantile3D(d, 1-r)`.
+"""
+cquantile3D(d::AbstractDensity, r::Real)
 """
     Vcirc(d::AbstractDensity, r::Real)
     Vcirc(uu::Unitful.VelocityUnits, d::AbstractDensity, r::Real)

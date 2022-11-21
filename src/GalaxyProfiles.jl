@@ -1,7 +1,6 @@
 module GalaxyProfiles
 
 import Random: AbstractRNG,rand,rand!,default_rng
-import Statistics: quantile # Extending this method. 
 import Roots: find_zero
 import LambertW: lambertw
 import SpecialFunctions: gamma
@@ -38,8 +37,8 @@ function __init__()
     end
 end
 
-export ExponentialDisk, ExponentialDiskDHI
-export GeneralIsothermal, SIS, NFW, Plummer
-export params, scale_radius, ρ, ρmean, invρmean, ∇ρ, invρ, Σ, invΣ, ∇Σ, Σmean, M, ∇M, invM, Mtot, Mproj, ∇Mproj, invMproj, cdf, ccdf, quantile, cquantile, Vcirc, Vesc, Vmax, Φ, ∇Φ, ∇∇Φ, rand, rand!
-
+export ExponentialDisk, ExponentialDiskDHI  # Exports from surface_densities/*
+export GeneralIsothermal, SIS, NFW, Plummer # Exports from densities/*
+export params, scale_radius, ρ, ρmean, invρmean, ∇ρ, invρ, Σ, invΣ, ∇Σ, Σmean, M, ∇M, invM, Mtot, Mproj, ∇Mproj, invMproj, cdf2D, cdf3D, ccdf2D, ccdf3D, quantile2D, quantile3D, cquantile2D, cquantile3D, Vcirc, Vesc, Vmax, Φ, ∇Φ, ∇∇Φ  # Exports from common.jl
+export sample2D_r!, sample3D_r!, sample2D_r, sample3D_r # Exports from generic_rand.jl.
 end # module

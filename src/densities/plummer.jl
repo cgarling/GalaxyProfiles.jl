@@ -24,8 +24,8 @@ the method [`GalaxyProfiles.plummer_a_to_rh`](@ref) is provided to perform this 
 
 The default units of `Plummer` are `[M] = [Msun], [a, r] = [kpc]`. This is important for quantities like [`Vcirc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), and [`∇∇Φ`](@ref) which involve the gravitational constant `G`; these will give incorrect results if the fields of `Plummer` or the provided `r` are in different units.
 
-The following methods are defined on this type:
- - [`Mtot`](@ref), [`ρ`](@ref), [`invρ`](@ref), [`∇ρ`](@ref), [`ρmean`](@ref), [`invρmean`](@ref), [`Σ`](@ref), [`∇Σ`](@ref), [`Σmean`](@ref), [`invΣ`](@ref), [`M`](@ref), [`∇M`](@ref), [`invM`](@ref), [`Mproj`](@ref), [`∇Mproj`](@ref), [`invMproj`](@ref), [`Vcirc`](@ref), [`Vesc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), [`∇∇Φ`](@ref)
+The following public methods are defined on this type:
+ - [`Mtot`](@ref), [`ρ`](@ref), [`invρ`](@ref), [`∇ρ`](@ref), [`ρmean`](@ref), [`invρmean`](@ref), [`Σ`](@ref), [`∇Σ`](@ref), [`Σmean`](@ref), [`invΣ`](@ref), [`M`](@ref), [`∇M`](@ref), [`invM`](@ref), [`Mproj`](@ref), [`∇Mproj`](@ref), [`invMproj`](@ref), [`Vcirc`](@ref), [`Vesc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), [`∇∇Φ`](@ref), [`cdf2D`](@ref), [`cdf3D`](@ref), [`ccdf2D`](@ref), [`ccdf3D`](@ref), [`quantile2D`](@ref), [`quantile3D`](@ref), [`cquantile2D`](@ref), [`cquantile3D`](@ref).
 """
 struct Plummer{T<:Real} <: AbstractDensity
     M::T
@@ -43,9 +43,33 @@ Mtot(d::Plummer) = d.M
 """
     plummer_a_to_rh(a)
 
-Returns the half-light (or half-mass) radius given the Plummer scale radius `a`.
+Returns the half-light (or half-mass) radius given the Plummer scale radius `a`. This is equivalent to [`quantile3D(d::Plummer, 0.5)`](@ref quantile3D) but faster because the argument `x=0.5` is known at compile-time.
 """
-plummer_a_to_rh(a) = a / sqrt( inv( cbrt(0.5)^2 ) - 1 )
+plummer_a_to_rh(a) = a / sqrt( inv( cbrt(0.5)^2 ) - 1 ) # The constant denominator is ~inv(1.3).
+"""
+    plummer_angular_avalue(absmag, sb, DM)
+
+This is an observational utility designed for use with the astronomical magnitude system. Returns the Plummer scale radius `a` given a desired absolute magnitude `absmag`, average surface brightness within the half-light radius `sb`, and distance modulus `DM`. If the units of `sb` are, for example, [mags/arcsec^2], and the units of `absmag` and `DM` should always be magnitudes, then this will return the Plummer scale radius `a` in [arcsec]. Mathematically, we solve the equation for the surface brightness `S` as a function of magnitude `m = absmag + DM` and area `A=πr^2`, with `r` being the half-light radius:
+
+```math
+\\begin{aligned}
+S &= m + 2.5 \\times \\log(A) = m + 2.5 \\times \\log(πr^2) = m + 2.5 \\times ( \\log(π) + 2\\log(r) ) \\newline
+r &= \\text{exp10} \\left(  \\frac{S - m - 2.5 \\, \\log(π)}{5} \\right) = \\text{exp10} \\left(  \\frac{S - m}{5} \\right) \\times π^{1/2}
+\\end{aligned}
+```
+
+We then only need to convert the half-light radius `r` to the scale radius `a`, which is just the inverse of [`GalaxyProfiles.plummer_a_to_rh`](@ref).
+
+# Examples
+For a Plummer profile with a total magnitude of -5 (`flux = -2.5*log10(mag) = 100`), an average surface brightness within the half-light radius of 25 mag/arcsec^2, and a distance of 1 Mpc (`DM = 5*log10(1e6 [pc] / 10 [pc]) = 25`), we can compute the scale radius of the corresponding Plummer profile in arcseconds as 
+```jldoctest
+julia> isapprox( GalaxyProfiles.plummer_angular_avalue(-5, 25, 25), 4.32; rtol=1e-2)
+true
+```
+"""
+plummer_angular_avalue(absmag, sb, DM) = exp10( (sb - (absmag + DM))/5) / sqrt(π) * sqrt( inv( cbrt(0.5)^2 ) - 1 )
+# plummer_angular_avalue(absmag, sb, DM) = inv( 1.3 * sqrt(π) ) * exp10( (sb - (absmag + DM))/5)
+
 """
     plummer_unscaled_density(r, M, a)
 
@@ -118,7 +142,10 @@ function ∇M(d::Plummer, r::Real)
     M, a = Mtot(d), scale_radius(d)
     return 3 * a * M * r^2 / (a^2 + r^2)^2 / sqrt(1 + (r/a)^2)
 end
-# invM is analytic but long and annoying; just use fallback
+function invM(d::Plummer, x::Real) # Actually basing this off quantile3D from Aarseth 1974.
+    M, a = Mtot(d), scale_radius(d)
+    return scale_radius(d) / sqrt( cbrt( inv( (x/M)^2 ) ) - 1)
+end
 function Mproj(d::Plummer, r::Real)
     M, a = Mtot(d), scale_radius(d)
     return M * r^2 / (a^2 + r^2)
@@ -150,3 +177,27 @@ function ∇∇Φ(d::Plummer{T}, r::S) where {T, S<:Real}
     denom2 = denom^2
     return U(constants.Gvelkpc2) * M * (a^2 - 2r^2) / sqrt(denom2 * denom2 * denom)
 end
+cdf2D(d::Plummer, r::Real) = r^2 / (scale_radius(d)^2 + r^2) # Just Mproj(d,R) / Mtot(d). 
+# ccdf2D fallback to 1 - cdf2D(d,r) in common.jl is fine. 
+function cdf3D(d::Plummer, r::Real) # Just M(d,R) / Mtot(d). 
+    a = scale_radius(d)
+    return a * r^3 * sqrt(1 + (r/a)^2) / (a^2 + r^2)^2
+end
+# ccdf3D fallback to 1 - cdf3D(d,r) in common.jl is fine. 
+quantile2D(d::Plummer, x::Real) = scale_radius(d) * sqrt(x) / sqrt( 1 - x )
+cquantile2D(d::Plummer, x::Real) = quantile2D(d, 1-x)
+quantile3D(d::Plummer, x::Real) = scale_radius(d) / sqrt( cbrt( inv( x^2 ) ) - 1) # This is the Aarseth 1974 result
+# function quantile3D(d::Plummer, x::Real) # This is the full expansion but it is virtually the same as above. 
+#     a = scale_radius(d)
+#     a2 = a^2
+#     a4 = a2^2
+#     a8 = a4^2
+#     a12 = a8 * a4
+#     x2 = x^2
+#     x4 = x2^2
+#     x6 = x4 * x2
+#     return sqrt( ( cbrt(2) * a4 * x2 / ( (x2 - 1) * cbrt( sqrt(a12 * x4 - 2 * a12 * x6 + a12 * x4^2) - a4 * a2 * x2 - a4 * a2 * x4) ) ) +
+#         ( cbrt( -a4 * a2 * x2 - a4 * a2 * x4 + sqrt(a12 * x4 - 2 * a12 * x6 + a12 * x4^2) ) / ( cbrt(2) * (x2 - 1) ) ) -
+#         a2 * x2 / (x2 - 1) )
+# end
+cquantile3D(d::Plummer, x::Real) = quantile3D(d, 1-x)

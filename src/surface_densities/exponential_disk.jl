@@ -12,7 +12,7 @@ Type describing projected isotropic exponential surface density profiles with ce
 The fields of `ExponentialDisk` are `Σ0, rs`. There are no methods defined for `ExponentialDisk` which use physical constants with units (e.g., `G`), so as long as `ExponentialDisk.rs` and the radius `r` you provide to methods are in the same units, and `Σ0` is in units of `[M/[r,rs]^2]`everything will work out. Generally just want to make sure the length units are uniform.
 
 The following public methods are defined on this type:
- - [`Σ`](@ref), [`∇Σ`](@ref), [`invΣ`](@ref), [`Mproj`](@ref), [`∇Mproj`](@ref), [`invMproj`](@ref), [`Mtot`](@ref)
+ - [`Σ`](@ref), [`∇Σ`](@ref), [`invΣ`](@ref), [`Mproj`](@ref), [`∇Mproj`](@ref), [`invMproj`](@ref), [`Mtot`](@ref), [`cdf2D`](@ref), [`ccdf2D`](@ref), [`quantile2D`](@ref), [`cquantile2D`](@ref)
 
 # See also
  - Convenience constructor [`ExponentialDiskDHI`](@ref).
@@ -64,11 +64,8 @@ scale_radius(d::ExponentialDisk) = d.rs
 
 #### Evaluation
 
-# function Σ(d::ExponentialDisk{T},r::S) where {T,S<:Real}
 function Σ(d::ExponentialDisk, r::Real) 
-    # U = promote_type(T,S)
     Σ0,rs = params(d)
-    # Σ0,rs,r = promote(Σ0,rs,r)
     Σ0 * exp(-r/rs)
 end
 function ∇Σ(d::ExponentialDisk, r::Real)
@@ -105,14 +102,14 @@ function Mtot(d::ExponentialDisk{T}) where T
     Σ0, rs=params(d)
     2 * T(π) * Σ0 * rs^2
 end
-function ccdf(d::ExponentialDisk, r::Real)
+function ccdf2D(d::ExponentialDisk, r::Real)
     Σ0, rs=params(d)
     ee = exp(-r/rs)
     r*ee/rs + ee
 end
-cdf(d::ExponentialDisk, r::Real) = 1 - ccdf(d,r)
-function cquantile(d::ExponentialDisk, x::Real)
+cdf2D(d::ExponentialDisk, r::Real) = 1 - ccdf2D(d, r)
+function cquantile2D(d::ExponentialDisk, x::Real)
     Σ0, rs=params(d)
     -rs * (1+lambertw(-x/ℯ,-1))
 end
-quantile(d::ExponentialDisk, x::Real) = cquantile(d,1-x)
+quantile2D(d::ExponentialDisk, x::Real) = cquantile2D(d,1-x)
