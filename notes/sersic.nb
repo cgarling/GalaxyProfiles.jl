@@ -1,0 +1,133 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      3492,        125]
+NotebookOptionsPosition[      3000,        103]
+NotebookOutlinePosition[      3341,        118]
+CellTagsIndexPosition[      3298,        115]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{
+  SubsuperscriptBox["\[Integral]", "0", 
+   RowBox[{"2", " ", "\[Pi]"}]], 
+  RowBox[{
+   SubsuperscriptBox["\[Integral]", "0", "\[Infinity]"], 
+   RowBox[{"S0", " ", 
+    RowBox[{"Exp", "[", 
+     RowBox[{"-", 
+      SuperscriptBox[
+       RowBox[{"(", 
+        FractionBox["r", "re"], ")"}], 
+       RowBox[{"1", "/", "n"}]]}], "]"}], "r", 
+    RowBox[{"\[DifferentialD]", "r"}], 
+    RowBox[{"\[DifferentialD]", "\[Phi]"}]}]}]}]], "Input",
+ CellChangeTimes->{{3.770654413979761*^9, 3.770654456260655*^9}}],
+
+Cell[BoxData[
+ RowBox[{"2", " ", "n", " ", "\[Pi]", " ", 
+  SuperscriptBox[
+   RowBox[{"(", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      FractionBox["1", "re"], ")"}], 
+     FractionBox["1", "n"]], ")"}], 
+   RowBox[{
+    RowBox[{"-", "2"}], " ", "n"}]], " ", "S0", " ", 
+  RowBox[{"Gamma", "[", 
+   RowBox[{"2", " ", "n"}], "]"}]}]], "Output",
+ CellChangeTimes->{3.770654468863096*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  SubsuperscriptBox["\[Integral]", "0", 
+   RowBox[{"2", " ", "\[Pi]"}]], 
+  RowBox[{
+   SubsuperscriptBox["\[Integral]", "0", "\[Infinity]"], 
+   RowBox[{"S0", " ", 
+    RowBox[{"Exp", "[", 
+     RowBox[{"-", 
+      SuperscriptBox[
+       RowBox[{"(", 
+        FractionBox["r", 
+         RowBox[{"re", "*", 
+          RowBox[{"Sqrt", "[", "q", "]"}]}]], ")"}], 
+       RowBox[{"1", "/", "n"}]]}], "]"}], "r", 
+    RowBox[{"\[DifferentialD]", "r"}], 
+    RowBox[{"\[DifferentialD]", "\[Phi]"}]}]}]}]], "Input",
+ CellChangeTimes->{{3.8009511177420607`*^9, 3.800951121454693*^9}}],
+
+Cell[BoxData[
+ RowBox[{"2", " ", "n", " ", "\[Pi]", " ", 
+  SuperscriptBox[
+   RowBox[{"(", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      FractionBox["1", 
+       RowBox[{
+        SqrtBox["q"], " ", "re"}]], ")"}], 
+     FractionBox["1", "n"]], ")"}], 
+   RowBox[{
+    RowBox[{"-", "2"}], " ", "n"}]], " ", "S0", " ", 
+  RowBox[{"Gamma", "[", 
+   RowBox[{"2", " ", "n"}], "]"}]}]], "Output",
+ CellChangeTimes->{3.800951137716432*^9}]
+}, Open  ]],
+
+Cell["This is equal to", "Text",
+ CellChangeTimes->{{3.800951194564781*^9, 3.8009511961242733`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"2", " ", "n", " ", "\[Pi]", " ", "q", " ", 
+  SuperscriptBox["re", "2"], " ", "S0", " ", 
+  RowBox[{"Gamma", "[", 
+   RowBox[{"2", " ", "n"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.800951184526004*^9, 3.8009512040131702`*^9}, {
+  3.800951257198143*^9, 3.800951258971779*^9}}]
+},
+WindowSize->{808, 911},
+WindowMargins->{{1258, Automatic}, {66, Automatic}},
+FrontEndVersion->"11.0 for Linux x86 (64-bit) (September 21, 2016)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 531, 15, 52, "Input"],
+Cell[1114, 39, 387, 12, 58, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1538, 56, 602, 17, 58, "Input"],
+Cell[2143, 75, 433, 14, 62, "Output"]
+}, Open  ]],
+Cell[2591, 92, 100, 1, 33, "Text"],
+Cell[2694, 95, 302, 6, 34, "Input"]
+}
+]
+*)
+

@@ -1,0 +1,473 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     13771,        465]
+NotebookOptionsPosition[     12344,        412]
+NotebookOutlinePosition[     12685,        427]
+CellTagsIndexPosition[     12642,        424]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell["\<\
+Surface density (surface brightness), also projected mass density (equation \
+36 in Dejonghe 1987)\
+\>", "Text",
+ CellChangeTimes->{{3.769439924640284*^9, 3.769439930200432*^9}, {
+  3.787507668542314*^9, 3.787507672838006*^9}, {3.8023563582016773`*^9, 
+  3.802356365017495*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"2", 
+  RowBox[{
+   SubsuperscriptBox["\[Integral]", "rp", "\[Infinity]"], " ", 
+   RowBox[{
+    FractionBox[
+     RowBox[{"r", " "}], 
+     SqrtBox[
+      RowBox[{
+       SuperscriptBox["r", "2"], "-", 
+       SuperscriptBox["rp", "2"]}]]], 
+    FractionBox[
+     RowBox[{"3", "M"}], 
+     RowBox[{"4", " ", "\[Pi]", " ", 
+      SuperscriptBox["a", "3"], " "}]], " ", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      RowBox[{"1", "+", 
+       SuperscriptBox[
+        RowBox[{"(", 
+         RowBox[{"r", "/", "a"}], ")"}], "2"]}], ")"}], 
+     RowBox[{
+      RowBox[{"-", "5"}], "/", "2"}]], 
+    RowBox[{"\[DifferentialD]", "r"}]}]}]}]], "Input",
+ CellChangeTimes->{{3.769405112202508*^9, 3.76940512611631*^9}, {
+  3.7694057997204247`*^9, 3.769405964220022*^9}}],
+
+Cell[BoxData[
+ RowBox[{"ConditionalExpression", "[", 
+  RowBox[{
+   FractionBox[
+    RowBox[{
+     SqrtBox[
+      FractionBox["1", 
+       SuperscriptBox["a", "2"]]], " ", 
+     SuperscriptBox["a", "3"], " ", "M"}], 
+    RowBox[{"\[Pi]", " ", 
+     SuperscriptBox[
+      RowBox[{"(", 
+       RowBox[{
+        SuperscriptBox["a", "2"], "+", 
+        SuperscriptBox["rp", "2"]}], ")"}], "2"]}]], ",", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Re", "[", "rp", "]"}], ">", "0"}], "&&", 
+    RowBox[{
+     RowBox[{"Im", "[", "rp", "]"}], "\[Equal]", "0"}], "&&", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         SuperscriptBox["a", "2"], "\[NotElement]", "Reals"}], "&&", 
+        RowBox[{"a", "\[NotElement]", "Reals"}], "&&", 
+        RowBox[{
+         RowBox[{"Re", "[", "a", "]"}], "\[NotEqual]", "0"}]}], ")"}], "||", 
+      RowBox[{
+       RowBox[{
+        SuperscriptBox["rp", "2"], "+", 
+        RowBox[{"Re", "[", 
+         SuperscriptBox["a", "2"], "]"}]}], ">", "0"}]}], ")"}]}]}], 
+  "]"}]], "Output",
+ CellChangeTimes->{3.7694059741723824`*^9, 3.787507710389751*^9}]
+}, Open  ]],
+
+Cell["Above reduces to", "Text",
+ CellChangeTimes->{{3.787511167110661*^9, 3.787511169039152*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   FractionBox[
+    RowBox[{
+     SuperscriptBox["a", "2"], " ", "M"}], 
+    RowBox[{"\[Pi]", 
+     SuperscriptBox[
+      RowBox[{"(", 
+       RowBox[{
+        SuperscriptBox["a", "2"], "+", 
+        SuperscriptBox["rp", "2"]}], ")"}], "2"]}]], " ", "=", " ", 
+   RowBox[{
+    FractionBox["M", 
+     RowBox[{
+      SuperscriptBox["a", "2"], "\[Pi]"}]], 
+    SuperscriptBox[
+     RowBox[{"(", 
+      RowBox[{"1", "+", 
+       FractionBox[
+        SuperscriptBox["rp", "2"], 
+        SuperscriptBox["a", "2"]]}], ")"}], 
+     RowBox[{"-", "2"}]]}]}], " ", ";", " ", 
+  RowBox[{"S0", " ", "=", " ", 
+   FractionBox["M", 
+    RowBox[{
+     SuperscriptBox["a", "2"], "\[Pi]"}]]}]}]], "Input",
+ CellChangeTimes->{{3.787507751643979*^9, 3.787507773142405*^9}, {
+  3.8023560296683693`*^9, 3.802356146475163*^9}, {3.802358566620949*^9, 
+  3.802358576252941*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  SubsuperscriptBox["\[Integral]", "0", 
+   RowBox[{"2", " ", "\[Pi]"}]], 
+  RowBox[{
+   SubsuperscriptBox["\[Integral]", "0", "\[Infinity]"], 
+   RowBox[{"S0", " ", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      RowBox[{"1", "+", 
+       FractionBox[
+        SuperscriptBox["r", "2"], 
+        SuperscriptBox["a", "2"]]}], ")"}], 
+     RowBox[{"-", "2"}]], "r", 
+    RowBox[{"\[DifferentialD]", "r"}], 
+    RowBox[{"\[DifferentialD]", "\[Phi]"}]}]}]}]], "Input",
+ CellChangeTimes->{{3.770321531358423*^9, 3.770321574682378*^9}, {
+   3.770321615094872*^9, 3.770321618087785*^9}, 3.770349523305232*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  SuperscriptBox["a", "2"], " ", "\[Pi]", " ", "S0"}]], "Output",
+ CellChangeTimes->{3.7703217179294252`*^9, 3.770349525637466*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  SubsuperscriptBox["\[Integral]", "0", 
+   RowBox[{"2", " ", "\[Pi]"}]], 
+  RowBox[{
+   SubsuperscriptBox["\[Integral]", "0", "\[Infinity]"], 
+   RowBox[{
+    FractionBox[
+     RowBox[{
+      SuperscriptBox["a", "2"], " ", "M"}], 
+     RowBox[{"\[Pi]", 
+      SuperscriptBox[
+       RowBox[{"(", 
+        RowBox[{
+         SuperscriptBox["a", "2"], "+", 
+         SuperscriptBox["r", "2"]}], ")"}], "2"]}]], "r", 
+    RowBox[{"\[DifferentialD]", "r"}], 
+    RowBox[{"\[DifferentialD]", "\[Phi]"}]}]}]}]], "Input",
+ CellChangeTimes->{{3.770322205771039*^9, 3.77032220585078*^9}, {
+  3.7703222447359877`*^9, 3.7703222515448313`*^9}, {3.770322319265676*^9, 
+  3.770322336520686*^9}, {3.80235657796861*^9, 3.802356621998595*^9}, {
+  3.802358345010416*^9, 3.80235835306354*^9}, {3.802358494741688*^9, 
+  3.802358495229738*^9}, {3.8023585496531487`*^9, 3.80235855562131*^9}, {
+  3.8023590138939734`*^9, 3.802359024796403*^9}}],
+
+Cell[BoxData["M"], "Output",
+ CellChangeTimes->{
+  3.770322337733458*^9, {3.80235660057898*^9, 3.8023566254286413`*^9}, 
+   3.802358354799247*^9, 3.802358503982411*^9, 3.8023585568536587`*^9, {
+   3.8023590160239763`*^9, 3.8023590277333*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  SubsuperscriptBox["\[Integral]", "0", 
+   RowBox[{"2", " ", "\[Pi]"}]], 
+  RowBox[{
+   SubsuperscriptBox["\[Integral]", "0", "\[Infinity]"], 
+   RowBox[{
+    FractionBox["M", 
+     RowBox[{
+      SuperscriptBox["a", "2"], "\[Pi]"}]], " ", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      RowBox[{"1", "+", 
+       FractionBox[
+        SuperscriptBox["r", "2"], 
+        SuperscriptBox["a", "2"]]}], ")"}], 
+     RowBox[{"-", "2"}]], "r", 
+    RowBox[{"\[DifferentialD]", "r"}], 
+    RowBox[{"\[DifferentialD]", "\[Phi]"}]}]}]}]], "Input"],
+
+Cell[BoxData["M"], "Output",
+ CellChangeTimes->{3.80235903902693*^9}]
+}, Open  ]],
+
+Cell["\<\
+Now we would like to generate images or kernels from the Plummer surface \
+brightness profile. For coords x,y we could just plug them in, but pixels \
+have a definite width, so integration over the pixels is more robust. Let\
+\[CloseCurlyQuote]s see if we can derive an analytic expression. Does not \
+evaluate : ( \
+\>", "Text",
+ CellChangeTimes->{{3.802432561593953*^9, 3.80243263441726*^9}, {
+  3.8024359259642677`*^9, 3.802435929034895*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  SubsuperscriptBox["\[Integral]", "x1", "x2"], 
+  RowBox[{
+   SubsuperscriptBox["\[Integral]", "y1", "y2"], 
+   RowBox[{
+    FractionBox["M", 
+     RowBox[{
+      SuperscriptBox["a", "2"], "\[Pi]"}]], " ", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      RowBox[{"1", "+", 
+       FractionBox[
+        RowBox[{"(", 
+         RowBox[{
+          SuperscriptBox["x", "2"], " ", "+", " ", 
+          SuperscriptBox["y", "2"]}], ")"}], 
+        SuperscriptBox["a", "2"]]}], ")"}], 
+     RowBox[{"-", "2"}]], 
+    RowBox[{"\[DifferentialD]", "y"}], 
+    RowBox[{"\[DifferentialD]", "x"}]}]}]}]], "Input",
+ CellChangeTimes->{{3.802432639042433*^9, 3.8024326791139936`*^9}}],
+
+Cell[BoxData["$Aborted"], "Output",
+ CellChangeTimes->{3.802435918250134*^9}]
+}, Open  ]],
+
+Cell["Projected velocity dispersion", "Text",
+ CellChangeTimes->{{3.76943993787225*^9, 3.769439941359223*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"2", 
+  RowBox[{
+   SubsuperscriptBox["\[Integral]", "rp", "\[Infinity]"], 
+   RowBox[{
+    FractionBox[
+     RowBox[{"r", " "}], 
+     SqrtBox[
+      RowBox[{
+       SuperscriptBox["r", "2"], "-", 
+       SuperscriptBox["rp", "2"]}]]], " ", 
+    FractionBox[
+     RowBox[{"G", " ", "M"}], 
+     RowBox[{"6", " ", 
+      SqrtBox[
+       RowBox[{
+        SuperscriptBox["r", "2"], "+", 
+        SuperscriptBox["a", "2"]}]]}]], " ", 
+    RowBox[{"\[DifferentialD]", "r"}]}]}]}]], "Input",
+ CellChangeTimes->{{3.76943995272103*^9, 3.769440012352689*^9}}],
+
+Cell[BoxData[
+ TemplateBox[{
+  "Integrate","idiv",
+   "\"Integral of \\!\\(\\*FractionBox[RowBox[{\\\"G\\\", \\\" \\\", \
+\\\"M\\\", \\\" \\\", \\\"r\\\"}], RowBox[{\\\"6\\\", \\\" \\\", \
+SqrtBox[RowBox[{SuperscriptBox[\\\"a\\\", \\\"2\\\"], \\\"+\\\", \
+SuperscriptBox[\\\"r\\\", \\\"2\\\"]}]], \\\" \\\", \
+SqrtBox[RowBox[{SuperscriptBox[\\\"r\\\", \\\"2\\\"], \\\"-\\\", \
+SuperscriptBox[\\\"rp\\\", \\\"2\\\"]}]]}]]\\) does not converge on \
+\\!\\(\\*RowBox[{\\\"{\\\", RowBox[{\\\"rp\\\", \\\",\\\", \
+\\\"\[Infinity]\\\"}], \\\"}\\\"}]\\).\"",2,6,4,18234991468902497851,"Local"},
+  
+  "MessageTemplate"]], "Message", "MSG",
+ CellChangeTimes->{3.769440018477399*^9}],
+
+Cell[BoxData[
+ RowBox[{"2", " ", 
+  RowBox[{
+   SubsuperscriptBox["\[Integral]", "rp", "\[Infinity]"], 
+   RowBox[{
+    FractionBox[
+     RowBox[{"G", " ", "M", " ", "r"}], 
+     RowBox[{"6", " ", 
+      SqrtBox[
+       RowBox[{
+        SuperscriptBox["a", "2"], "+", 
+        SuperscriptBox["r", "2"]}]], " ", 
+      SqrtBox[
+       RowBox[{
+        SuperscriptBox["r", "2"], "-", 
+        SuperscriptBox["rp", "2"]}]]}]], 
+    RowBox[{"\[DifferentialD]", "r"}]}]}]}]], "Output",
+ CellChangeTimes->{3.7694400184780693`*^9}]
+}, Open  ]],
+
+Cell["Projected enclosed mass", "Text",
+ CellChangeTimes->{{3.7875054083166113`*^9, 3.7875054132370243`*^9}, {
+  3.787509243635991*^9, 3.7875092465798187`*^9}}],
+
+Cell["\<\
+Equation 39 in Dejonghe, substituting the correct projected mass density from \
+above\
+\>", "Text",
+ CellChangeTimes->{{3.787510120238337*^9, 3.787510145885789*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  FractionBox[
+   RowBox[{"2", "\[Pi]"}], "M"], 
+  RowBox[{
+   SubsuperscriptBox["\[Integral]", "0", "x"], 
+   RowBox[{
+    FractionBox[
+     RowBox[{
+      SuperscriptBox["a", "2"], " ", "M", " "}], 
+     RowBox[{"\[Pi]", 
+      SuperscriptBox[
+       RowBox[{"(", 
+        RowBox[{
+         SuperscriptBox["a", "2"], "+", 
+         SuperscriptBox["r", "2"]}], ")"}], "2"]}]], "r", 
+    RowBox[{"\[DifferentialD]", "r"}]}]}]}]], "Input",
+ CellChangeTimes->{{3.787510031831922*^9, 3.787510082903339*^9}, 
+   3.7875103710309668`*^9, 3.787510411134445*^9, {3.787510511461722*^9, 
+   3.7875105152428093`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"ConditionalExpression", "[", 
+  RowBox[{
+   FractionBox[
+    SuperscriptBox["x", "2"], 
+    RowBox[{
+     SuperscriptBox["a", "2"], "+", 
+     SuperscriptBox["x", "2"]}]], ",", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Re", "[", 
+      FractionBox["a", "x"], "]"}], "\[NotEqual]", "0"}], "||", 
+    RowBox[{
+     RowBox[{"Im", "[", 
+      FractionBox["a", "x"], "]"}], ">", "1"}], "||", 
+    RowBox[{
+     RowBox[{"Im", "[", 
+      FractionBox["a", "x"], "]"}], "<", 
+     RowBox[{"-", "1"}]}]}]}], "]"}]], "Output",
+ CellChangeTimes->{3.787510091367894*^9, 3.787510413636483*^9, 
+  3.787510517512157*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Solve", "[", 
+  RowBox[{
+   RowBox[{"X", "\[Equal]", 
+    FractionBox[
+     SuperscriptBox["r", "2"], 
+     RowBox[{
+      SuperscriptBox["a", "2"], "+", 
+      SuperscriptBox["r", "2"]}]]}], ",", "r"}], "]"}]], "Input",
+ CellChangeTimes->{{3.787510605756513*^9, 3.787510607147306*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"r", "\[Rule]", 
+     RowBox[{"-", 
+      FractionBox[
+       RowBox[{"a", " ", 
+        SqrtBox["X"]}], 
+       SqrtBox[
+        RowBox[{"1", "-", "X"}]]]}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"r", "\[Rule]", 
+     FractionBox[
+      RowBox[{"a", " ", 
+       SqrtBox["X"]}], 
+      SqrtBox[
+       RowBox[{"1", "-", "X"}]]]}], "}"}]}], "}"}]], "Output",
+ CellChangeTimes->{3.787510612588335*^9}]
+}, Open  ]],
+
+Cell["\<\
+So now a uniform random number X substituted above will return a properly \
+sampled projected radius.\
+\>", "Text",
+ CellChangeTimes->{{3.78751108799198*^9, 3.787511112704053*^9}}]
+},
+WindowSize->{808, 911},
+WindowMargins->{{207, Automatic}, {Automatic, 194}},
+FrontEndVersion->"11.0 for Linux x86 (64-bit) (September 21, 2016)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 288, 6, 33, "Text"],
+Cell[CellGroupData[{
+Cell[871, 30, 783, 25, 67, "Input"],
+Cell[1657, 57, 1118, 35, 122, "Output"]
+}, Open  ]],
+Cell[2790, 95, 98, 1, 33, "Text"],
+Cell[2891, 98, 888, 29, 65, "Input"],
+Cell[CellGroupData[{
+Cell[3804, 131, 624, 17, 60, "Input"],
+Cell[4431, 150, 155, 3, 34, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4623, 158, 945, 23, 65, "Input"],
+Cell[5571, 183, 242, 4, 32, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[5850, 192, 561, 18, 60, "Input"],
+Cell[6414, 212, 69, 1, 32, "Output"]
+}, Open  ]],
+Cell[6498, 216, 455, 8, 77, "Text"],
+Cell[CellGroupData[{
+Cell[6978, 228, 688, 21, 64, "Input"],
+Cell[7669, 251, 77, 1, 32, "Output"]
+}, Open  ]],
+Cell[7761, 255, 110, 1, 33, "Text"],
+Cell[CellGroupData[{
+Cell[7896, 260, 574, 19, 67, "Input"],
+Cell[8473, 281, 672, 13, 55, "Message"],
+Cell[9148, 296, 524, 17, 60, "Output"]
+}, Open  ]],
+Cell[9687, 316, 160, 2, 33, "Text"],
+Cell[9850, 320, 175, 4, 33, "Text"],
+Cell[CellGroupData[{
+Cell[10050, 328, 630, 19, 65, "Input"],
+Cell[10683, 349, 627, 20, 54, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[11347, 374, 310, 9, 59, "Input"],
+Cell[11660, 385, 475, 18, 58, "Output"]
+}, Open  ]],
+Cell[12150, 406, 190, 4, 55, "Text"]
+}
+]
+*)
+
