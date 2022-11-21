@@ -32,17 +32,18 @@ scale_radius(d::AbstractMassProfile)
 
 Evaluate the density of `d` at radius `r`.
 """
-ρ(d::AbstractDensity,r::Real)
+ρ(d::AbstractDensity, r::Real)
 """
     invρ(d::AbstractMassProfile, x::Real
-    invρ(d::AbstractMassProfile, x::Real, interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))
+    invρ(d::AbstractMassProfile, x::Real,
+        interval::NTuple{2,Real}=(scale_radius(d)/100,100*scale_radius(d)))
     invρ(uu::Unitful.LengthUnits, d::AbstractMassProfile, x::Real)
     invρ(d::AbstractMassProfile, x::Unitful.Density)
     invρ(uu::Unitful.LengthUnits, d::AbstractMassProfile, x::Unitful.Density)
 
 Solve for the radius `r` at which the density is `x` for profile `d`. Requires `x>0`. When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `ρ(d,r)` be defined.
 """
-invρ(d::AbstractDensity,x::Real,interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))) = x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->ρ(d,y)-x,interval)
+invρ(d::AbstractDensity, x::T, interval::NTuple{2,S}=(scale_radius(d)/100,100*scale_radius(d))) where {T<:Real, S<:Real} = (U = promote_type(T, S); x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->ρ(d,y)-x,(U(interval[1]),U(interval[2]))))
 """
     ∇ρ(d::AbstractDensity, r::Real)
     ∇ρ(uu::GalaxyProfiles.∇ρdimensionUnits, d::AbstractDensity, r::Real)
@@ -51,7 +52,7 @@ invρ(d::AbstractDensity,x::Real,interval::Tuple=(scale_radius(d)/100,100*scale_
 
 The gradient of `ρ(d,r)` evaluated at radius `r`.
 """
-∇ρ(d::AbstractDensity,r::Real)
+∇ρ(d::AbstractDensity, r::Real)
 """
     ρmean(d::AbstractDensity, r::Real)
     ρmean(uu::Unitful.DensityUnits, d::AbstractDensity,r::Real)
@@ -60,17 +61,18 @@ The gradient of `ρ(d,r)` evaluated at radius `r`.
 
 The average density inside `r`; defaults to enclosed mass divided by volume; `M(d,r) * 3 / (4π*r^3)`. 
 """
-ρmean(d::AbstractDensity,r::Real) = M(d,r) * 3 / (4π*r^3)
+ρmean(d::AbstractDensity, r::Real) = M(d,r) * 3 / (4π*r^3)
 """
     invρmean(d::AbstractDensity, x::Real)
-    invρmean(d::AbstractDensity, x::Real, interval::Tuple=(scale_radius(d)/100,100*scale_radius(d)))
+    invρmean(d::AbstractDensity, x::Real,
+        interval::NTuple{2,Real}=(scale_radius(d)/100,100*scale_radius(d)))
     invρmean(uu::Unitful.LengthUnits, d::AbstractDensity, x::Real)
     invρmean(d::AbstractDensity, x::Unitful.Density)
     invρmean(uu::Unitful.LengthUnits, d::AbstractDensity, x::Unitful.Density)
 
 Solve for the radius `r` inside which the average density is `x`. Requires `x>0`. When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `ρmean(d,r)` or `M(d,r)` be defined.
 """
-invρmean(d::AbstractDensity,x::Real,interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))) = x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->ρmean(d,y)-x,interval)
+invρmean(d::AbstractDensity, x::T, interval::NTuple{2,S}=(scale_radius(d)/100,100*scale_radius(d)); kws...) where {T<:Real, S<:Real} = (U = promote_type(T, S); x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->ρmean(d,y)-x,(U(interval[1]), U(interval[2])); kws...))
 """
     Σ(d::AbstractMassProfile, r::Real)
     Σ(uu::GalaxyProfiles.SurfaceDensityUnits, d::AbstractMassProfile, r::Real)
@@ -110,14 +112,15 @@ Evaluates the mean projected surface density inside the radius `r`; defaults to 
 Σmean(d::AbstractMassProfile,r::T) where T<:Real = Mproj(d,r) / (T(π) * r^2)
 """
     invΣ(d::AbstractMassProfile, x::Real)
-    invΣ(d::AbstractMassProfile, x::Real, interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))
+    invΣ(d::AbstractMassProfile, x::Real,
+        interval::NTuple{2,Real}=(scale_radius(d)/100,100*scale_radius(d)))
     invΣ(uu::Unitful.LengthUnits, d::AbstractMassProfile, x::Real)
     invΣ(d::AbstractMassProfile, r::Unitful.Length)
     invΣ(uu::Unitful.LengthUnits, d::AbstractMassProfile, r::Unitful.Length)
 
 Solve for the radius `r` at which the surface density is `x` for profile `d`. Requires `x>0`. When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `Σ(d,r)` be defined.
 """
-invΣ(d::AbstractMassProfile,x::Real,interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))) = x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->Σ(d,y)-x,interval)
+invΣ(d::AbstractDensity, x::T, interval::NTuple{2,S}=(scale_radius(d)/100,100*scale_radius(d))) where {T<:Real, S<:Real} = (U = promote_type(T, S); x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->Σ(d,y)-x,(U(interval[1]), U(interval[2]))))
 """
     M(d::AbstractMassProfile, r::Real)
     M(uu::Unitful.MassUnits, d::AbstractMassProfile, r::Real)
@@ -141,14 +144,15 @@ The gradient of `M(d,r)` evaluated at radius `r`.
 ∇M(d::AbstractMassProfile,r::Real)
 """
     invM(d::AbstractMassProfile, x::Real)
-    invM(d::AbstractMassProfile, x::Real, interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))
+    invM(d::AbstractMassProfile, x::Real,
+        interval::NTuple{2,Real}=(scale_radius(d)/100,100*scale_radius(d)))
     invM(uu::Unitful.LengthUnits, d::AbstractMassProfile, x::Real)
     invM(d::AbstractMassProfile, x::Unitful.Mass)
     invM(uu::Unitful.LengthUnits, d::AbstractMassProfile, x::Unitful.Mass)
 
 Solve for the radius `r` at which the enclosed mass is `x` for profile `d`. Requires `x>0`. When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `M(d,r)` be defined.
 """
-invM(d::AbstractMassProfile,x::Real,interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))) = x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->M(d,y)-x,interval)
+invM(d::AbstractDensity, x::T, interval::NTuple{2,S}=(scale_radius(d)/100,100*scale_radius(d))) where {T<:Real, S<:Real} = (U = promote_type(T, S); x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->M(d,y)-x,(U(interval[1]), U(interval[2]))))
 """
     Mtot(d::AbstractMassProfile)
     Mtot(uu::Unitful.MassUnits, d::AbstractMassProfile)
@@ -179,13 +183,14 @@ The gradient of `Mproj(d,r)` evaluated at radius `r`.
 ∇Mproj(d::AbstractMassProfile,r::Real)
 """
     invMproj(d::AbstractMassProfile, x::Real)
-    invMproj(d::AbstractMassProfile, x::Real, interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))
+    invMproj(d::AbstractMassProfile, x::Real,
+        interval::NTuple{2,Real}=(scale_radius(d)/100,100*scale_radius(d))
     invMproj(d::AbstractMassProfile, x::Unitful.Mass)
     invMproj(uu::Unitful.LengthUnits, d::AbstractMassProfile, x::Unitful.Mass)
 
 Solve for the radius `r` at which the line-of-sight projected enclosed mass is `x` for profile `d`. Requires `x>0`. When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `M(d,r)` be defined.
 """
-invMproj(d::AbstractMassProfile,x::Real,interval::Tuple=(scale_radius(d)/100,100*scale_radius(d))) = x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->Mproj(d,y)-x,interval)
+invMproj(d::AbstractDensity, x::T, interval::NTuple{2,S}=(scale_radius(d)/100,100*scale_radius(d))) where {T<:Real, S<:Real} = (U = promote_type(T, S); x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->Mproj(d,y)-x,(U(interval[1]), U(interval[2]))))
 """
     cdf(d::AbstractMassProfile, r::Real)
     cdf(d::AbstractMassProfile, r::Unitful.Quantity)
