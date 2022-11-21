@@ -14,6 +14,7 @@ The following concrete types, representing specific density profiles, are curren
 ExponentialDisk
 GeneralIsothermal
 NFW
+Plummer
 ```
 
 ## Retrieving Parameters

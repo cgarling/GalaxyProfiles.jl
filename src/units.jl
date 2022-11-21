@@ -41,12 +41,12 @@ homogenize_units(Σ::SurfaceDensity) = u.ustrip(defaultunits.surfacedensity, Σ)
 homogenize_units(r::u.Length) = u.ustrip(defaultunits.length, r)
 
 # Create Unitful constructors for our various composite types
-ExponentialDisk(Σ0::SurfaceDensity,rs::u.Length) = ExponentialDisk(homogenize_units(Σ0),homogenize_units(rs))
-function ExponentialDisk(rs::u.Length;M=nothing,Σ0=nothing)
+ExponentialDisk(Σ0::SurfaceDensity, rs::u.Length) = ExponentialDisk(homogenize_units(Σ0), homogenize_units(rs))
+function ExponentialDisk(rs::u.Length; M=nothing, Σ0=nothing)
     if isnothing(M)
         @assert !isnothing(Σ0)
         @assert Σ0 isa SurfaceDensity
-        ExponentialDisk(Σ0,rs)
+        ExponentialDisk(Σ0, rs)
     else
         @assert M isa u.Mass
         # ExponentialDisk(M/(2π*rs^2),rs)
@@ -55,13 +55,13 @@ function ExponentialDisk(rs::u.Length;M=nothing,Σ0=nothing)
 end
 ExponentialDiskDHI(DHI::Unitful.Length, MHI::Unitful.Mass, ΣDHI::SurfaceDensity=1*ua.Msun/ua.pc^2) = ExponentialDiskDHI(homogenize_units(DHI), homogenize_units(MHI), homogenize_units(ΣDHI))
 
-GeneralIsothermal(ρ0::u.Density,rs::u.Length,α::Real) = GeneralIsothermal(homogenize_units(ρ0),homogenize_units(rs),α)
-GeneralIsothermal(rs::u.Length,α::Real,M::u.Mass,Rmax::u.Length) = GeneralIsothermal(homogenize_units(rs),α,homogenize_units(M),homogenize_units(Rmax))
+GeneralIsothermal(ρ0::u.Density, rs::u.Length, α::Real) = GeneralIsothermal(homogenize_units(ρ0), homogenize_units(rs), α)
+GeneralIsothermal(rs::u.Length, α::Real, M::u.Mass, Rmax::u.Length) = GeneralIsothermal(homogenize_units(rs), α, homogenize_units(M), homogenize_units(Rmax))
 
-SIS(ρ0::u.Density,rs::u.Length) = SIS(homogenize_units(ρ0),homogenize_units(rs))
-SIS(rs::u.Length,M::u.Mass,Rmax::u.Length) = SIS(homogenize_units(rs),homogenize_units(M),homogenize_units(Rmax))
+SIS(ρ0::u.Density, rs::u.Length) = SIS(homogenize_units(ρ0), homogenize_units(rs))
+SIS(rs::u.Length, M::u.Mass, Rmax::u.Length) = SIS(homogenize_units(rs), homogenize_units(M), homogenize_units(Rmax))
 
-NFW(ρ0::u.Density,rs::u.Length) = NFW(homogenize_units(ρ0),homogenize_units(rs))
+NFW(ρ0::u.Density, rs::u.Length) = NFW(homogenize_units(ρ0), homogenize_units(rs))
 
 #########################################################################################
 # Easily select a different unit

@@ -91,7 +91,7 @@ which has an inverse of
 \\rho(r) = -\\frac{1}{\\pi} \\int_r^\\infty \\frac{d\\Sigma(R)}{dR} \\frac{dR}{\\sqrt{R^2-r^2}}
 ```
 """
-Σ(d::AbstractMassProfile,r::Real) = 2 * quadgk(x->x*ρ(d,x)/sqrt(x^2-r^2),r,Inf)[1]
+Σ(d::AbstractMassProfile, r::Real) = 2 * quadgk(x->x*ρ(d,x)/sqrt(x^2-r^2),r,Inf)[1]
 """
     ∇Σ(d::AbstractMassProfile, r::Real)
     ∇Σ(uu::Unitful.DensityUnits, d::AbstractMassProfile, r::Real)
@@ -100,7 +100,7 @@ which has an inverse of
 
 The gradient of `Σ(d,r)` evaluated at radius `r`.
 """
-∇Σ(d::AbstractMassProfile,r::Real)
+∇Σ(d::AbstractMassProfile, r::Real)
 """
     Σmean(d::AbstractMassProfile, r::Real)
     Σmean(uu::GalaxyProfiles.SurfaceDensityUnits, d::AbstractMassProfile, r::Real)
@@ -109,7 +109,7 @@ The gradient of `Σ(d,r)` evaluated at radius `r`.
 
 Evaluates the mean projected surface density inside the radius `r`; defaults to `Mproj(d::AbstractMassProfile,r::Real) / (π * r^2)`.
 """
-Σmean(d::AbstractMassProfile,r::T) where T<:Real = Mproj(d,r) / (T(π) * r^2)
+Σmean(d::AbstractMassProfile, r::T) where T<:Real = Mproj(d,r) / (T(π) * r^2)
 """
     invΣ(d::AbstractMassProfile, x::Real)
     invΣ(d::AbstractMassProfile, x::Real,
@@ -120,35 +120,38 @@ Evaluates the mean projected surface density inside the radius `r`; defaults to 
 
 Solve for the radius `r` at which the surface density is `x` for profile `d`. Requires `x>0`. When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `Σ(d,r)` be defined. For this method, `kws...` are passed to `Roots.find_zero`.
 """
-invΣ(d::AbstractDensity, x::T, interval::NTuple{2,S}=(scale_radius(d)/100,100*scale_radius(d)); kws...) where {T<:Real, S<:Real} = (U = promote_type(T, S); x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->Σ(d,y)-x,(U(interval[1]), U(interval[2])); kws...))
+invΣ(d::AbstractMassProfile, x::T, interval::NTuple{2,S}=(scale_radius(d)/100,100*scale_radius(d)); kws...) where {T<:Real, S<:Real} = (U = promote_type(T, S); x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->Σ(d,y)-x,(U(interval[1]), U(interval[2])); kws...))
 """
-    M(d::AbstractMassProfile, r::Real)
-    M(uu::Unitful.MassUnits, d::AbstractMassProfile, r::Real)
-    M(d::AbstractMassProfile, r::Unitful.Length)
-    M(uu::Unitful.MassUnits, d::AbstractMassProfile, r::Unitful.Length)
+    M(d::AbstractDensity, r::Real; kws...)
+    M(uu::Unitful.MassUnits, d::AbstractDensity, r::Real)
+    M(d::AbstractDensity, r::Unitful.Length)
+    M(uu::Unitful.MassUnits, d::AbstractDensity, r::Unitful.Length)
 
 Evaluate the total mass enclosed within a radius `r` for the profile `d`. For spherical systems this is given by the integral
+
 ```math
 M(\\lt R) = 4\\pi \\int_0^R r^2 ρ(r) dr
 ```
+
+When this method is not specialized for `d`, it will compute the numerical integral using `QuadGK.quadgk`;  the provided `kws...` will be passed through. 
 """
-M(d::AbstractMassProfile,r::Real)
+M(d::AbstractDensity, r::Real; kws...) = 4π * quadgk(x->x^2 * ρ(d,x), 0.0, r)[1]
 """
-    ∇M(d::AbstractMassProfile, r::Real)
-    ∇M(uu::GalaxyProfiles.∇mdimensionUnits, d::AbstractMassProfile, r::Real)
-    ∇M(d::AbstractMassProfile, r::Unitful.Length)
-    ∇M(uu::GalaxyProfiles.∇mdimensionUnits, d::AbstractMassProfile, r::Unitful.Length)
+    ∇M(d::AbstractDensity, r::Real)
+    ∇M(uu::GalaxyProfiles.∇mdimensionUnits, d::AbstractDensity, r::Real)
+    ∇M(d::AbstractDensity, r::Unitful.Length)
+    ∇M(uu::GalaxyProfiles.∇mdimensionUnits, d::AbstractDensity, r::Unitful.Length)
 
 The gradient of `M(d,r)` evaluated at radius `r`.
 """
-∇M(d::AbstractMassProfile,r::Real)
+∇M(d::AbstractMassProfile, r::Real)
 """
-    invM(d::AbstractMassProfile, x::Real)
-    invM(d::AbstractMassProfile, x::Real,
+    invM(d::AbstractDensity, x::Real)
+    invM(d::AbstractDensity, x::Real,
         interval::NTuple{2,Real}=(scale_radius(d)/100,100*scale_radius(d)); kws...)
-    invM(uu::Unitful.LengthUnits, d::AbstractMassProfile, x::Real)
-    invM(d::AbstractMassProfile, x::Unitful.Mass)
-    invM(uu::Unitful.LengthUnits, d::AbstractMassProfile, x::Unitful.Mass)
+    invM(uu::Unitful.LengthUnits, d::AbstractDensity, x::Real)
+    invM(d::AbstractDensity, x::Unitful.Mass)
+    invM(uu::Unitful.LengthUnits, d::AbstractDensity, x::Unitful.Mass)
 
 Solve for the radius `r` at which the enclosed mass is `x` for profile `d`. Requires `x>0`. When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `M(d,r)` be defined. For this method, `kws...` are passed to `Roots.find_zero`.
 """
@@ -171,7 +174,7 @@ Evaluate the total line-of-sight projected mass enclosed within a radius `r` for
 M_{\\text{proj}}(\\lt R) = 2\\pi \\int_0^R r \\, \\Sigma(r) dr = 2\\pi \\int_0^R r \\left( 2 \\int_r^\\infty \\rho(r^\\prime) \\frac{r^\\prime}{ \\sqrt{r^{\\prime \\, 2}-r^2} } \\, dr^\\prime \\right) dr
 ```
 """
-Mproj(d::AbstractMassProfile,r::Real) = 2π * quadgk(x->x * Σ(d,x),0,r)[1]
+Mproj(d::AbstractMassProfile, r::Real) = 2π * quadgk(x->x * Σ(d,x),0,r)[1]
 """
     ∇Mproj(d::AbstractMassProfile, r::Real)
     ∇Mproj(uu::GalaxyProfiles.∇mdimensionUnits, d::AbstractMassProfile, r::Real)
@@ -180,7 +183,7 @@ Mproj(d::AbstractMassProfile,r::Real) = 2π * quadgk(x->x * Σ(d,x),0,r)[1]
 
 The gradient of `Mproj(d,r)` evaluated at radius `r`.
 """
-∇Mproj(d::AbstractMassProfile,r::Real)
+∇Mproj(d::AbstractMassProfile, r::Real)
 """
     invMproj(d::AbstractMassProfile, x::Real)
     invMproj(d::AbstractMassProfile, x::Real,
@@ -190,7 +193,7 @@ The gradient of `Mproj(d,r)` evaluated at radius `r`.
 
 Solve for the radius `r` at which the line-of-sight projected enclosed mass is `x` for profile `d`. Requires `x>0`. When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `M(d,r)` be defined. For this method, `kws...` are passed to `Roots.find_zero`.
 """
-invMproj(d::AbstractDensity, x::T, interval::NTuple{2,S}=(scale_radius(d)/100,100*scale_radius(d)); kws...) where {T<:Real, S<:Real} = (U = promote_type(T, S); x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->Mproj(d,y)-x,(U(interval[1]), U(interval[2])); kws...))
+invMproj(d::AbstractMassProfile, x::T, interval::NTuple{2,S}=(scale_radius(d)/100,100*scale_radius(d)); kws...) where {T<:Real, S<:Real} = (U = promote_type(T, S); x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->Mproj(d,y)-x,(U(interval[1]), U(interval[2])); kws...))
 """
     cdf(d::AbstractMassProfile, r::Real)
     cdf(d::AbstractMassProfile, r::Unitful.Quantity)

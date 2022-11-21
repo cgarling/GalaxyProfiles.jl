@@ -1,14 +1,14 @@
 """
-    NFW(ρ0::Real,rs::Real)
-    NFW(ρ0::Unitful.Density,rs::Unitful.Length)
+    NFW(ρ0::Real, rs::Real)
+    NFW(ρ0::Unitful.Density, rs::Unitful.Length)
 
-Type describing the Navarro-Frenk-White (NFW) density profile with scale radius `rs` and characteristic density `ρ0`. The surface density profile is
+Type describing the Navarro-Frenk-White (NFW) density profile with scale radius `rs` and characteristic density `ρ0`. The density profile is
 
 ```math
 \\rho(r) = \\frac{\\rho_0}{(r/R_s) \\, (1+r/R_s)^2}
 ```
 
-The fields of `NFW` are `ρ0, rs`. The default units of `NFW` are `[ρ0] = [Msun/kpc^3], [r, rs] = [kpc], [M] = [Msun]`. This is important for quantities like `Vcirc`, `Φ`, `∇Φ` which involve `G`; these will give incorrect results if the fields of `NFW` or the provided `r` are in different units.
+The fields of `NFW` are `ρ0, rs`. The default units of `NFW` are `[ρ0] = [Msun/kpc^3], [r, rs] = [kpc], [M] = [Msun]`. This is important for quantities like [`Vcirc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), and [`∇∇Φ`](@ref) which involve the gravitational constant `G`; these will give incorrect results if the fields of `NFW` or the provided `r` are in different units.
 
 The following methods are defined on this type:
  - [`ρ`](@ref), [`invρ`](@ref), [`∇ρ`](@ref), [`ρmean`](@ref), [`Σ`](@ref), [`M`](@ref), [`∇M`](@ref), [`invM`](@ref), [`Mproj`](@ref), [`∇Mproj`](@ref), [`Vmax`](@ref), [`Vesc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), [`∇∇Φ`](@ref)
