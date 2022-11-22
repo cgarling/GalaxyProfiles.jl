@@ -11,7 +11,7 @@ Type describing general isothermal density profiles with scale radius `rs`, powe
 \\rho(r) = \\rho_0 \\times \\left( \\frac{r}{R_s} \\right)^{-\\alpha}
 ```
 
-The fields of `GeneralIsothermal` are `ρ0, rs, α`. The default units of `GeneralIsothermal` are `[ρ0] = [Msun/kpc^3], [r, rs] = [kpc], [M] = [Msun]` when you construct `GeneralIsothermal` with `Real`s, like `Float64`. This is important for quantities like [`Vcirc`](@ref), [`Vesc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), [`∇∇Φ`](@ref) which involve `G`; these will give incorrect results if the fields of `GeneralIsothermal` or the provided `r` are in different units. If you construct `GeneralIsothermal` with `Unitful` quantities, they will be internally converted. 
+The fields of `GeneralIsothermal` are `ρ0, rs, α`. The default units of `GeneralIsothermal` are `[ρ0] = [Msun/kpc^3], [r, rs] = [kpc], [M] = [Msun]` when you construct `GeneralIsothermal` with `Real`s, like `Float64`. This is important for quantities like [`Vcirc`](@ref), [`Vesc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), and [`∇∇Φ`](@ref) which involve `G`; these will give incorrect results if the fields of `GeneralIsothermal` or the provided `r` are in different units. If you construct `GeneralIsothermal` with `Unitful` quantities, they will be internally converted. 
 
 Since the total mass of the `GeneralIsothermal` profile is undefined when ``\\alpha \\geq 3``, we define the the potential [`Φ`](@ref) to be 0 at `rs` for *all* instances of `GeneralIsothermal`.
 

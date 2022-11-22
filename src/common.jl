@@ -19,9 +19,9 @@ Get the fields of the struct as expected by its defined methods.
 params(d::AbstractMassProfile)
 """
     scale_radius(d::AbstractMassProfile)
-    scale_radius(uu::Unitful.LengthUnits,d::AbstractMassProfile)
+    scale_radius(uu::Unitful.LengthUnits, d::AbstractMassProfile)
 
-Returns the characteristic scale radius of the profile; used for some default methods. An example is `rs` for the [`ExponentialDisk`](@ref) model. You should generally use `params` instead.
+Returns the characteristic scale radius of the profile; used for some default methods. An example is `rs` for the [`ExponentialDisk`](@ref) model. 
 """
 scale_radius(d::AbstractMassProfile)
 """
@@ -264,7 +264,7 @@ v_c^2(r) = \\frac{G M(r)}{r} = r \\frac{d\\Phi}{dr} = r\\nabla\\Phi(r)
 
 By default uses `G` in units such that if `rs` and `r` are in kpc, the velocity ends up in `km/s`. For example, for [`GeneralIsothermal`](@ref) we have `[G] = [kpc * km^2 / Msun / s^2]` so that the velocity ends up in `km/s`. Falls back to `sqrt( GalaxyProfiles.constants.Gvelkpc * M(d::AbstractDensity,r) / r)`.
 """
-Vcirc(d::AbstractDensity,r::T) where {T<:Real} = sqrt( T(constants.Gvelkpc) * M(d,r) / r)
+Vcirc(d::AbstractDensity,r::T) where {T<:Real} = sqrt( T(constants.Gvelkpc) * M(d, r) / r)
 """
     Vesc(d::AbstractDensity, r::Real)
     Vesc(uu::Unitful.VelocityUnits, d::AbstractDensity, r::Real)
@@ -279,7 +279,7 @@ if ``\\Phi \\to 0`` for ``r \\to \\infty``; see the note for [`Φ`](@ref).
 
 By default uses `G` in units such that if `rs` and `r` are in kpc, the velocity ends up in `km/s`. For example, for [`GeneralIsothermal`](@ref) we have `[G] = [kpc * km^2 / Msun / s^2]` so that the velocity ends up in `km/s`. 
 """
-Vesc(d::AbstractDensity,r::Real) = sqrt( 2 * abs(Φ(d,r)) )
+Vesc(d::AbstractDensity,r::Real) = sqrt( 2 * abs(Φ(d, r)) )
 """
     Vmax(d::AbstractDensity)
     Vmax(uu::Unitful.VelocityUnits,d::AbstractDensity)

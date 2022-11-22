@@ -14,15 +14,15 @@ which corresponds to a density profile of
 \\rho(r) = \\frac{3 \\, M}{4 \\pi a^3} \\, \\left( 1 + \\frac{r^2}{a^2} \\right)^{-5/2}
 ```
 
-where `M` is the total mass of the system. Following this, the fields of `Plummer` are `M, a`, where `a` is the Plummer scale radius. This scale radius can be converted to the half-light (or half-mass) radius via
+where `M` is the total mass of the system and `a` is the characteristic scale radius of the system. Following this, the fields of `Plummer` are `M, a`. This scale radius can be converted to the 3D half-light (or half-mass) radius via
 
 ```math
 r_h = \\frac{a}{\\sqrt{ 0.5^{-2/3} - 1} }
 ```
 
-the method [`GalaxyProfiles.plummer_a_to_rh`](@ref) is provided to perform this conversion.
+the method [`GalaxyProfiles.plummer_a_to_rh`](@ref) is provided to perform this conversion. In projection (i.e., along a line-of-sight) the half-light radius is equal to the Plummer scale radius `a`, verifiable by [`quantile2D(d::Plummer, 0.5) == scale_radius(d)`](@ref quantile2D). 
 
-The default units of `Plummer` are `[M] = [Msun], [a, r] = [kpc]`. This is important for quantities like [`Vcirc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), and [`∇∇Φ`](@ref) which involve the gravitational constant `G`; these will give incorrect results if the fields of `Plummer` or the provided `r` are in different units.
+The default units of `Plummer` are `[M] = [Msun], [a, r] = [kpc]`. This is important for quantities like [`Vcirc`](@ref), [`Vesc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), and [`∇∇Φ`](@ref) which involve the gravitational constant `G`; these will give incorrect results if the fields of `Plummer` or the provided `r` are in different units.
 
 The following public methods are defined on this type:
  - [`Mtot`](@ref), [`ρ`](@ref), [`invρ`](@ref), [`∇ρ`](@ref), [`ρmean`](@ref), [`invρmean`](@ref), [`Σ`](@ref), [`∇Σ`](@ref), [`Σmean`](@ref), [`invΣ`](@ref), [`M`](@ref), [`∇M`](@ref), [`invM`](@ref), [`Mproj`](@ref), [`∇Mproj`](@ref), [`invMproj`](@ref), [`Vcirc`](@ref), [`Vesc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), [`∇∇Φ`](@ref), [`cdf2D`](@ref), [`cdf3D`](@ref), [`ccdf2D`](@ref), [`ccdf3D`](@ref), [`quantile2D`](@ref), [`quantile3D`](@ref), [`cquantile2D`](@ref), [`cquantile3D`](@ref).
@@ -45,7 +45,7 @@ Mtot(d::Plummer) = d.M
 
 Returns the half-light (or half-mass) radius given the Plummer scale radius `a`. This is equivalent to [`quantile3D(d::Plummer, 0.5)`](@ref quantile3D) but faster because the argument `x=0.5` is known at compile-time.
 """
-plummer_a_to_rh(a) = a / sqrt( inv( cbrt(0.5)^2 ) - 1 ) # The constant denominator is ~inv(1.3).
+plummer_a_to_rh(a::T) where T = a / sqrt( inv( cbrt( T(1//2) )^2 ) - 1 ) # The constant denominator is ~inv(1.3).
 """
     plummer_angular_avalue(absmag, sb, DM)
 
@@ -68,7 +68,8 @@ true
 ```
 """
 plummer_angular_avalue(absmag, sb, DM) = exp10( (sb - (absmag + DM))/5) / sqrt(π) * sqrt( inv( cbrt(0.5)^2 ) - 1 )
-# plummer_angular_avalue(absmag, sb, DM) = inv( 1.3 * sqrt(π) ) * exp10( (sb - (absmag + DM))/5)
+# plummer_angular_avalue(absmag::T, sb::S, DM::V) where {T,S,V} =
+#     (U = promote_type(T,S,V); exp10( (sb - (absmag + DM))/5) / sqrt(U(π)) * sqrt( inv( cbrt( U(1//2) )^2 ) - 1 ) )
 
 """
     plummer_unscaled_density(r, M, a)
@@ -76,8 +77,7 @@ plummer_angular_avalue(absmag, sb, DM) = exp10( (sb - (absmag + DM))/5) / sqrt(�
 Returns the unscaled density for a Plummer profile at radius `r` with total mass `M` and Plummer scale radius `a`. 
 """
 plummer_unscaled_density(r, M, a) =
-    (interior = (1 + (r/a)^2); interior2 = interior^2; sqrt( inv( interior2^2 * interior ) ) )
-    # (1+(r/a)^2)^(-5/2)
+    (interior = (1 + (r/a)^2); interior2 = interior^2; sqrt( inv( interior2^2 * interior ) ) ) # (1+(r/a)^2)^(-5/2)
 """
     plummer_unscaled_density_deriv(r, M, a)
 
@@ -98,56 +98,59 @@ plummer_unscaled_Σmean(r, M, a) = 4/3 * a^3 / (a^2 + r^2)
 
 #### Evaluation
 
+# function ρ(d::Plummer{T}, r::S) where {T,S} # = (3*self.M/(4.*np.pi*self.a**3.)) * self.unscaled_density(r)
 function ρ(d::Plummer, r::Real) # = (3*self.M/(4.*np.pi*self.a**3.)) * self.unscaled_density(r)
-    M, a = Mtot(d), scale_radius(d)
-    return 3M / (4π*a^3) * plummer_unscaled_density(r, M, a)
+    r, M, a = promote(r, Mtot(d), scale_radius(d))
+    return 3M / (4 * typeof(r)(π) * a^3) * plummer_unscaled_density(r, M, a)
 end
 function invρ(d::Plummer, x::Real)
-    M, a = Mtot(d), scale_radius(d)
-    return a * sqrt( 2^(-4/5) * 3^(2/5) * π^(-2/5) * (a^3 * x / M)^(-2/5) - 1 )
+    x, M, a = promote(x, Mtot(d), scale_radius(d))
+    U = typeof(x)
+    return a * sqrt( U(2^(-4/5) * 3^(2/5) * π^(-2/5)) * (a^3 * x / M)^U(-2/5) - 1 )
 end
 function ∇ρ(d::Plummer, r::Real)
-    M, a = Mtot(d), scale_radius(d)
-    return 3M / (4π*a^3) * plummer_unscaled_density_deriv(r, M, a)
+    r, M, a = promote(r, Mtot(d), scale_radius(d))
+    return 3M / (4 * typeof(r)(π) * a^3) * plummer_unscaled_density_deriv(r, M, a)
 end
 function ρmean(d::Plummer, r::Real)
-    M, a = Mtot(d), scale_radius(d)
-    return 3M / (4π*a^3) * plummer_unscaled_ρmean(r, M, a)
+    r, M, a = promote(r, Mtot(d), scale_radius(d))
+    return 3M / (4 * typeof(r)(π) * a^3) * plummer_unscaled_ρmean(r, M, a)
 end
 function invρmean(d::Plummer, x::Real)
-    M, a = Mtot(d), scale_radius(d)
-    return sqrt( M^(2/3) * (6/π)^(2/3) / x^(2/3) - 4a^2 )
+    x, M, a = promote(x, Mtot(d), scale_radius(d))
+    U = typeof(x)
+    return sqrt( M^U(2/3) * U(6/π)^U(2/3) / x^U(2/3) - 4a^2 ) / 2
 end
 function Σ(d::Plummer, r::Real)
-    M, a = Mtot(d), scale_radius(d)
-    return M/π * a^2 / (a^2 + r^2)^2 # return 3M / (4π*a^3) * plummer_unscaled_Σ(r, M, a)
+    r, M, a = promote(r, Mtot(d), scale_radius(d))
+    return M/typeof(r)(π) * a^2 / (a^2 + r^2)^2 
 end
 function ∇Σ(d::Plummer, r::Real)
-    M, a = Mtot(d), scale_radius(d)
-    return -4/π * a^2 * M * r / (a^2 + r^2)^3 # return 3M / (4π*a^3) * plummer_unscaled_∇Σ(r, M, a)
+    r, M, a = promote(r, Mtot(d), scale_radius(d))
+    return -4/typeof(r)(π) * a^2 * M * r / (a^2 + r^2)^3 
 end
 function Σmean(d::Plummer, r::Real)
-    M, a = Mtot(d), scale_radius(d)
-    return M / π / (a^2 + r^2) # return 3M / (4π*a^3) * plummer_unscaled_Σmean(r, M, a)
+    r, M, a = promote(r, Mtot(d), scale_radius(d))
+    return M / typeof(r)(π) / (a^2 + r^2) 
 end
 function invΣ(d::Plummer, x::Real)
-    M, a = Mtot(d), scale_radius(d)
-    return a * sqrt( sqrt(M / x / π) / a - 1)
+    x, M, a = promote(x, Mtot(d), scale_radius(d))
+    return a * sqrt( sqrt(M / x / typeof(x)(π)) / a - 1)
 end
 function M(d::Plummer, r::Real)
-    M, a = Mtot(d), scale_radius(d)
+    r, M, a = promote(r, Mtot(d), scale_radius(d))
     return a * M * r^3 * sqrt(1 + (r/a)^2) / (a^2 + r^2)^2
 end
 function ∇M(d::Plummer, r::Real)
-    M, a = Mtot(d), scale_radius(d)
+    r, M, a = promote(r, Mtot(d), scale_radius(d))
     return 3 * a * M * r^2 / (a^2 + r^2)^2 / sqrt(1 + (r/a)^2)
 end
 function invM(d::Plummer, x::Real) # Actually basing this off quantile3D from Aarseth 1974.
-    M, a = Mtot(d), scale_radius(d)
+    x, M, a = promote(x, Mtot(d), scale_radius(d))
     return scale_radius(d) / sqrt( cbrt( inv( (x/M)^2 ) ) - 1)
 end
 function Mproj(d::Plummer, r::Real)
-    M, a = Mtot(d), scale_radius(d)
+    r, M, a = promote(r, Mtot(d), scale_radius(d))
     return M * r^2 / (a^2 + r^2)
 end
 function ∇Mproj(d::Plummer, r::Real)
@@ -160,22 +163,19 @@ function invMproj(d::Plummer, x::Real)
 end
 # Vcirc fallback to common.jl is fine
 # Vesc fallback to common.jl is fine
-function Φ(d::Plummer{T}, r::S) where {T, S<:Real}
-    U = promote_type(T, S)
-    M, a, r = promote(Mtot(d), scale_radius(d), r) 
-    return -U(constants.Gvelkpc) * M / sqrt(r^2 + a^2)
+function Φ(d::Plummer, r::Real)
+    r, M, a = promote(r, Mtot(d), scale_radius(d))
+    return -typeof(r)(constants.Gvelkpc) * M / sqrt(r^2 + a^2)
 end
-function ∇Φ(d::Plummer{T}, r::S) where {T, S<:Real}
-    U = promote_type(T, S)
-    M, a, r = promote(Mtot(d), scale_radius(d), r) 
-    return U(constants.Gvelkpc2) * M * r / sqrt((r^2 + a^2)^3)
+function ∇Φ(d::Plummer, r::Real)
+    r, M, a = promote(r, Mtot(d), scale_radius(d))
+    return typeof(r)(constants.Gvelkpc2) * M * r / sqrt((r^2 + a^2)^3)
 end
-function ∇∇Φ(d::Plummer{T}, r::S) where {T, S<:Real}
-    U = promote_type(T, S)
-    M, a, r = promote(Mtot(d), scale_radius(d), r) 
+function ∇∇Φ(d::Plummer, r::Real) 
+    r, M, a = promote(r, Mtot(d), scale_radius(d))
     denom = a^2 + r^2
     denom2 = denom^2
-    return U(constants.Gvelkpc2) * M * (a^2 - 2r^2) / sqrt(denom2 * denom2 * denom)
+    return typeof(r)(constants.Gvelkpc2) * M * (a^2 - 2r^2) / sqrt(denom2 * denom2 * denom)
 end
 cdf2D(d::Plummer, r::Real) = r^2 / (scale_radius(d)^2 + r^2) # Just Mproj(d,R) / Mtot(d). 
 # ccdf2D fallback to 1 - cdf2D(d,r) in common.jl is fine. 
