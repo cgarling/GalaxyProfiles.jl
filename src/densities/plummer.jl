@@ -2,7 +2,7 @@
     Plummer(M::Real, a::Real)
     Plummer(M::Unitful.Mass, a::Unitful.Length)
 
-Type implementing the density profile first proposed by [Plummer 1911](http://adsabs.harvard.edu/abs/1911MNRAS..71..460P); this density profile is defined by the potential
+Type implementing the density profile first proposed by [Plummer 1911](http://adsabs.harvard.edu/abs/1911MNRAS..71..460P) (see also [Dejonghe 1987](https://ui.adsabs.harvard.edu/abs/1987MNRAS.224...13D/abstract)); this density profile is defined by the potential
 
 ```math
 \\Phi(r) = -\\frac{G \\, M}{\\sqrt{ r^2 + a^2 } }
