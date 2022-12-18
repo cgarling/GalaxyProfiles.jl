@@ -89,15 +89,15 @@
         @test ∇M(d,1.0) isa Float64
         @test @inferred ∇M(d,1.0f0) == 4π
         @test ∇M(d,1.0f0) isa Float64
-        @test @inferred Mproj(d,1.0) == 2*π^2
+        @test @inferred Mproj(d,1.0) ≈ 2*π^2
         @test Mproj(d,1.0) isa Float64
-        @test @inferred Mproj(d,1.0f0) == 2*π^2
+        @test @inferred Mproj(d,1.0f0) ≈ 2*π^2
         @test Mproj(d,1.0f0) isa Float64
-        @test @inferred ∇Mproj(d,1.0) == 2*π^2
+        @test @inferred ∇Mproj(d,1.0) ≈ 2*π^2
         @test ∇Mproj(d,1.0) isa Float64
-        @test @inferred ∇Mproj(d,1.0f0) == 2*π^2
+        @test @inferred ∇Mproj(d,1.0f0) ≈ 2*π^2
         @test ∇Mproj(d,1.0f0) isa Float64
-        @test @inferred invMproj(d,2*π^2) == 1.0
+        @test @inferred invMproj(d,2*π^2) ≈ 1.0
         @test invMproj(d,2*π^2) isa Float64
         @test @inferred invMproj(d,Float32(2*π^2)) ≈ 1.0f0
         @test invMproj(d,Float32(2*π^2)) isa Float64
@@ -176,33 +176,33 @@
         @test ∇M(d,1.0*GalaxyProfiles.defaultunits.length) |> u.ustrip isa Float64
         @test ∇M(d,1.0f0*GalaxyProfiles.defaultunits.length) |> u.ustrip isa Float64
         ####################################
-        @test @inferred Mproj(GalaxyProfiles.defaultunits.mass,d,1.0) == 2*π^2 * GalaxyProfiles.defaultunits.mass
+        @test @inferred Mproj(GalaxyProfiles.defaultunits.mass,d,1.0) ≈ 2*π^2 * GalaxyProfiles.defaultunits.mass
         @test Mproj(GalaxyProfiles.defaultunits.mass,d,1.0) |> u.ustrip isa Float64
         @test Mproj(GalaxyProfiles.defaultunits.mass,d,1.0f0) |> u.ustrip isa Float64
-        @test @inferred Mproj(GalaxyProfiles.defaultunits.mass,d,1.0*GalaxyProfiles.defaultunits.length) == 2*π^2 * GalaxyProfiles.defaultunits.mass
+        @test @inferred Mproj(GalaxyProfiles.defaultunits.mass,d,1.0*GalaxyProfiles.defaultunits.length) ≈ 2*π^2 * GalaxyProfiles.defaultunits.mass
         @test Mproj(GalaxyProfiles.defaultunits.mass,d,1.0*GalaxyProfiles.defaultunits.length) |> u.ustrip isa Float64
         @test Mproj(GalaxyProfiles.defaultunits.mass,d,1.0f0*GalaxyProfiles.defaultunits.length) |> u.ustrip isa Float64
-        @test @inferred Mproj(d,1.0*GalaxyProfiles.defaultunits.length) == 2*π^2 * GalaxyProfiles.defaultunits.mass
+        @test @inferred Mproj(d,1.0*GalaxyProfiles.defaultunits.length) ≈ 2*π^2 * GalaxyProfiles.defaultunits.mass
         @test Mproj(d,1.0*GalaxyProfiles.defaultunits.length) |> u.ustrip isa Float64
         @test Mproj(d,1.0f0*GalaxyProfiles.defaultunits.length) |> u.ustrip isa Float64
         ####################################
-        @test @inferred ∇Mproj(GalaxyProfiles.defaultunits.∇mass,d,1.0) == 2*π^2*GalaxyProfiles.defaultunits.∇mass
+        @test @inferred ∇Mproj(GalaxyProfiles.defaultunits.∇mass,d,1.0) ≈ 2*π^2*GalaxyProfiles.defaultunits.∇mass
         @test ∇Mproj(GalaxyProfiles.defaultunits.∇mass,d,1.0) |> u.ustrip isa Float64
         @test ∇Mproj(GalaxyProfiles.defaultunits.∇mass,d,1.0f0) |> u.ustrip isa Float64
-        @test @inferred ∇Mproj(GalaxyProfiles.defaultunits.∇mass,d,1.0*GalaxyProfiles.defaultunits.length) == 2*π^2*GalaxyProfiles.defaultunits.∇mass
+        @test @inferred ∇Mproj(GalaxyProfiles.defaultunits.∇mass,d,1.0*GalaxyProfiles.defaultunits.length) ≈ 2*π^2*GalaxyProfiles.defaultunits.∇mass
         @test ∇Mproj(GalaxyProfiles.defaultunits.∇mass,d,1.0*GalaxyProfiles.defaultunits.length) |> u.ustrip isa Float64
         @test ∇Mproj(GalaxyProfiles.defaultunits.∇mass,d,1.0f0*GalaxyProfiles.defaultunits.length) |> u.ustrip isa Float64
-        @test @inferred ∇Mproj(d,1.0*GalaxyProfiles.defaultunits.length) == 2*π^2*GalaxyProfiles.defaultunits.∇mass
+        @test @inferred ∇Mproj(d,1.0*GalaxyProfiles.defaultunits.length) ≈ 2*π^2*GalaxyProfiles.defaultunits.∇mass
         @test ∇Mproj(d,1.0*GalaxyProfiles.defaultunits.length) |> u.ustrip isa Float64
         @test ∇Mproj(d,1.0f0*GalaxyProfiles.defaultunits.length) |> u.ustrip isa Float64
         ####################################
-        @test @inferred invMproj(GalaxyProfiles.defaultunits.length,d,2*π^2) == 1.0*GalaxyProfiles.defaultunits.length
+        @test @inferred invMproj(GalaxyProfiles.defaultunits.length,d,2*π^2) ≈ 1.0*GalaxyProfiles.defaultunits.length
         @test invMproj(GalaxyProfiles.defaultunits.length,d,2*π^2) |> u.ustrip isa Float64
         @test invMproj(GalaxyProfiles.defaultunits.length,d,Float32(2*π^2)) |> u.ustrip isa Float64
-        @test @inferred invMproj(GalaxyProfiles.defaultunits.length,d,2*π^2*GalaxyProfiles.defaultunits.mass) == 1.0*GalaxyProfiles.defaultunits.length
+        @test @inferred invMproj(GalaxyProfiles.defaultunits.length,d,2*π^2*GalaxyProfiles.defaultunits.mass) ≈ 1.0*GalaxyProfiles.defaultunits.length
         @test invMproj(GalaxyProfiles.defaultunits.length,d,2*π^2*GalaxyProfiles.defaultunits.mass) |> u.ustrip isa Float64
         @test invMproj(GalaxyProfiles.defaultunits.length,d,Float32(2*π^2)*GalaxyProfiles.defaultunits.mass) |> u.ustrip isa Float64
-        @test @inferred invMproj(d,2*π^2*GalaxyProfiles.defaultunits.mass) == 1.0*GalaxyProfiles.defaultunits.length
+        @test @inferred invMproj(d,2*π^2*GalaxyProfiles.defaultunits.mass) ≈ 1.0*GalaxyProfiles.defaultunits.length
         @test invMproj(d,2*π^2*GalaxyProfiles.defaultunits.mass) |> u.ustrip isa Float64
         @test invMproj(d,Float32(2*π^2)*GalaxyProfiles.defaultunits.mass) |> u.ustrip isa Float64
         ####################################

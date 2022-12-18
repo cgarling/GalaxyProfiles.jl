@@ -43,15 +43,15 @@
         @test ∇M(d,1.0) isa Float64
         @test @inferred ∇M(d,1.0f0) == 4π
         @test ∇M(d,1.0f0) isa Float64
-        @test @inferred Mproj(d,1.0) == 2*π^2
+        @test @inferred Mproj(d,1.0) ≈ 2*π^2
         @test Mproj(d,1.0) isa Float64
-        @test @inferred Mproj(d,1.0f0) == 2*π^2
+        @test @inferred Mproj(d,1.0f0) ≈ 2*π^2
         @test Mproj(d,1.0f0) isa Float64
-        @test @inferred ∇Mproj(d,1.0) == 2*π^2
+        @test @inferred ∇Mproj(d,1.0) ≈ 2*π^2
         @test ∇Mproj(d,1.0) isa Float64
-        @test @inferred ∇Mproj(d,1.0f0) == 2*π^2
+        @test @inferred ∇Mproj(d,1.0f0) ≈ 2*π^2
         @test ∇Mproj(d,1.0f0) isa Float64
-        @test @inferred invMproj(d,2*π^2) == 1.0
+        @test @inferred invMproj(d,2*π^2) ≈ 1.0
         @test invMproj(d,2*π^2) isa Float64
         @test @inferred invMproj(d,Float32(2*π^2)) ≈ 1.0f0
         @test invMproj(d,Float32(2*π^2)) isa Float64
@@ -124,15 +124,15 @@
         @test ∇M(d,1.0) isa Float64
         @test @inferred ∇M(d,1.0f0) == Float32(4π)
         @test ∇M(d,1.0f0) isa Float32
-        @test @inferred Mproj(d,1.0) == 2*π^2
+        @test @inferred Mproj(d,1.0) ≈ 2*π^2
         @test Mproj(d,1.0) isa Float64
         @test @inferred Mproj(d,1.0f0) == Float32(2*π^2)
         @test Mproj(d,1.0f0) isa Float32
-        @test @inferred ∇Mproj(d,1.0) == 2*π^2
+        @test @inferred ∇Mproj(d,1.0) ≈ 2*π^2
         @test ∇Mproj(d,1.0) isa Float64
         @test @inferred ∇Mproj(d,1.0f0) == Float32(2*π^2)
         @test ∇Mproj(d,1.0f0) isa Float32
-        @test @inferred invMproj(d,2*π^2) == 1.0
+        @test @inferred invMproj(d,2*π^2) ≈ 1.0
         @test invMproj(d,2*π^2) isa Float64
         @test @inferred invMproj(d,Float32(2*π^2)) == 1.0f0
         @test invMproj(d,Float32(2*π^2)) isa Float32
