@@ -63,7 +63,6 @@ params(d::ExponentialDisk) = (d.Σ0,d.rs)
 scale_radius(d::ExponentialDisk) = d.rs
 
 #### Evaluation
-
 function Σ(d::ExponentialDisk, r::Real) 
     Σ0,rs = params(d)
     Σ0 * exp(-r/rs)

@@ -3,7 +3,7 @@ module GalaxyProfiles
 import Random: AbstractRNG,rand,rand!,default_rng
 import Roots: find_zero
 import LambertW: lambertw
-import SpecialFunctions: gamma
+import SpecialFunctions: gamma, gamma_inc, gamma_inc_inv
 import QuadGK: quadgk
 import Requires: @require
 
