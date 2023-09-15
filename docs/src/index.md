@@ -1,6 +1,3 @@
-# [Index](@id index)
+# Overview
 
-```@index
-Modules = [GalaxyProfiles]
-Pages = ["types.md","methods.md"]
-```
+Insert a brief description here with links to the other pages.
