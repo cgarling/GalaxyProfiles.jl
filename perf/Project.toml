@@ -1,4 +1,6 @@
 [deps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+GalaxyProfiles = "c7b03836-40d9-4a07-b42e-f60785744864"
+LoopVectorization = "bdcacae8-1622-11e9-2a5c-532679323890"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"

@@ -25,11 +25,16 @@ function Mproj(d::ExponentialDiskUnits,r::Number)
     ee = exp(-r/d.rs)
     2π * d.Σ0 * d.rs^2 * (1 - ee*(r/d.rs + 1))
 end
-# this is broken and annoying
-# struct ExponentialDiskUnits2{T<:Real}
-#     Σ0::u.Quantity{T, u.𝐌 * u.𝐋^-2 , u.FreeUnits{(ua.pc^-2, ua.Msun), u.𝐌 * u.𝐋^-2, nothing}}
-#     rs::u.Quantity{T, u.𝐋, u.FreeUnits{(ua.kpc,), u.𝐋,  nothing}}
+# this actually works fine; might be worth implementing
+# struct ExponentialDiskUnits{T<:Real,S<:u.Quantity{T,u.𝐌/u.𝐋^2},V<:u.Quantity{T,u.𝐋}}
+#     Σ0::S
+#     rs::V
 # end
+# the T is not technically necessary but nice to have I guess ? ^^^
+# See discussion
+# https://discourse.julialang.org/t/how-to-properly-use-unitful/40295/3
+Σ(d::ExponentialDiskUnits,r::u.Length)= d.Σ0 * exp(-r/d.rs)
+
 Base.Broadcast.broadcastable(m::ExponentialDiskUnits) = Ref(m)
 function testbasic()
     Σ0_nou = 1e6
