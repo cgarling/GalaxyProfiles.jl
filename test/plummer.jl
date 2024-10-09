@@ -133,7 +133,8 @@
                 T(1.72144211452034)
             @test @inferred GalaxyProfiles.plummer_a_to_rh( T(20.0) ) ≈ T(26.09532053008214)
             @test GalaxyProfiles.plummer_a_to_rh( T(20.0) ) isa T
-
+            @test @inferred GalaxyProfiles.plummer_rh_to_a( T(26.09532053008214) ) ≈ T(20.0)
+            @test GalaxyProfiles.plummer_rh_to_a( T(26.09532053008214) ) isa T
         end
     end
 end

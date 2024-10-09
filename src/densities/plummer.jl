@@ -43,9 +43,15 @@ Mtot(d::Plummer) = d.M
 """
     plummer_a_to_rh(a)
 
-Returns the half-light (or half-mass) radius given the Plummer scale radius `a`. This is equivalent to [`quantile3D(d::Plummer, 0.5)`](@ref quantile3D) but faster because the argument `x=0.5` is known at compile-time.
+Returns the 3-D half-light (or half-mass) radius given the Plummer scale radius `a`. This is equivalent to [`quantile3D(d::Plummer, 0.5)`](@ref quantile3D) but faster because the argument `x=0.5` is known at compile-time. Note that in projection (i.e., along a line-of-sight) the half-light radius is simply equal to the Plummer scale radius `a`, verifiable by [`quantile2D(d::Plummer, 0.5) == scale_radius(d)`](@ref quantile2D).
 """
 plummer_a_to_rh(a::T) where T = a / sqrt( inv( cbrt( T(1//2) )^2 ) - 1 ) # The constant denominator is ~inv(1.3).
+"""
+    plummer_rh_to_a(a)
+
+Returns the Plummer scale radius `a` given a 3-D half-light (or half-mass) radius. Note that in projection (i.e., along a line-of-sight) the half-light radius is simply equal to the Plummer scale radius `a`, verifiable by [`quantile2D(d::Plummer, 0.5) == scale_radius(d)`](@ref quantile2D).
+"""
+plummer_rh_to_a(rh::T) where T = rh * sqrt( inv( cbrt( T(1//2) )^2 ) - 1 )
 """
     plummer_angular_avalue(absmag, sb, DM)
 
