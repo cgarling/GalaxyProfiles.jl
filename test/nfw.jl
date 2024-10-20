@@ -1,3 +1,12 @@
+# from galpy.potential import NFWPotential, tdyn
+# from astropy import units as u
+# # Galpy uses NFW amplitude in units of mass rather than density, so need to correct for that
+# p = NFWPotential(amp=1e3 * u.Msun / u.kpc**3 * (4 * np.pi * (10*u.kpc)**3), a=10 * u.kpc)
+# print(tdyn(p, 10*u.kpc))
+# # 60.130773 Gyr
+# print(tdyn(p, 2*10*u.kpc))
+# # 113.72905 Gyr
+
 @testset "NFW" begin
     @testset "Float64" begin
         @test NFW(1.0,1.0) isa NFW{Float64}
@@ -63,6 +72,10 @@
         @test invMproj(d,0.2) isa Float64
         @test @inferred invMproj(d,0.2f0) ≈ 0.11585086460387914f0
         @test invMproj(d,0.2f0) isa Float64
+        @test @inferred dynamical_time(d,1.0) ≈ 4.753754967831782e11
+        @test dynamical_time(d,1.0) isa Float64
+        @test @inferred dynamical_time(d,1.0f0) ≈ 4.753754967831782f11
+        @test dynamical_time(d,1.0f0) isa Float64
         @test @inferred Vcirc(d,1.0) ≈ 0.003230945727279133
         @test Vcirc(d,1.0) isa Float64
         @test @inferred Vcirc(d,1.0f0) ≈ 0.003230945727279133f0
@@ -89,6 +102,7 @@
     @testset "Float32" begin
         @test NFW(1.0f0,1.0f0) isa NFW{Float32}
         @test NFW(1.0f0,1) isa NFW{Float32}
+        @test NFW(1,1.0f0) isa NFW{Float32}
         d = NFW(1.0f0,1.0f0)
         @test @inferred ρ(d,1.0) ≈ 0.25f0
         @test ρ(d,1.0) isa Float64
@@ -149,6 +163,10 @@
         @test invMproj(d,0.2) isa Float64
         @test @inferred invMproj(d,0.2f0) ≈ 0.11585086460387914f0
         @test invMproj(d,0.2f0) isa Float32
+        @test @inferred dynamical_time(d,1.0) ≈ 4.753754967831782f11
+        @test dynamical_time(d,1.0) isa Float64
+        @test @inferred dynamical_time(d,1.0f0) ≈ 4.753754967831782f11
+        @test dynamical_time(d,1.0f0) isa Float32
         @test @inferred Vcirc(d,1.0) ≈ 0.003230945727279133f0
         @test Vcirc(d,1.0) isa Float64
         @test @inferred Vcirc(d,1.0f0) ≈ 0.003230945727279133f0

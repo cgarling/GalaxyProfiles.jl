@@ -55,7 +55,7 @@ The gradient of `ρ(d,r)` evaluated at radius `r`.
 ∇ρ(d::AbstractDensity, r::Real)
 """
     ρmean(d::AbstractDensity, r::Real)
-    ρmean(uu::Unitful.DensityUnits, d::AbstractDensity,r::Real)
+    ρmean(uu::Unitful.DensityUnits, d::AbstractDensity, r::Real)
     ρmean(d::AbstractDensity, r::Unitful.Length)
     ρmean(uu::Unitful.DensityUnits, d::AbstractDensity, r::Unitful.Length)
 
@@ -194,6 +194,39 @@ The gradient of `Mproj(d,r)` evaluated at radius `r`.
 Solve for the radius `r` at which the line-of-sight projected enclosed mass is `x` for profile `d`. Requires `x>0`. When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `M(d,r)` be defined. For this method, `kws...` are passed to `Roots.find_zero`.
 """
 invMproj(d::AbstractMassProfile, x::T, interval::NTuple{2,S}=(scale_radius(d)/100,100*scale_radius(d)); kws...) where {T<:Real, S<:Real} = (U = promote_type(T, S); x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->Mproj(d,y)-x,(U(interval[1]), U(interval[2])); kws...))
+"""
+    dynamical_time(d::Union{AbstractDensity, AbstractMassProfile}, r::Real)
+    dynamical_time(d::Union{AbstractDensity, AbstractMassProfile}, r::Unitful.Length)
+    dynamical_time(uu::Unitful.TimeUnits, d::Union{AbstractDensity, AbstractMassProfile}, r::Unitful.Length)
+
+Returns the dynamical time at radius `r` in the provided density profile. The dynamical time is a characteristic timescale associated with orbits in potentials. This implementation specifically calculates Equation 2.39 in Binney & Tremaine Galactic Dynamics 2E, with the replacement of the standard density [`ρ`](@ref) for the average density interior to `r`, [`ρmean`](@ref), to better account for inhomogenous systems. 
+
+```math
+t_\\text{dyn} \\left( r \\right) = \\sqrt{ \\frac{3\\pi}{16 \\, G \\, \\overline{\\rho} \\left( r \\right)} }
+```
+
+The above equation is used when the argument `d::AbstractDensity`. As `ρmean` can be expressed as a function of the total mass interior to the orbit, this can also be written as
+
+```math
+\\begin{aligned}
+\\overline{\\rho} \\left( r \\right) &= \\frac{3 \\, M \\left( r \\right)}{4 \\, \\pi \\, r^3} \\newline
+t_\\text{dyn} \\left( r \\right) &= \\pi \\, \\sqrt{ \\frac{r^3}{4 \\, G \\, M \\left( r \\right)} }
+\\end{aligned}
+```
+
+where ``M \\left( r \\right)}`` is the mass enclosed inside radius ``r``, provided by the method [`M`](@ref). This equation is used when the argument `d::AbstractMassProfile`.
+
+# Alternative Definitions
+Note that some authors prefer to omit the factor of ``\\sqrt{ \\frac{1}{16} } = 1/4`` in the denominator of the first equation above; this is, for example, the convention used by galpy. Dynamical times thus defined will be four times larger than those calculated by this method. 
+"""
+function dynamical_time(d::AbstractDensity, r::T) where {T <: Real}
+    # constants.Gkpc has time units of 1/s^2; 31557600 is seconds in year to return value in yr
+    # return sqrt(inv(GalaxyProfiles.ρmean(d, r)) * 3 * π / 16 / T(constants.Gkpc)) / 31557600
+    return sqrt(inv(GalaxyProfiles.ρmean(d, r)) * 3 * π) / (4 * 31557600 * sqrt(T(constants.Gkpc)))
+end
+dynamical_time(d::AbstractMassProfile, r::T) where {T <: Real} =
+    π * sqrt(r^3 / M(d, r)) / (2 * 31557600 * sqrt(T(constants.Gkpc)))
+    # π * sqrt( r^3 / 4 / T(constants.Gkpc) / M(d, r) ) / 31557600
 """
     cdf2D(d::AbstractMassProfile, r::Real)
     cdf2D(d::AbstractMassProfile, r::Unitful.Quantity)

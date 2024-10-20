@@ -20,6 +20,7 @@ Mtot(::GalaxyProfiles.AbstractMassProfile)
 Mproj(::GalaxyProfiles.AbstractMassProfile,::Real)
 ∇Mproj(::GalaxyProfiles.AbstractMassProfile,::Real)
 invMproj(::GalaxyProfiles.AbstractMassProfile,::T,::NTuple{2,S}) where {T<:Real,S<:Real}
+dynamical_time(d::GalaxyProfiles.AbstractDensity, r::T) where {T <: Real}
 cdf2D
 cdf3D
 ccdf2D

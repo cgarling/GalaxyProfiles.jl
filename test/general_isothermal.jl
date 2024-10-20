@@ -55,6 +55,10 @@
         @test invMproj(d,2*π^2) isa Float64
         @test @inferred invMproj(d,Float32(2*π^2)) ≈ 1.0f0
         @test invMproj(d,Float32(2*π^2)) isa Float64
+        @test @inferred dynamical_time(d,3.0) ≈ 6.267613877418796e11
+        @test dynamical_time(d,3.0) isa Float64
+        @test @inferred dynamical_time(d,3.0f0) ≈ 6.267613877418796f11
+        @test dynamical_time(d,3.0f0) isa Float64
         # @test @inferred Vcirc(d,1.0) == 1.0
         @test Vcirc(d,1.0) isa Float64
         # @test @inferred Vcirc(d,1.0) ≈ 1.0f0
@@ -136,6 +140,10 @@
         @test invMproj(d,2*π^2) isa Float64
         @test @inferred invMproj(d,Float32(2*π^2)) == 1.0f0
         @test invMproj(d,Float32(2*π^2)) isa Float32
+        @test @inferred dynamical_time(d,3.0) ≈ 6.267613877418798e11
+        @test dynamical_time(d,3.0) isa Float64
+        @test @inferred dynamical_time(d,3.0f0) ≈ 6.267614f11
+        @test dynamical_time(d,3.0f0) isa Float32
         # @test @inferred Vcirc(d,1.0) == 1.0
         @test Vcirc(d,1.0) isa Float64
         # @test @inferred Vcirc(d,1.0) ≈ 1.0f0

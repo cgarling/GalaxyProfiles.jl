@@ -7,14 +7,21 @@ GalaxyProfiles.AbstractDensity
 GalaxyProfiles.AbstractSurfaceDensity
 ```
 
-## Concrete Types
+## Densities
 The following concrete types, representing specific density profiles, are currently implemented:
 
 ```@docs
-ExponentialDisk
+CoreNFW
 GeneralIsothermal
 NFW
 Plummer
+```
+
+## Surface Densities
+The following concrete types, representing specific surface density profiles, are currently implemented:
+
+```@docs
+ExponentialDisk
 ```
 
 ## Retrieving Parameters
@@ -27,6 +34,7 @@ scale_radius(::GalaxyProfiles.AbstractMassProfile)
 ## Convenience Constructors
 We also provide some convenience constructors for other types such as the [`singular isothermal sphere`](@ref SIS), which returns an instance of [`GeneralIsothermal`](@ref) with `α=2`.
 ```@docs
+CoreNFWGalaxy
 SIS
 ExponentialDiskDHI
 ```
