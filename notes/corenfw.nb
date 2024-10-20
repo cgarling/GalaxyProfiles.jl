@@ -1,0 +1,86 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 13.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      2260,         78]
+NotebookOptionsPosition[      1681,         60]
+NotebookOutlinePosition[      2091,         76]
+CellTagsIndexPosition[      2048,         73]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[TextData[{
+ "Radial derivative of ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["f", "n"], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "1217585a-df98-49b7-bfb7-8bcb0bdbd6d0"],
+ "in CoreNFW profile (for ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"\[Del]", "M"}], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "4de292f1-06f7-4384-af44-a76c5e73e87f"],
+ ")"
+}], "Text",ExpressionUUID->"d8f2ebd7-c6b2-47d1-a6ae-c6114e688077"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"D", "[", 
+  RowBox[{
+   SuperscriptBox[
+    RowBox[{"Tanh", "[", 
+     FractionBox["r", "rc"], "]"}], "n"], ",", "r"}], "]"}]], "Input",
+ CellLabel->"In[2]:=",ExpressionUUID->"9505a382-e242-4e64-ad94-980636e33211"],
+
+Cell[BoxData[
+ FractionBox[
+  RowBox[{"n", " ", 
+   SuperscriptBox[
+    RowBox[{"Sech", "[", 
+     FractionBox["r", "rc"], "]"}], "2"], " ", 
+   SuperscriptBox[
+    RowBox[{"Tanh", "[", 
+     FractionBox["r", "rc"], "]"}], 
+    RowBox[{
+     RowBox[{"-", "1"}], "+", "n"}]]}], "rc"]], "Output",
+ CellLabel->"Out[2]=",ExpressionUUID->"1d809e75-98e5-4560-ab88-7e03b01620dc"]
+}, Open  ]]
+},
+WindowSize->{569.25, 624.75},
+WindowMargins->{{639, Automatic}, {Automatic, 150}},
+FrontEndVersion->"13.2 for Microsoft Windows (64-bit) (November 18, 2022)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"e804c02a-17df-4f74-bbaf-49ef89377278"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 469, 14, 35, "Text",ExpressionUUID->"d8f2ebd7-c6b2-47d1-a6ae-c6114e688077"],
+Cell[CellGroupData[{
+Cell[1052, 38, 238, 6, 43, "Input",ExpressionUUID->"9505a382-e242-4e64-ad94-980636e33211"],
+Cell[1293, 46, 372, 11, 55, "Output",ExpressionUUID->"1d809e75-98e5-4560-ab88-7e03b01620dc"]
+}, Open  ]]
+}
+]
+*)
+
