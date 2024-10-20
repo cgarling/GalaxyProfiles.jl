@@ -101,6 +101,10 @@
         @test invMproj(d,2*π^2) isa Float64
         @test @inferred invMproj(d,Float32(2*π^2)) ≈ 1.0f0
         @test invMproj(d,Float32(2*π^2)) isa Float64
+        @test @inferred dynamical_time(d,3.0) ≈ 6.267613877418796e11
+        @test dynamical_time(d,3.0) isa Float64
+        @test @inferred dynamical_time(d,3.0f0) ≈ 6.267613877418796f11
+        @test dynamical_time(d,3.0f0) isa Float64
         # @test @inferred Vcirc(d,1.0) == 1.0
         @test Vcirc(d,1.0) isa Float64
         # @test @inferred Vcirc(d,1.0) ≈ 1.0f0
@@ -205,6 +209,16 @@
         @test @inferred invMproj(d,2*π^2*GalaxyProfiles.defaultunits.mass) ≈ 1.0*GalaxyProfiles.defaultunits.length
         @test invMproj(d,2*π^2*GalaxyProfiles.defaultunits.mass) |> u.ustrip isa Float64
         @test invMproj(d,Float32(2*π^2)*GalaxyProfiles.defaultunits.mass) |> u.ustrip isa Float64
+        ####################################
+        @test @inferred dynamical_time(GalaxyProfiles.defaultunits.time,d,3.0) ≈ 6.267613877418796e11*GalaxyProfiles.defaultunits.time
+        @test dynamical_time(GalaxyProfiles.defaultunits.time,d,3.0) |> u.ustrip isa Float64
+        @test dynamical_time(GalaxyProfiles.defaultunits.time,d,Float32(3.0)) |> u.ustrip isa Float64
+        @test @inferred dynamical_time(GalaxyProfiles.defaultunits.time,d,3.0*GalaxyProfiles.defaultunits.length) ≈ 6.267613877418796e11*GalaxyProfiles.defaultunits.time
+        @test dynamical_time(GalaxyProfiles.defaultunits.time,d,3.0*GalaxyProfiles.defaultunits.length) |> u.ustrip isa Float64
+        @test dynamical_time(GalaxyProfiles.defaultunits.time,d,Float32(3.0)*GalaxyProfiles.defaultunits.length) |> u.ustrip isa Float64
+        @test @inferred dynamical_time(d,3.0*GalaxyProfiles.defaultunits.length) ≈ 6.267613877418796e11*GalaxyProfiles.defaultunits.time
+        @test dynamical_time(d,3.0*GalaxyProfiles.defaultunits.length) |> u.ustrip isa Float64
+        @test dynamical_time(d,Float32(3.0)*GalaxyProfiles.defaultunits.length) |> u.ustrip isa Float64
         ####################################
         @test @inferred Vcirc(GalaxyProfiles.defaultunits.velocity,d,1.0) == Vcirc(d,1.0) * GalaxyProfiles.defaultunits.velocity
         @test Vcirc(GalaxyProfiles.defaultunits.velocity,d,1.0) |> u.ustrip isa Float64

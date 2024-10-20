@@ -17,6 +17,7 @@ module defaultunits
 import ..UnitfulAstro as ua
 import ..Unitful as u
 
+const time = u.yr # for timescales
 const mass = ua.Msun
 const ∇mass = ua.Msun / ua.kpc
 const density = ua.Msun / ua.kpc^3
@@ -103,7 +104,7 @@ NFW(ρ0::u.Density, rs::u.Length) = NFW(homogenize_units(ρ0), homogenize_units(
 # However, the args... are pointless in this context because we are specifying a specific signature with hasmethod.
 # If the same methods are defined on other types which take more than one argument (or a single argument that is not a Real)
 # then additional hasmethod branches will need to be defined.
-for f in (:ExponentialDisk,:GeneralIsothermal) # quantities requiring 3D densities
+for f in (:ExponentialDisk, :GeneralIsothermal, :Plummer, :NFW) # quantities requiring 3D densities
     @eval if hasmethod(scale_radius,($f,))
         scale_radius(uu::u.LengthUnits,$f,args...;kws...) = scale_radius($f,args...;kws...) * defaultunits.length |> uu
     end
@@ -184,6 +185,11 @@ for f in (:ExponentialDisk,:GeneralIsothermal) # quantities requiring 3D densiti
         @eval invMproj(uu::u.LengthUnits,$f,args...;kws...) = invMproj($f,args...;kws...) * defaultunits.length |> uu
         @eval invMproj(uu::u.LengthUnits,$f,x::u.Mass,args...;kws...) = invMproj($f,homogenize_units(x),args...;kws...) * defaultunits.length |> uu
         @eval invMproj($f,x::u.Mass,args...;kws...) = invMproj($f,homogenize_units(x),args...;kws...) * defaultunits.length
+    end
+    @eval if hasmethod(dynamical_time,($f,Real)) # check if this method is defined for the current type
+        @eval dynamical_time(uu::u.TimeUnits,$f,args...;kws...) = dynamical_time($f,args...;kws...) * defaultunits.time |> uu
+        @eval dynamical_time(uu::u.TimeUnits,$f,x::u.Length,args...;kws...) = dynamical_time($f,homogenize_units(x),args...;kws...) * defaultunits.time |> uu
+        @eval dynamical_time($f,x::u.Length,args...;kws...) = dynamical_time($f,homogenize_units(x),args...;kws...) * defaultunits.time
     end
     @eval if hasmethod(Vcirc,($f,Real))
         @eval Vcirc(uu::u.VelocityUnits,$f,args...;kws...) = Vcirc($f,args...;kws...) * defaultunits.velocity |> uu

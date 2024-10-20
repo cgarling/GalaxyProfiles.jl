@@ -2,7 +2,7 @@ using GalaxyProfiles
 using Test
 
 # first run regular tests, without units
-tests = ["general_isothermal.jl","exponential_disk.jl","nfw.jl","plummer.jl"]
+tests = ["general_isothermal.jl", "exponential_disk.jl", "nfw.jl", "corenfw_tests.jl", "plummer.jl"]
 for i in tests
     include(i)
 end
@@ -10,7 +10,7 @@ end
 # now run tests for Unitful API
 import Unitful as u
 import UnitfulAstro as ua
-tests_units = ["general_isothermal_units.jl","exponential_disk_units.jl"]
+tests_units = ["general_isothermal_units.jl", "exponential_disk_units.jl", "nfw_units.jl"]
 
 for i in tests_units
     include(i)
