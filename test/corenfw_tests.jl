@@ -47,14 +47,14 @@
         # @test invΣ(d,0.5) isa Float64
         # @test @inferred invΣ(d,0.5f0) ≈ 1.259435551338637f0
         # @test invΣ(d,0.5f0) isa Float64
-        # @test @inferred M(d,1.0) ≈ 2.4271590540348216
-        # @test M(d,1.0) isa Float64
-        # @test @inferred M(d,1.0f0) ≈ 2.4271590540348216f0
-        # @test M(d,1.0f0) isa Float64
-        # @test @inferred ∇M(d,1.0) ≈ π
-        # @test ∇M(d,1.0) isa Float64
-        # @test @inferred ∇M(d,1.0f0) ≈ Float32(π)
-        # @test ∇M(d,1.0f0) isa Float64
+        @test @inferred M(d,1.0) ≈ 6328.317649417912
+        @test M(d,1.0) isa Float64
+        @test @inferred M(d,1.0f0) ≈ 6328.317649417912f0
+        @test M(d,1.0f0) isa Float64
+        @test @inferred ∇M(d,1.0) ≈ 11492.928625676475
+        @test ∇M(d,1.0) isa Float64
+        @test @inferred ∇M(d,1.0f0) ≈ 11492.928625676475f0
+        @test ∇M(d,1.0f0) isa Float64
         # @test @inferred invM(d,2.4271590540348216) ≈ 1.0
         # @test invM(d,2.4271590540348216) isa Float64
         # @test @inferred invM(d,2.4271590540348216f0) ≈ 1.0f0

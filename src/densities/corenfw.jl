@@ -151,18 +151,21 @@ end
 # # ∇Σ
 # # Σmean fallback to common.jl is fine
 # # invΣ
-# function M(d::NFW{T}, r::S) where {T, S<:Real}
-#     U = promote_type(T, S)
-#     ρ0,rs = params(d)
-#     ρ0,rs,r = promote(ρ0, rs, r)
-#     4 * U(π) * rs^3 * ρ0 * NFWmu(r, rs)
-# end
-# function ∇M(d::NFW{T}, r::S) where {T, S<:Real}
-#     U = promote_type(T, S)
-#     ρ0,rs = params(d)
-#     ρ0, rs, r = promote(ρ0, rs, r)
-#     4 * U(π) * r * rs * ρ0 / (1 + r/rs)^2
-# end
+function M(d::CoreNFW, r::Real)
+    rc, n = d.rc, d.n
+    f = tanh(r/rc) # Equation 17, Read 2016
+    fn = f^n
+    return M(d.NFW, r) * fn # Equation 16
+end
+function ∇M(d::CoreNFW, r::Real)
+    rc, n = d.rc, d.n
+    x = r/rc
+    f = tanh(x) # Equation 17, Read 2016
+    fn = f^n
+    prof = d.NFW
+    # Product rule
+    return fn * ∇M(prof, r) + n * sech(x)^2 * (fn / f) / rc * M(prof, r)
+end
 # function invM(d::NFW{T}, x::S) where {T, S<:Real}
 #     U = promote_type(T, S)
 #     ρ0,rs = params(d)
