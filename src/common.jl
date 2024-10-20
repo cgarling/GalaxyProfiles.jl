@@ -11,6 +11,15 @@ const Gvelkpc2 = big"1.393832361434717359905559114367183944790625806098294248158
 const Gvelpc = big"4.3009172700362805113763897679746150970458984375e-6"
 const nfwvmaxpar = big"2.162581587064609834856553669603264573507154023820515448359231774428038693093796" # constant for NFW's Vmax
 end
+
+module utilities
+""" `get_inf(x::T) where T` returns the infinity of type `T` if `T` is `Float64`, `Float32`, or `Float16`. Otherwise, returns `Inf`."""
+get_inf(::Float64) = Inf64
+get_inf(::Float32) = Inf32
+get_inf(::Float16) = Inf16
+get_inf(::Any) = Inf
+end
+
 """
     params(d::AbstractMassProfile)
 
@@ -91,7 +100,7 @@ which has an inverse of
 \\rho(r) = -\\frac{1}{\\pi} \\int_r^\\infty \\frac{d\\Sigma(R)}{dR} \\frac{dR}{\\sqrt{R^2-r^2}}
 ```
 """
-Σ(d::AbstractMassProfile, r::Real) = 2 * quadgk(x->x*ρ(d,x)/sqrt(x^2-r^2),r,Inf)[1]
+Σ(d::AbstractMassProfile, r::Real) = 2 * quadgk(x->x*ρ(d,x)/sqrt(x^2-r^2), r, utilities.get_inf(r))[1]
 """
     ∇Σ(d::AbstractMassProfile, r::Real)
     ∇Σ(uu::Unitful.DensityUnits, d::AbstractMassProfile, r::Real)
@@ -135,7 +144,7 @@ M(\\lt R) = 4\\pi \\int_0^R r^2 ρ(r) dr
 
 When this method is not specialized for `d`, it will compute the numerical integral using `QuadGK.quadgk`;  the provided `kws...` will be passed through. 
 """
-M(d::AbstractDensity, r::Real; kws...) = 4π * quadgk(x->x^2 * ρ(d,x), 0.0, r)[1]
+M(d::AbstractDensity, r::Real; kws...) = quadgk(x->x^2 * ρ(d,x), zero(r), r)[1] * 4 * π
 """
     ∇M(d::AbstractDensity, r::Real)
     ∇M(uu::GalaxyProfiles.∇mdimensionUnits, d::AbstractDensity, r::Real)
@@ -174,7 +183,7 @@ Evaluate the total line-of-sight projected mass enclosed within a radius `r` for
 M_{\\text{proj}}(\\lt R) = 2\\pi \\int_0^R r \\, \\Sigma(r) dr = 2\\pi \\int_0^R r \\left( 2 \\int_r^\\infty \\rho(r^\\prime) \\frac{r^\\prime}{ \\sqrt{r^{\\prime \\, 2}-r^2} } \\, dr^\\prime \\right) dr
 ```
 """
-Mproj(d::AbstractMassProfile, r::Real) = 2π * quadgk(x->x * Σ(d,x),0,r)[1]
+Mproj(d::AbstractMassProfile, r::Real) = quadgk(x->x * Σ(d,x), zero(r), r)[1] * 2 * π
 """
     ∇Mproj(d::AbstractMassProfile, r::Real)
     ∇Mproj(uu::GalaxyProfiles.∇mdimensionUnits, d::AbstractMassProfile, r::Real)
