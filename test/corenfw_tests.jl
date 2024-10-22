@@ -13,18 +13,18 @@
             @test ρ(d, 2.0) == ρ(d.NFW, 2.0)
         end
         d = CoreNFW(1e3, 2.0, 1.0, 0.5)
-        # @test @inferred ρ(d,1.0) ≈ 0.25
-        @test ρ(d,1.0) isa Float64
-        # @test @inferred ρ(d,1.0f0) ≈ 0.25f0
+        @test @inferred ρ(d,4.0) ≈ 55.681774896666134
+        @test ρ(d,4.0) isa Float64
+        @test @inferred ρ(d,4.0f0) ≈ 55.681774896666134f0
         @test ρ(d,1.0f0) isa Float64
         # @test @inferred invρ(d,0.25) ≈ 1.0
         # @test invρ(d,0.25) isa Float64
         # @test @inferred invρ(d,0.25f0) ≈ 1.0f0
         # @test invρ(d,0.25f0) isa Float64        
-        # @test @inferred ∇ρ(d,1.0) ≈ -0.375
-        # @test ∇ρ(d,1.0) isa Float64
-        # @test @inferred ∇ρ(d,1.0f0) ≈ -0.375f0
-        # @test ∇ρ(d,1.0f0) isa Float64
+        @test @inferred ∇ρ(d,4.0) ≈ -32.68405095256785
+        @test ∇ρ(d,4.0) isa Float64
+        @test @inferred ∇ρ(d,4.0f0) ≈ -32.68405095256785f0
+        @test ∇ρ(d,4.0f0) isa Float64
         # @test @inferred ρmean(d,1.0) ≈ 0.5794415416798359
         # @test ρmean(d,1.0) isa Float64
         # @test @inferred ρmean(d,1.0f0) ≈ 0.5794415416798359f0
