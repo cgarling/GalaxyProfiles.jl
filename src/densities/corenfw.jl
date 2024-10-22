@@ -124,10 +124,13 @@ end
 #     tmp = cbrt(2x / (2x + 27ρ0 + 3*sqrt(3ρ0*(27ρ0+4x)))) # cbrt more efficient than ^(1/3)
 #     rs/3 * (tmp + inv(tmp) - 2) 
 # end
-# function ∇ρ(d::NFW, r::Real)
-#     ρ0, rs = params(d)
-#     -ρ0 * rs^3 * (3 * r * rs) / (r^2 * (r + rs)^3)
-# end
+function ∇ρ(d::CoreNFW, r::Real)
+    ρ0, rs, rc, n = params(d)
+    return rs^3 * ρ0 / (r^3 * rc^2 * (r + rs)^3) * tanh(r/rc)^n *
+        (-r * rc^2 * (3r + rs) + 8n * (r + rs) / (cosh(4r/rc) - 1) * 
+        (r * (r + rs) * (n - cosh(2r/rc)) * (-r + (r + rs) * log(r/rs + 1)) -
+        rc * (-r * (2r + rs) + (r + rs)^2 * log(r/rs + 1)) * sinh(2r/rc)))
+end
 # function ρmean(d::NFW, r::Real)
 #     ρ0, rs = params(d)
 #     3 * rs^3 * ρ0 * (-r + ( r + rs ) * log( ( r + rs ) /
