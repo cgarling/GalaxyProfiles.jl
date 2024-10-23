@@ -215,6 +215,7 @@ end
 #     r = T(constants.nfwvmaxpar) * rs
 #     return Vcirc(d,r), r
 # end
+# SatGen has an approximate potential at https://github.com/shergreen/SatGen/blob/7f76cf86ead6fc8e1e608e0353c2c8e05d4bff21/profiles.py#L1050
 # function Φ(d::NFW{T}, r::S) where {T, S<:Real}
 #     U = promote_type(T, S)
 #     ρ0, rs = params(d)
