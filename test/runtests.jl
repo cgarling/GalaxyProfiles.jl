@@ -2,7 +2,7 @@ using GalaxyProfiles
 using Test
 
 # first run regular tests, without units
-tests = ["general_isothermal.jl", "exponential_disk.jl", "nfw.jl", "corenfw_tests.jl", "plummer.jl"]
+tests = ["general_isothermal.jl", "exponential_disk.jl", "nfw.jl", "corenfw_tests.jl", "plummer_tests.jl"]
 for i in tests
     include(i)
 end

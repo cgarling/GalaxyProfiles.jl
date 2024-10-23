@@ -81,6 +81,12 @@
             @test Vesc(d,1.0) isa promote_type(T, Float64)
             @test @inferred Vesc(d,1.0f0) ≈ 0.0024662553667311048f0
             @test Vesc(d,1.0f0) isa promote_type(T, Float32)
+            let d=Plummer(T(10^3), T(10^-2))
+                @test @inferred σr(d,0.0,0.0) ≈ 0.267734858583272
+                @test σr(d,0.0,0.0) isa promote_type(T, Float64)
+                @test @inferred σr(d,0.0f0,0.0f0) ≈ 0.267734858583272f0
+                @test σr(d,0.0f0,0.0f0) isa promote_type(T, Float32)
+            end
             @test @inferred Φ(d,1.0) ≈ -3.0412077669649876e-6
             @test Φ(d,1.0) isa promote_type(T, Float64)
             @test @inferred Φ(d,1.0f0) ≈ -3.0412077669649876f-6

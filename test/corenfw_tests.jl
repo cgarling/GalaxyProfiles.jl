@@ -82,10 +82,13 @@
         # @test Vesc(d,1.0f0) isa Float64
         # @test @inferred all(Vmax(d) .≈ (0.003418455956363109, 2.1625815870646097))
         # @test Vmax(d) isa NTuple{2,Float64}
-        # @test @inferred Φ(d,1.0) ≈ -3.7462470491110184e-5
-        # @test Φ(d,1.0) isa Float64
-        # @test @inferred Φ(d,1.0f0) ≈ -3.7462470491110184f-5
-        # @test Φ(d,1.0f0) isa Float64
+        # Test that generic potential = NFW potential when n=0
+        let d = CoreNFW(1e3, 1.0, 0.5, 0.0)
+            @test @inferred Φ(d,4.0) ≈ Φ(d.NFW,4.0)
+            @test Φ(d,4.0) isa Float64
+            @test @inferred Φ(d,4.0f0) ≈ Φ(d.NFW,4.0f0)
+            @test Φ(d,4.0f0) isa Float64
+        end
         # @test @inferred ∇Φ(d,1.0) ≈ 3.38305283586301e-22
         # @test ∇Φ(d,1.0) isa Float64
         # @test @inferred ∇Φ(d,1.0f0) ≈ 3.38305283586301f-22
