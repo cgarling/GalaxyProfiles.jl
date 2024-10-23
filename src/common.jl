@@ -4,13 +4,14 @@ module constants
 # const Gvelkpc = 4.30091727003628e-6     # G in kpc*km^2/solMass/s^2, for velocity calculations
 # const Gvelkpc2 = 1.3938323614347172e-22 # G in kpc^2*km/solMass/s^2, for velocity calculations
 # const Gvelpc = 4.30091727003628e-3      # G in kpc*km^2/solMass/s^2
+# Use BigFloat for more accuracy
 const Gkpc = big"4.517103049894965029489870560544420380775973240960280169677794680278054678900598e-39" # G in kpc^3/solMass/s^2
 const Gpc = big"4.517103049894965632856118045698970338735168159241032233763499248446748879359808e-30"  # G in pc^3/solMass/s^2
 const Gvelkpc = big"4.3009172700362805113763897679746150970458984375e-6"   # G in kpc*km^2/solMass/s^2, for velocity and Φ calculations; (G |> ua.kpc*u.km^2/ua.Msun/u.s^2)
 const Gvelkpc2 = big"1.393832361434717359905559114367183944790625806098294248158708796836435794830327e-22" # G in kpc^2*km/solMass/s^2, for ∇Φ calculations; (G |> ua.kpc^2*u.km/ua.Msun/u.s^2)
 const Gvelpc = big"4.3009172700362805113763897679746150970458984375e-6"
 const nfwvmaxpar = big"2.162581587064609834856553669603264573507154023820515448359231774428038693093796" # constant for NFW's Vmax
-end
+end # module
 
 module utilities
 """ `get_inf(x::T) where T` returns the infinity of type `T` if `T` is `Float64`, `Float32`, or `Float16`. Otherwise, returns `Inf`."""
@@ -18,7 +19,12 @@ get_inf(::Float64) = Inf64
 get_inf(::Float32) = Inf32
 get_inf(::Float16) = Inf16
 get_inf(::Any) = Inf
-end
+# Useful but not currently used
+# function hasspecialization(f::F, d::T, r::S) where {F, T, S}
+#     m = which(f, Tuple{T, S}) # 
+#     return m.sig == Tuple{F, T.name.wrapper, Real}
+# end
+end # module
 
 """
     params(d::AbstractMassProfile)
@@ -70,7 +76,7 @@ The gradient of `ρ(d,r)` evaluated at radius `r`.
 
 The average density inside `r`; defaults to enclosed mass divided by volume; `M(d,r) * 3 / (4π*r^3)`. 
 """
-ρmean(d::AbstractDensity, r::Real) = M(d,r) * 3 / (4π*r^3)
+ρmean(d::AbstractDensity, r::Real) = M(d,r) * 3 / 4 / π / r^3
 """
     invρmean(d::AbstractDensity, x::Real)
     invρmean(d::AbstractDensity, x::Real,
@@ -118,7 +124,7 @@ The gradient of `Σ(d,r)` evaluated at radius `r`.
 
 Evaluates the mean projected surface density inside the radius `r`; defaults to `Mproj(d::AbstractMassProfile,r::Real) / (π * r^2)`.
 """
-Σmean(d::AbstractMassProfile, r::T) where T<:Real = Mproj(d,r) / (T(π) * r^2)
+Σmean(d::AbstractMassProfile, r::T) where T <: Real = Mproj(d,r) / r^2 / π
 """
     invΣ(d::AbstractMassProfile, x::Real)
     invΣ(d::AbstractMassProfile, x::Real,
@@ -263,7 +269,7 @@ ccdf2D(d::AbstractMassProfile, r::Real) = 1 - cdf2D(d,r)
 
 Evaluate the complementary cumulative distribution function of the profile `d` at `r` in three dimensions. This is defined as `1 - cdf3D(d,r) = 1 - M(d,r)/Mtot(d)`. 
 """
-ccdf3D(d::AbstractMassProfile,r::Real) = 1 - cdf3D(d,r)
+ccdf3D(d::AbstractMassProfile, r::Real) = 1 - cdf3D(d,r)
 """
     quantile2D(d::AbstractMassProfile, r::Real)
     quantile2D(d::AbstractMassProfile, r::Unitful.Quantity)
@@ -306,7 +312,7 @@ v_c^2(r) = \\frac{G M(r)}{r} = r \\frac{d\\Phi}{dr} = r\\nabla\\Phi(r)
 
 By default uses `G` in units such that if `rs` and `r` are in kpc, the velocity ends up in `km/s`. For example, for [`GeneralIsothermal`](@ref) we have `[G] = [kpc * km^2 / Msun / s^2]` so that the velocity ends up in `km/s`. Falls back to `sqrt( GalaxyProfiles.constants.Gvelkpc * M(d::AbstractDensity,r) / r)`.
 """
-Vcirc(d::AbstractDensity,r::T) where {T<:Real} = sqrt( T(constants.Gvelkpc) * M(d, r) / r)
+Vcirc(d::AbstractDensity, r::T) where T <: Real = sqrt(T(constants.Gvelkpc) * M(d, r) / r)
 """
     Vesc(d::AbstractDensity, r::Real)
     Vesc(uu::Unitful.VelocityUnits, d::AbstractDensity, r::Real)
@@ -352,7 +358,7 @@ However, these integrals are not finite for some mass distributions (e.g., [`Gen
 such that ``\\Phi(R_s)\\equiv0``.
 By default uses `G` in units such that if `rs` and `r` are in kpc, the potential ends up in `(km/s)^2`.
 """
-Φ(d::AbstractDensity,r::Real)
+Φ(d::AbstractDensity, r::T) where T <: Real = -T(constants.Gvelkpc) * (M(d,r)/r + quadgk(x->x * ρ(d,x), r, utilities.get_inf(T))[1] * 4 * π)
 """
     ∇Φ(d::AbstractDensity, r::Real)
     ∇Φ(uu::u.AccelerationUnits, d::AbstractDensity, r::Real)
