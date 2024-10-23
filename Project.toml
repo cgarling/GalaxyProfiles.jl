@@ -4,9 +4,18 @@ authors = ["cgarling <chris.t.garling@gmail.com>"]
 version = "0.1.0"
 
 [deps]
+HypergeometricFunctions = "34004b35-14d8-5ef3-9330-4cdb6864b03a"
 LambertW = "984bce1d-4616-540c-a9ee-88d1112d94c9"
 QuadGK = "1fd47b50-473d-5c70-9696-f719f8f3bcdc"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 Roots = "f2b01f46-fcfa-551c-844a-d8ac1e96c665"
 SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
+
+[compat]
+HypergeometricFunctions = "0.3"
+LambertW = "0.4, 1"
+QuadGK = "2"
+Random = "<0.0.1, 1"
+Roots = "2"
+SpecialFunctions = "1.2, 2"

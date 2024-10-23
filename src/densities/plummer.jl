@@ -169,6 +169,13 @@ function invMproj(d::Plummer, x::Real)
 end
 # Vcirc fallback to common.jl is fine
 # Vesc fallback to common.jl is fine
+# There is a variation of this for all hypervirial density-potential pairs; see Evans2005
+function σr(d::Plummer, r::T, β::S) where {T <: Real, S <: Real}
+    U = promote_type(T, S)
+    # HypergeometricFunctions._₂F₁ will return NaN if z (last argument) is Inf (r=0), but it should return 1...
+    int_factor = r ≈ zero(T) ? one(U) : _₂F₁(-β, one(U), 4-β, -inv(r^2))
+    return sqrt(-Φ(d, r) / (6-2β) * int_factor)
+end
 function Φ(d::Plummer, r::Real)
     r, M, a = promote(r, Mtot(d), scale_radius(d))
     return -typeof(r)(constants.Gvelkpc) * M / sqrt(r^2 + a^2)

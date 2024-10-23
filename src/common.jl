@@ -341,6 +341,30 @@ for `r`, where ``v_c`` is the circular velocity, then evaluating the circular ve
 """
 Vmax(d::AbstractDensity,r::Real)
 """
+    σr(d::AbstractMassProfile, r::Real, β::Real)
+Returns the radial velocity dispersion in [km/s] of `d` at radius `r` for constant velocity anisotropy `β` given by
+
+```math
+\\sigma_r^2 \\left( R \\right) = \\frac{1}{R^{2\\beta} \\, \\rho(R)} \\int_R^\\infty r^{2\\beta} \\, \\rho(r) \\, \\frac{d\\Phi}{dr} \\, dr
+```
+
+and as ``\\frac{d\\Phi}{dr} = -G M(r) / r^2`` we can alternatively write
+
+```math
+\\sigma_r^2 \\left( R \\right) = \\frac{G}{R^{2\\beta} \\, \\rho(R)} \\int_R^\\infty r^{2\\left( \\beta-1 \\right)} \\, \\rho(r) \\, M\\left( r \\right) \\, dr
+```
+
+which is the default fallback method as we expect ``M(r)`` to be more commonly available than ``\\frac{d\\Phi}{dr}``.
+"""
+σr(d::AbstractMassProfile, r::T, β::S) where {T <: Real, S <: Real} = σr(d, promote(r, β)...)
+σr(d::AbstractMassProfile, r::T, β::T) where T <: Real =
+    sqrt(T(constants.Gvelkpc) * quadgk(x -> x^2(β-1) * ρ(d, x) * M(d, x), r, utilities.get_inf(r))[1] / r^(2β) / ρ(d, r))
+# function σr(d::AbstractMassProfile, r::T, β::T) where T <: Real
+#     value = sqrt(quadgk(x -> x^2β * ρ(d, x) * ∇Φ(d, x), r, utilities.get_inf(r))[1] / r^(2β) / ρ(d, r))
+#     # Convert from km^(1/2) kpc^(1/2) / s to km/s
+#     return value * 2947102009410051//16777216 # 1.7566096838772e8
+# end
+"""
     Φ(d::AbstractDensity, r::Real)
     Φ(uu::GalaxyProfiles.ΦdimensionUnits, d::AbstractDensity, r::Real)
     Φ(d::AbstractDensity, r::Unitful.Length)
