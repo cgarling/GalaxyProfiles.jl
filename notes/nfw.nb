@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     23965,        787]
-NotebookOptionsPosition[     22586,        735]
-NotebookOutlinePosition[     22934,        750]
-CellTagsIndexPosition[     22891,        747]
+NotebookDataLength[     40132,       1176]
+NotebookOptionsPosition[     37063,       1117]
+NotebookOutlinePosition[     37474,       1133]
+CellTagsIndexPosition[     37431,       1130]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -22,7 +22,9 @@ Cell["\<\
 Integral of x*mu(x) in colossus conventions or x/g(x) in Lokas 2001 \
 conventions\
 \>", "Text",
- CellChangeTimes->{{3.833653529049635*^9, 3.83365355082621*^9}}],
+ CellChangeTimes->{{3.833653529049635*^9, 
+  3.83365355082621*^9}},ExpressionUUID->"e92a0cb3-b1b1-4cb6-aa45-\
+962c0bd2a794"],
 
 Cell[CellGroupData[{
 
@@ -37,7 +39,9 @@ Cell[BoxData[
      FractionBox["x", 
       RowBox[{"1", " ", "+", " ", "x"}]]}], ")"}], 
    RowBox[{"\[DifferentialD]", "x"}]}]}]], "Input",
- CellChangeTimes->{{3.833604964474614*^9, 3.83360508662892*^9}}],
+ CellChangeTimes->{{3.833604964474614*^9, 
+  3.83360508662892*^9}},ExpressionUUID->"ce5d0dda-c51d-4a9f-a68c-\
+86b37ed8ef4e"],
 
 Cell[BoxData[
  RowBox[{"ConditionalExpression", "[", 
@@ -63,11 +67,15 @@ Cell[BoxData[
      RowBox[{"Re", "[", "R", "]"}], ">", 
      RowBox[{"-", "1"}]}], "||", 
     RowBox[{"R", "\[NotElement]", "Reals"}]}]}], "]"}]], "Output",
- CellChangeTimes->{{3.833605066100107*^9, 3.833605093628488*^9}}]
+ CellChangeTimes->{{3.833605066100107*^9, 
+  3.833605093628488*^9}},ExpressionUUID->"d513d16d-d00a-434d-b7f6-\
+9ce8254718b7"]
 }, Open  ]],
 
 Cell["Finding the potential for the NFW profile", "Text",
- CellChangeTimes->{{3.833653493747311*^9, 3.833653499753768*^9}}],
+ CellChangeTimes->{{3.833653493747311*^9, 
+  3.833653499753768*^9}},ExpressionUUID->"eca23192-31e6-45d4-867a-\
+59742e7c3ded"],
 
 Cell[CellGroupData[{
 
@@ -108,7 +116,9 @@ Cell[BoxData[
            RowBox[{"r", "/", 
             SubscriptBox["r", "s"]}]}], ")"}], "2"]}]], 
       RowBox[{"\[DifferentialD]", "r"}]}]}]}], " ", ")"}]}]], "Input",
- CellChangeTimes->{{3.833652068113144*^9, 3.833652204131879*^9}}],
+ CellChangeTimes->{{3.833652068113144*^9, 
+  3.833652204131879*^9}},ExpressionUUID->"f2ca0531-5d96-49f6-99a6-\
+800edd9e26f2"],
 
 Cell[BoxData[
  RowBox[{"-", 
@@ -142,7 +152,9 @@ Cell[BoxData[
             FractionBox["r", 
              SubscriptBox["r", "s"]]}], ")"}], "2"]], 
         RowBox[{"\[DifferentialD]", "r"}]}]}]}], ")"}]}], "R"]}]], "Output",
- CellChangeTimes->{3.833652206026683*^9}]
+ CellChangeTimes->{
+  3.833652206026683*^9},ExpressionUUID->"9ee7779d-1444-41de-8882-\
+7b11d62ab53d"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -186,7 +198,9 @@ Cell[BoxData[
             SubscriptBox["r", "s"]}]}], ")"}], "2"]}]], 
       RowBox[{"\[DifferentialD]", "x"}]}]}]}], " ", ")"}]}]], "Input",
  CellChangeTimes->{{3.833652299682597*^9, 3.833652327811438*^9}, {
-  3.833652846741384*^9, 3.833652853392268*^9}}],
+  3.833652846741384*^9, 
+  3.833652853392268*^9}},ExpressionUUID->"e7e02af0-663e-4ef1-a213-\
+e6c89e299eac"],
 
 Cell[BoxData[
  RowBox[{"ConditionalExpression", "[", 
@@ -287,7 +301,8 @@ Cell[BoxData[
         SubscriptBox["r", "s"]}], "\[NotElement]", "Reals"}]}], ")"}]}]}], 
   "]"}]], "Output",
  CellChangeTimes->{3.833652314678817*^9, 3.83365235038922*^9, 
-  3.833652872727449*^9}]
+  3.833652872727449*^9},ExpressionUUID->"fffd9a23-b1ca-41f5-994f-\
+0dc51842a497"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -336,7 +351,6 @@ Cell[BoxData[
          RowBox[{
           FractionBox[
            SubscriptBox["r", "s"], "R"], "\[NotEqual]", "0"}]}], ")"}], "||", 
-       
        RowBox[{
         RowBox[{"Re", "[", 
          FractionBox[
@@ -393,7 +407,9 @@ Cell[BoxData[
          SubscriptBox["r", "s"]}], "\[NotElement]", "Reals"}]}], ")"}]}]}], 
    "]"}], "]"}]], "Input",
  CellChangeTimes->{{3.833652374391563*^9, 3.833652383997016*^9}, {
-  3.83365290502884*^9, 3.833652906619048*^9}}],
+  3.83365290502884*^9, 
+  3.833652906619048*^9}},ExpressionUUID->"79889df0-228e-4808-a740-\
+e01129e41609"],
 
 Cell[BoxData[
  RowBox[{"ConditionalExpression", "[", 
@@ -479,7 +495,9 @@ Cell[BoxData[
        RowBox[{"R", "+", 
         SubscriptBox["r", "s"]}], "\[NotElement]", "Reals"}]}], ")"}]}]}], 
   "]"}]], "Output",
- CellChangeTimes->{3.833652385125643*^9, 3.833652907711282*^9}]
+ CellChangeTimes->{3.833652385125643*^9, 
+  3.833652907711282*^9},ExpressionUUID->"e464ef87-2979-427e-97ad-\
+6f053c8ce68c"]
 }, Open  ]],
 
 Cell["\<\
@@ -488,7 +506,8 @@ differences.\
 \>", "Text",
  CellChangeTimes->{{3.833653570704657*^9, 3.833653574018744*^9}, {
   3.834757720711278*^9, 3.8347577421663*^9}, {3.8347588784884253`*^9, 
-  3.834758882919303*^9}}],
+  3.834758882919303*^9}},ExpressionUUID->"6da6707c-307a-4920-9c7b-\
+43cd0c608757"],
 
 Cell[CellGroupData[{
 
@@ -512,7 +531,9 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{"\[Phi]", "[", "r", "]"}], ",", "r"}], "]"}]}], "Input",
  CellChangeTimes->{{3.834757763681343*^9, 3.834757849991344*^9}, {
-  3.83475794161511*^9, 3.834757973074478*^9}}],
+  3.83475794161511*^9, 
+  3.834757973074478*^9}},ExpressionUUID->"6ab1d39c-e530-428a-b38c-\
+43929507f463"],
 
 Cell[BoxData[
  RowBox[{
@@ -538,7 +559,8 @@ Cell[BoxData[
      RowBox[{"r", "+", 
       SubscriptBox["R", "s"]}], ")"}]}]]}]], "Output",
  CellChangeTimes->{{3.8347579691309443`*^9, 3.8347579735409727`*^9}, 
-   3.8683897987931905`*^9}]
+   3.8683897987931905`*^9},ExpressionUUID->"78dfa185-8ca2-4490-a046-\
+a3a91bdbfda3"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -546,7 +568,9 @@ Cell[CellGroupData[{
 Cell[BoxData[
  RowBox[{
   RowBox[{"\[Phi]", "'"}], "[", "r", "]"}]], "Input",
- CellChangeTimes->{{3.834757979925848*^9, 3.834757988045723*^9}}],
+ CellChangeTimes->{{3.834757979925848*^9, 
+  3.834757988045723*^9}},ExpressionUUID->"e6a682d2-ca2e-47b0-8f01-\
+be4a76ac9155"],
 
 Cell[BoxData[
  RowBox[{
@@ -571,7 +595,9 @@ Cell[BoxData[
     RowBox[{"(", 
      RowBox[{"r", "+", 
       SubscriptBox["R", "s"]}], ")"}]}]]}]], "Output",
- CellChangeTimes->{3.834757989124693*^9}]
+ CellChangeTimes->{
+  3.834757989124693*^9},ExpressionUUID->"76f78d33-70e4-401c-853d-\
+a19b77e65945"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -600,7 +626,7 @@ Cell[BoxData[
      RowBox[{"(", 
       RowBox[{"r", "+", 
        SubscriptBox["R", "s"]}], ")"}]}]]}], "]"}]], "Input",
- NumberMarks->False],
+ NumberMarks->False,ExpressionUUID->"5bcdc7ee-72a6-43da-87b2-4d3b0f0d503f"],
 
 Cell[BoxData[
  FractionBox[
@@ -619,18 +645,24 @@ Cell[BoxData[
        SubscriptBox["R", "s"]}]]}], ")"}], " ", 
    SubscriptBox["\[Rho]", "s"]}], 
   SuperscriptBox["r", "2"]]], "Output",
- CellChangeTimes->{3.834758202181018*^9}]
+ CellChangeTimes->{
+  3.834758202181018*^9},ExpressionUUID->"597c192a-4c78-4862-b754-\
+e4ccf5fe0629"]
 }, Open  ]],
 
 Cell["Second derivative of potential", "Text",
- CellChangeTimes->{{3.8683898196654825`*^9, 3.86838982309807*^9}}],
+ CellChangeTimes->{{3.8683898196654825`*^9, 
+  3.86838982309807*^9}},ExpressionUUID->"e0cca9f3-a8c9-4739-b9c9-\
+bf2e074502b5"],
 
 Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{
   RowBox[{"\[Phi]", "''"}], "[", "r", "]"}]], "Input",
- CellChangeTimes->{{3.86838976430184*^9, 3.868389793925949*^9}}],
+ CellChangeTimes->{{3.86838976430184*^9, 
+  3.868389793925949*^9}},ExpressionUUID->"7eccaf78-9833-4419-a4ba-\
+58294861aa6e"],
 
 Cell[BoxData[
  RowBox[{
@@ -664,7 +696,9 @@ Cell[BoxData[
     RowBox[{"(", 
      RowBox[{"r", "+", 
       SubscriptBox["R", "s"]}], ")"}]}]]}]], "Output",
- CellChangeTimes->{{3.86838976556504*^9, 3.8683898010288196`*^9}}]
+ CellChangeTimes->{{3.86838976556504*^9, 
+  3.8683898010288196`*^9}},ExpressionUUID->"c7519c23-56dc-4092-89fe-\
+333b8cd25c69"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -702,7 +736,9 @@ Cell[BoxData[
      RowBox[{"(", 
       RowBox[{"r", "+", 
        SubscriptBox["R", "s"]}], ")"}]}]]}], "]"}]], "Input",
- CellChangeTimes->{{3.868389805762932*^9, 3.8683898107103033`*^9}}],
+ CellChangeTimes->{{3.868389805762932*^9, 
+  3.8683898107103033`*^9}},ExpressionUUID->"6c882851-d38f-40ab-9f31-\
+abe8e681c961"],
 
 Cell[BoxData[
  FractionBox[
@@ -730,13 +766,360 @@ Cell[BoxData[
          SubscriptBox["R", "s"]}], ")"}], "2"]]}], ")"}], " ", 
    SubscriptBox["\[Rho]", "s"]}], 
   SuperscriptBox["r", "3"]]], "Output",
- CellChangeTimes->{3.8683898112397223`*^9}]
-}, Open  ]]
+ CellChangeTimes->{
+  3.8683898112397223`*^9},ExpressionUUID->"1897597d-fea5-4e05-9489-\
+dbc0521e8456"]
+}, Open  ]],
+
+Cell["\<\
+Try to simplify integral appearing in radial velocity dispersion\
+\>", "Text",ExpressionUUID->"4e65179b-deda-45ae-b145-60d2851346da"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  SubsuperscriptBox["\[Integral]", "a", "\[Infinity]"], 
+  RowBox[{
+   FractionBox[
+    RowBox[{
+     SuperscriptBox["x", 
+      RowBox[{
+       RowBox[{"2", "\[Beta]"}], "-", "3"}]], " "}], 
+    SuperscriptBox[
+     RowBox[{"(", 
+      RowBox[{"1", "+", "x"}], ")"}], "2"]], "*", " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"Log", "[", 
+      RowBox[{"1", "+", "x"}], "]"}], "-", 
+     FractionBox["x", 
+      RowBox[{"1", "+", "x"}]]}], ")"}], 
+   RowBox[{"\[DifferentialD]", "x"}]}]}]], "Input",
+ CellLabel->"In[84]:=",ExpressionUUID->"2c4e98d4-23da-46de-9caa-6fdcae10efc4"],
+
+Cell[BoxData[
+ TemplateBox[{
+   RowBox[{
+     FractionBox["1", "2"], " ", 
+     RowBox[{"(", 
+       RowBox[{
+         RowBox[{
+           SuperscriptBox["a", 
+            RowBox[{
+              RowBox[{"-", "4"}], "+", 
+              RowBox[{"2", " ", "\[Beta]"}]}]], " ", 
+           RowBox[{"(", 
+             RowBox[{
+               RowBox[{"-", 
+                 FractionBox[
+                  RowBox[{"a", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "2"}], "-", "a", "+", 
+                    RowBox[{"2", " ", "\[Beta]"}], "+", 
+                    RowBox[{"2", " ", "a", " ", "\[Beta]"}]}], ")"}]}], 
+                  SuperscriptBox[
+                   RowBox[{"(", 
+                    RowBox[{"1", "+", "a"}], ")"}], "2"]]}], "+", 
+               FractionBox[
+                RowBox[{
+                  RowBox[{"(", 
+                    RowBox[{"3", "-", 
+                    RowBox[{"5", " ", "\[Beta]"}], "+", 
+                    RowBox[{"2", " ", 
+                    SuperscriptBox["\[Beta]", "2"]}]}], ")"}], " ", 
+                  RowBox[{"Hypergeometric2F1", "[", 
+                    RowBox[{"1", ",", 
+                    RowBox[{"4", "-", 
+                    RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                    RowBox[{"5", "-", 
+                    RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                    RowBox[{"-", 
+                    FractionBox["1", "a"]}]}], "]"}]}], 
+                RowBox[{
+                  RowBox[{"-", "2"}], "+", "\[Beta]"}]]}], ")"}]}], "+", 
+         FractionBox[
+          RowBox[{
+            SuperscriptBox["a", 
+             RowBox[{
+               RowBox[{"-", "4"}], "+", 
+               RowBox[{"2", " ", "\[Beta]"}]}]], " ", 
+            RowBox[{"Hypergeometric2F1", "[", 
+              RowBox[{"3", ",", 
+                RowBox[{"4", "-", 
+                  RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                RowBox[{"5", "-", 
+                  RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                RowBox[{"-", 
+                  FractionBox["1", "a"]}]}], "]"}]}], 
+          RowBox[{"2", " ", 
+            SuperscriptBox[
+             RowBox[{"(", 
+               RowBox[{
+                 RowBox[{"-", "2"}], "+", "\[Beta]"}], ")"}], "2"]}]], "+", 
+         FractionBox[
+          RowBox[{"2", " ", 
+            SuperscriptBox["a", 
+             RowBox[{
+               RowBox[{"-", "4"}], "+", 
+               RowBox[{"2", " ", "\[Beta]"}]}]], " ", 
+            RowBox[{"Hypergeometric2F1", "[", 
+              RowBox[{"3", ",", 
+                RowBox[{"4", "-", 
+                  RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                RowBox[{"5", "-", 
+                  RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                RowBox[{"-", 
+                  FractionBox["1", "a"]}]}], "]"}], " ", 
+            RowBox[{"Log", "[", "a", "]"}]}], 
+          SuperscriptBox[
+           RowBox[{"(", 
+             RowBox[{
+               RowBox[{"-", "2"}], "+", "\[Beta]"}], ")"}], "2"]], "-", 
+         FractionBox[
+          RowBox[{
+            SuperscriptBox["a", 
+             RowBox[{
+               RowBox[{"-", "4"}], "+", 
+               RowBox[{"2", " ", "\[Beta]"}]}]], " ", "\[Beta]", " ", 
+            RowBox[{"Hypergeometric2F1", "[", 
+              RowBox[{"3", ",", 
+                RowBox[{"4", "-", 
+                  RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                RowBox[{"5", "-", 
+                  RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                RowBox[{"-", 
+                  FractionBox["1", "a"]}]}], "]"}], " ", 
+            RowBox[{"Log", "[", "a", "]"}]}], 
+          SuperscriptBox[
+           RowBox[{"(", 
+             RowBox[{
+               RowBox[{"-", "2"}], "+", "\[Beta]"}], ")"}], "2"]], "+", 
+         RowBox[{
+           FractionBox["1", 
+            SuperscriptBox[
+             RowBox[{"(", 
+               RowBox[{"5", "-", 
+                 RowBox[{"2", " ", "\[Beta]"}]}], ")"}], "2"]], 
+           RowBox[{"2", " ", 
+             SuperscriptBox[
+              RowBox[{"(", 
+                RowBox[{"1", "+", "a"}], ")"}], 
+              RowBox[{
+                RowBox[{"-", "5"}], "+", 
+                RowBox[{"2", " ", "\[Beta]"}]}]], " ", 
+             RowBox[{"(", 
+               RowBox[{
+                 RowBox[{"HypergeometricPFQ", "[", 
+                   RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"3", "-", 
+                    RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                    RowBox[{"5", "-", 
+                    RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                    RowBox[{"5", "-", 
+                    RowBox[{"2", " ", "\[Beta]"}]}]}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"6", "-", 
+                    RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                    RowBox[{"6", "-", 
+                    RowBox[{"2", " ", "\[Beta]"}]}]}], "}"}], ",", 
+                    FractionBox["1", 
+                    RowBox[{"1", "+", "a"}]]}], "]"}], "+", 
+                 RowBox[{
+                   RowBox[{"(", 
+                    RowBox[{"5", "-", 
+                    RowBox[{"2", " ", "\[Beta]"}]}], ")"}], " ", 
+                   RowBox[{"Hypergeometric2F1", "[", 
+                    RowBox[{
+                    RowBox[{"3", "-", 
+                    RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                    RowBox[{"5", "-", 
+                    RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                    RowBox[{"6", "-", 
+                    RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                    FractionBox["1", 
+                    RowBox[{"1", "+", "a"}]]}], "]"}], " ", 
+                   RowBox[{"Log", "[", 
+                    RowBox[{"1", "+", "a"}], "]"}]}]}], ")"}]}]}], "-", 
+         FractionBox[
+          RowBox[{"2", " ", 
+            SuperscriptBox["a", 
+             RowBox[{
+               RowBox[{"-", "4"}], "+", 
+               RowBox[{"2", " ", "\[Beta]"}]}]], " ", 
+            RowBox[{
+              SuperscriptBox["Hypergeometric2F1", 
+               TagBox[
+                RowBox[{"(", 
+                  RowBox[{"0", ",", "0", ",", "1", ",", "0"}], ")"}], 
+                Derivative], MultilineFunction -> None], "[", 
+              RowBox[{"3", ",", 
+                RowBox[{"4", "-", 
+                  RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                RowBox[{"5", "-", 
+                  RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                RowBox[{"-", 
+                  FractionBox["1", "a"]}]}], "]"}]}], 
+          SuperscriptBox[
+           RowBox[{"(", 
+             RowBox[{
+               RowBox[{"-", "2"}], "+", "\[Beta]"}], ")"}], "2"]], "+", 
+         FractionBox[
+          RowBox[{
+            SuperscriptBox["a", 
+             RowBox[{
+               RowBox[{"-", "4"}], "+", 
+               RowBox[{"2", " ", "\[Beta]"}]}]], " ", "\[Beta]", " ", 
+            RowBox[{
+              SuperscriptBox["Hypergeometric2F1", 
+               TagBox[
+                RowBox[{"(", 
+                  RowBox[{"0", ",", "0", ",", "1", ",", "0"}], ")"}], 
+                Derivative], MultilineFunction -> None], "[", 
+              RowBox[{"3", ",", 
+                RowBox[{"4", "-", 
+                  RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                RowBox[{"5", "-", 
+                  RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                RowBox[{"-", 
+                  FractionBox["1", "a"]}]}], "]"}]}], 
+          SuperscriptBox[
+           RowBox[{"(", 
+             RowBox[{
+               RowBox[{"-", "2"}], "+", "\[Beta]"}], ")"}], "2"]], "-", 
+         FractionBox[
+          RowBox[{"2", " ", 
+            SuperscriptBox["a", 
+             RowBox[{
+               RowBox[{"-", "4"}], "+", 
+               RowBox[{"2", " ", "\[Beta]"}]}]], " ", 
+            RowBox[{
+              SuperscriptBox["Hypergeometric2F1", 
+               TagBox[
+                RowBox[{"(", 
+                  RowBox[{"0", ",", "1", ",", "0", ",", "0"}], ")"}], 
+                Derivative], MultilineFunction -> None], "[", 
+              RowBox[{"3", ",", 
+                RowBox[{"4", "-", 
+                  RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                RowBox[{"5", "-", 
+                  RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                RowBox[{"-", 
+                  FractionBox["1", "a"]}]}], "]"}]}], 
+          SuperscriptBox[
+           RowBox[{"(", 
+             RowBox[{
+               RowBox[{"-", "2"}], "+", "\[Beta]"}], ")"}], "2"]], "+", 
+         FractionBox[
+          RowBox[{
+            SuperscriptBox["a", 
+             RowBox[{
+               RowBox[{"-", "4"}], "+", 
+               RowBox[{"2", " ", "\[Beta]"}]}]], " ", "\[Beta]", " ", 
+            RowBox[{
+              SuperscriptBox["Hypergeometric2F1", 
+               TagBox[
+                RowBox[{"(", 
+                  RowBox[{"0", ",", "1", ",", "0", ",", "0"}], ")"}], 
+                Derivative], MultilineFunction -> None], "[", 
+              RowBox[{"3", ",", 
+                RowBox[{"4", "-", 
+                  RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                RowBox[{"5", "-", 
+                  RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                RowBox[{"-", 
+                  FractionBox["1", "a"]}]}], "]"}]}], 
+          SuperscriptBox[
+           RowBox[{"(", 
+             RowBox[{
+               RowBox[{"-", "2"}], "+", "\[Beta]"}], ")"}], "2"]], "-", 
+         FractionBox[
+          RowBox[{"2", " ", 
+            SuperscriptBox["a", 
+             RowBox[{
+               RowBox[{"-", "4"}], "+", 
+               RowBox[{"2", " ", "\[Beta]"}]}]], " ", 
+            RowBox[{
+              SuperscriptBox["Hypergeometric2F1", 
+               TagBox[
+                RowBox[{"(", 
+                  RowBox[{"1", ",", "0", ",", "0", ",", "0"}], ")"}], 
+                Derivative], MultilineFunction -> None], "[", 
+              RowBox[{"3", ",", 
+                RowBox[{"4", "-", 
+                  RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                RowBox[{"5", "-", 
+                  RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                RowBox[{"-", 
+                  FractionBox["1", "a"]}]}], "]"}]}], 
+          SuperscriptBox[
+           RowBox[{"(", 
+             RowBox[{
+               RowBox[{"-", "2"}], "+", "\[Beta]"}], ")"}], "2"]], "+", 
+         FractionBox[
+          RowBox[{
+            SuperscriptBox["a", 
+             RowBox[{
+               RowBox[{"-", "4"}], "+", 
+               RowBox[{"2", " ", "\[Beta]"}]}]], " ", "\[Beta]", " ", 
+            RowBox[{
+              SuperscriptBox["Hypergeometric2F1", 
+               TagBox[
+                RowBox[{"(", 
+                  RowBox[{"1", ",", "0", ",", "0", ",", "0"}], ")"}], 
+                Derivative], MultilineFunction -> None], "[", 
+              RowBox[{"3", ",", 
+                RowBox[{"4", "-", 
+                  RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                RowBox[{"5", "-", 
+                  RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+                RowBox[{"-", 
+                  FractionBox["1", "a"]}]}], "]"}]}], 
+          SuperscriptBox[
+           RowBox[{"(", 
+             RowBox[{
+               RowBox[{"-", "2"}], "+", "\[Beta]"}], ")"}], "2"]]}], ")"}]}], 
+   RowBox[{
+     RowBox[{
+       RowBox[{"Re", "[", "\[Beta]", "]"}], "<", "2"}], "&&", 
+     RowBox[{
+       RowBox[{"Re", "[", "a", "]"}], ">", "0"}], "&&", 
+     RowBox[{
+       RowBox[{"Im", "[", "a", "]"}], "\[Equal]", "0"}]}]},
+  "ConditionalExpression"]], "Output",
+ CellLabel->"Out[84]=",ExpressionUUID->"7def0f9f-385e-4353-83ed-a5415391d492"]
+}, Open  ]],
+
+Cell[TextData[{
+ "I do not know what the terms (0,0,1,0) mean in ",
+ Cell[BoxData[
+  RowBox[{
+   SuperscriptBox["Hypergeometric2F1", 
+    TagBox[
+     RowBox[{"(", 
+      RowBox[{"0", ",", "0", ",", "1", ",", "0"}], ")"}],
+     Derivative],
+    MultilineFunction->None], "[", 
+   RowBox[{"3", ",", 
+    RowBox[{"4", "-", 
+     RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+    RowBox[{"5", "-", 
+     RowBox[{"2", " ", "\[Beta]"}]}], ",", 
+    RowBox[{"-", 
+     FractionBox["1", "a"]}]}], "]"}]], "Output",ExpressionUUID->
+  "b1bb9885-ea03-4d64-b301-77bb0ccd27a2"],
+ "; confused, not worried with implementing at the moment."
+}], "Text",ExpressionUUID->"4a6b3111-cc2a-4739-8b0b-f4a12c5aac25"]
 },
-WindowSize->{808, 911},
-WindowMargins->{{370, Automatic}, {Automatic, 42}},
-FrontEndVersion->"11.0 for Microsoft Windows (64-bit) (September 21, 2016)",
-StyleDefinitions->"Default.nb"
+WindowSize->{808.5, 911.25},
+WindowMargins->{{189, Automatic}, {Automatic, 44.25}},
+FrontEndVersion->"13.2 for Microsoft Windows (64-bit) (November 18, 2022)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"fc0318f4-53f3-4095-8567-0a0eb7a94ab6"
 ]
 (* End of Notebook Content *)
 
@@ -749,46 +1132,52 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[558, 20, 170, 4, 30, "Text"],
+Cell[558, 20, 230, 6, 35, "Text",ExpressionUUID->"e92a0cb3-b1b1-4cb6-aa45-962c0bd2a794"],
 Cell[CellGroupData[{
-Cell[753, 28, 403, 11, 48, "Input"],
-Cell[1159, 41, 762, 24, 45, "Output"]
+Cell[813, 30, 463, 13, 44, "Input",ExpressionUUID->"ce5d0dda-c51d-4a9f-a68c-86b37ed8ef4e"],
+Cell[1279, 45, 822, 26, 48, "Output",ExpressionUUID->"d513d16d-d00a-434d-b7f6-9ce8254718b7"]
 }, Open  ]],
-Cell[1936, 68, 123, 1, 30, "Text"],
+Cell[2116, 74, 183, 3, 35, "Text",ExpressionUUID->"eca23192-31e6-45d4-867a-59742e7c3ded"],
 Cell[CellGroupData[{
-Cell[2084, 73, 1214, 37, 53, "Input"],
-Cell[3301, 112, 1051, 32, 73, "Output"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[4389, 149, 1297, 39, 53, "Input"],
-Cell[5689, 190, 3237, 99, 173, "Output"]
+Cell[2324, 81, 1274, 39, 49, "Input",ExpressionUUID->"f2ca0531-5d96-49f6-99a6-800edd9e26f2"],
+Cell[3601, 122, 1111, 34, 78, "Output",ExpressionUUID->"9ee7779d-1444-41de-8882-7b11d62ab53d"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[8963, 294, 3401, 101, 196, "Input"],
-Cell[12367, 397, 2783, 84, 149, "Output"]
-}, Open  ]],
-Cell[15165, 484, 273, 6, 30, "Text"],
-Cell[CellGroupData[{
-Cell[15463, 494, 695, 20, 71, "Input"],
-Cell[16161, 516, 800, 24, 52, "Output"]
+Cell[4749, 161, 1357, 41, 49, "Input",ExpressionUUID->"e7e02af0-663e-4ef1-a213-e6c89e299eac"],
+Cell[6109, 204, 3294, 100, 178, "Output",ExpressionUUID->"fffd9a23-b1ca-41f5-994f-0dc51842a497"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[16998, 545, 143, 3, 30, "Input"],
-Cell[17144, 550, 744, 23, 52, "Output"]
+Cell[9440, 309, 3453, 102, 178, "Input",ExpressionUUID->"79889df0-228e-4808-a740-e01129e41609"],
+Cell[12896, 413, 2843, 86, 154, "Output",ExpressionUUID->"e464ef87-2979-427e-97ad-6f053c8ce68c"]
+}, Open  ]],
+Cell[15754, 502, 330, 7, 35, "Text",ExpressionUUID->"6da6707c-307a-4920-9c7b-43cd0c608757"],
+Cell[CellGroupData[{
+Cell[16109, 513, 755, 22, 66, "Input",ExpressionUUID->"6ab1d39c-e530-428a-b38c-43929507f463"],
+Cell[16867, 537, 857, 25, 53, "Output",ExpressionUUID->"78dfa185-8ca2-4490-a046-a3a91bdbfda3"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[17925, 578, 778, 24, 55, "Input"],
-Cell[18706, 604, 548, 17, 59, "Output"]
-}, Open  ]],
-Cell[19269, 624, 113, 1, 30, "Text"],
-Cell[CellGroupData[{
-Cell[19407, 629, 143, 3, 30, "Input"],
-Cell[19553, 634, 1047, 32, 52, "Output"]
+Cell[17761, 567, 203, 5, 28, "Input",ExpressionUUID->"e6a682d2-ca2e-47b0-8f01-be4a76ac9155"],
+Cell[17967, 574, 804, 25, 53, "Output",ExpressionUUID->"76f78d33-70e4-401c-853d-a19b77e65945"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[20637, 671, 1112, 33, 55, "Input"],
-Cell[21752, 706, 818, 26, 59, "Output"]
-}, Open  ]]
+Cell[18808, 604, 833, 24, 50, "Input",ExpressionUUID->"5bcdc7ee-72a6-43da-87b2-4d3b0f0d503f"],
+Cell[19644, 630, 608, 19, 60, "Output",ExpressionUUID->"597c192a-4c78-4862-b754-e4ccf5fe0629"]
+}, Open  ]],
+Cell[20267, 652, 173, 3, 35, "Text",ExpressionUUID->"e0cca9f3-a8c9-4739-b9c9-bf2e074502b5"],
+Cell[CellGroupData[{
+Cell[20465, 659, 203, 5, 28, "Input",ExpressionUUID->"7eccaf78-9833-4419-a4ba-58294861aa6e"],
+Cell[20671, 666, 1107, 34, 54, "Output",ExpressionUUID->"c7519c23-56dc-4092-89fe-333b8cd25c69"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[21815, 705, 1172, 35, 51, "Input",ExpressionUUID->"6c882851-d38f-40ab-9f31-abe8e681c961"],
+Cell[22990, 742, 878, 28, 61, "Output",ExpressionUUID->"1897597d-fea5-4e05-9489-dbc0521e8456"]
+}, Open  ]],
+Cell[23883, 773, 143, 2, 35, "Text",ExpressionUUID->"4e65179b-deda-45ae-b145-60d2851346da"],
+Cell[CellGroupData[{
+Cell[24051, 779, 606, 19, 51, "Input",ExpressionUUID->"2c4e98d4-23da-46de-9caa-6fdcae10efc4"],
+Cell[24660, 800, 11698, 293, 603, "Output",ExpressionUUID->"7def0f9f-385e-4353-83ed-a5415391d492"]
+}, Open  ]],
+Cell[36373, 1096, 686, 19, 61, "Text",ExpressionUUID->"4a6b3111-cc2a-4739-8b0b-f4a12c5aac25"]
 }
 ]
 *)
