@@ -342,7 +342,7 @@ for `r`, where ``v_c`` is the circular velocity, then evaluating the circular ve
 Vmax(d::AbstractDensity,r::Real)
 """
     σr(d::AbstractMassProfile, r::Real, β::Real)
-Returns the radial velocity dispersion in [km/s] of `d` at radius `r` for constant velocity anisotropy `β` given by
+Returns the radial velocity dispersion in [km/s] of `d` at radius `r` for constant velocity anisotropy `β` given by Equation 4.216 in Binney & Tremaine Galactic Dynamics 2E,
 
 ```math
 \\sigma_r^2 \\left( R \\right) = \\frac{1}{R^{2\\beta} \\, \\rho(R)} \\int_R^\\infty r^{2\\beta} \\, \\rho(r) \\, \\frac{d\\Phi}{dr} \\, dr
@@ -364,6 +364,18 @@ which is the default fallback method as we expect ``M(r)`` to be more commonly a
 #     # Convert from km^(1/2) kpc^(1/2) / s to km/s
 #     return value * 2947102009410051//16777216 # 1.7566096838772e8
 # end
+"""
+    σlos(d::AbstractMassProfile, r::Real, β::Real)
+
+Returns the line-of-sight projected velocity dispersion in [km/s] of `d` at projected radius `r` for constant velocity anisotropy `β` given by
+
+```math
+\\sigma_{\\text{LOS}}^2 \\left( R \\right) = \\frac{2}{\\Sigma \\left( R \\right)} \\int_R^\\infty \\left(1 - \\beta \\frac{R^2}{r^2} \\right) \\frac{r \\, \\rho \\left( r \\right) \\, \\sigma_r^2 \\left( r \\right)}{\\sqrt{r^2 - R^2}} \\, dr
+```
+"""
+σlos(d::AbstractMassProfile, r::T, β::S) where {T <: Real, S <: Real} = σlos(d, promote(r, β)...)
+σlos(d::AbstractMassProfile, r::T, β::T) where T <: Real =
+    sqrt(2 / Σ(d,r) * quadgk(x->(1-β*(r/x)^2) * ρ(d,x) * σr(d,x,β)^2 * x / sqrt(x^2 - r^2), r, utilities.get_inf(r))[1])
 """
     Φ(d::AbstractDensity, r::Real)
     Φ(uu::GalaxyProfiles.ΦdimensionUnits, d::AbstractDensity, r::Real)
