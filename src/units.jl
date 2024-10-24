@@ -204,13 +204,18 @@ for f in (:ExponentialDisk, :GeneralIsothermal, :Plummer, :NFW) # quantities req
     @eval if hasmethod(Vmax,($f,Real))
         @eval Vmax(uu::u.VelocityUnits,$f,args...;kws...) = Vmax($f,args...;kws...) * defaultunits.velocity |> uu
         @eval Vmax(uu::u.VelocityUnits,$f,r::u.Length,args...;kws...) = Vmax($f,homogenize_units(r),args...;kws...) * defaultunits.velocity |> uu
-        @eval Vmax($f,r::u.Length,args...;kws...) = Vmax($f,homogenize_units(r),args...;kws...) * defaultunits.velocity       
+        @eval Vmax($f,r::u.Length,args...;kws...) = Vmax($f,homogenize_units(r),args...;kws...) * defaultunits.velocity
     end
     @eval if hasmethod(σr,($f,Real,Real))
         @eval σr(uu::u.VelocityUnits,$f,args...;kws...) = σr($f,args...;kws...) * defaultunits.velocity |> uu
         @eval σr(uu::u.VelocityUnits,$f,r::u.Length,args...;kws...) = σr($f,homogenize_units(r),args...;kws...) * defaultunits.velocity |> uu
-        @eval σr($f,r::u.Length,args...;kws...) = σr($f,homogenize_units(r),args...;kws...) * defaultunits.velocity       
-    end    
+        @eval σr($f,r::u.Length,args...;kws...) = σr($f,homogenize_units(r),args...;kws...) * defaultunits.velocity
+    end
+    @eval if hasmethod(σlos,($f,Real,Real))
+        @eval σlos(uu::u.VelocityUnits,$f,args...;kws...) = σlos($f,args...;kws...) * defaultunits.velocity |> uu
+        @eval σlos(uu::u.VelocityUnits,$f,r::u.Length,args...;kws...) = σlos($f,homogenize_units(r),args...;kws...) * defaultunits.velocity |> uu
+        @eval σlos($f,r::u.Length,args...;kws...) = σlos($f,homogenize_units(r),args...;kws...) * defaultunits.velocity
+    end
     @eval if hasmethod(Φ,($f,Real)) # check if this method is defined for the current type
         @eval Φ(uu::ΦdimensionUnits,$f,args...;kws...) = Φ($f,args...;kws...) * defaultunits.Φunit |> uu
         @eval Φ(uu::ΦdimensionUnits,$f,r::u.Length,args...;kws...) = Φ($f,homogenize_units(r),args...;kws...) * defaultunits.Φunit |> uu
