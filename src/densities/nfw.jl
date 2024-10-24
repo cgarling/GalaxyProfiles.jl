@@ -26,8 +26,8 @@ scale_radius(d::NFW) = d.rs
 
 #### Convenience functions
 
-NFWmu(r, rs) = (x=r/rs; log(1+x) - x / (1+x))
 NFWmu(x) = log(1+x) - x / (1+x)
+NFWmu(r, rs) = NFWmu(r/rs)
 
 #### Evaluation
 
@@ -125,6 +125,15 @@ function Vmax(d::NFW{T}) where T
     ρ0,rs = params(d)
     r = T(constants.nfwvmaxpar) * rs
     return Vcirc(d,r), r
+end
+# Roughly 2x faster than generic fallback
+function σr(d::NFW{T}, r::S, β::S) where {T <: Real, S <: Real}
+    U = promote_type(T, S)
+    ρ0, rs = params(d)
+    x = r / rs
+    Φ0 = ρ0 * rs^2 * 4 * π * U(constants.Gvelkpc)
+    return sqrt(Φ0 * quadgk(x->x^(2β-3) * NFWmu(x) / (1+x)^2, x, utilities.get_inf(x))[1] /
+        x^(2β-1) * (1+x)^2)
 end
 function Φ(d::NFW{T}, r::S) where {T, S<:Real}
     U = promote_type(T, S)
