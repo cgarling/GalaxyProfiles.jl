@@ -43,12 +43,12 @@ END PROGRAM  plummerM
 
 ! Equivalent Julia code
 ! In single precision,
-! rr2 = (1:10^5) .* 1f-3
+! rr2 = (1:10^5) .* 1f-3 |> collect
 ! sum( (M(Plummer(100.0f0,20.0f0),i) for i in rr2))
 ! @benchmark sum( (M(Plummer($100.0f0,$20.0f0),i) for i in $rr2))
 ! takes ~140 microseconds. 
 ! In double precision,
-! rr = (1:10^5) .* 1e-3
+! rr = (1:10^5) .* 1e-3 |> collect
 ! sum( (M(Plummer(100.0,20.0),i) for i in rr))
 ! @benchmark sum( (M(Plummer($100.0,$20.0),i) for i in $rr))
 ! runs in ~300 microseconds
@@ -63,6 +63,14 @@ END PROGRAM  plummerM
 !     result += a * M * r^3 * sqrt(1 + (r/a)^2) / (a^2 + r^2)^2
 !   end
 !   return result
+! end
+! This will also work;
+! function psum2(d::Plummer, rr::AbstractArray{<:Real})
+!     result = zero(eltype(rr))
+!     @turbo for i in eachindex(rr)
+!         result += M(d, rr[i])
+!     end
+!     return result
 ! end
 ! @benchmark psum($rr, $20.0, $100.0)
 ! Runs in about 300 microseconds in double precision with @inbounds @simd, which is the same as an un-annotated loop. 
