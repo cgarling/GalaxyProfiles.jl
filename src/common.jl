@@ -341,7 +341,7 @@ for `r`, where ``v_c`` is the circular velocity, then evaluating the circular ve
 """
 Vmax(d::AbstractDensity,r::Real)
 """
-    σr(d::AbstractMassProfile, r::Real, β::Real)
+    σr(d::AbstractDensity, r::Real, β::Real)
 Returns the radial velocity dispersion in [km/s] of `d` at radius `r` for constant velocity anisotropy `β` given by Equation 4.216 in Binney & Tremaine Galactic Dynamics 2E,
 
 ```math
@@ -356,16 +356,16 @@ and as ``\\frac{d\\Phi}{dr} = -G M(r) / r^2`` we can alternatively write
 
 which is the default fallback method as we expect ``M(r)`` to be more commonly available than ``\\frac{d\\Phi}{dr}``.
 """
-σr(d::AbstractMassProfile, r::T, β::S) where {T <: Real, S <: Real} = σr(d, promote(r, β)...)
-σr(d::AbstractMassProfile, r::T, β::T) where T <: Real =
+σr(d::AbstractDensity, r::T, β::S) where {T <: Real, S <: Real} = σr(d, promote(r, β)...)
+σr(d::AbstractDensity, r::T, β::T) where T <: Real =
     sqrt(T(constants.Gvelkpc) * quadgk(x -> x^2(β-1) * ρ(d, x) * M(d, x), r, utilities.get_inf(r))[1] / r^(2β) / ρ(d, r))
-# function σr(d::AbstractMassProfile, r::T, β::T) where T <: Real
+# function σr(d::AbstractDensity, r::T, β::T) where T <: Real
 #     value = sqrt(quadgk(x -> x^2β * ρ(d, x) * ∇Φ(d, x), r, utilities.get_inf(r))[1] / r^(2β) / ρ(d, r))
 #     # Convert from km^(1/2) kpc^(1/2) / s to km/s
 #     return value * 2947102009410051//16777216 # 1.7566096838772e8
 # end
 """
-    σlos(d::AbstractMassProfile, r::Real, β::Real)
+    σlos(d::AbstractDensity, r::Real, β::Real)
 
 Returns the line-of-sight projected velocity dispersion in [km/s] of `d` at projected radius `r` for constant velocity anisotropy `β` given by
 
@@ -373,8 +373,8 @@ Returns the line-of-sight projected velocity dispersion in [km/s] of `d` at proj
 \\sigma_{\\text{LOS}}^2 \\left( R \\right) = \\frac{2}{\\Sigma \\left( R \\right)} \\int_R^\\infty \\left(1 - \\beta \\frac{R^2}{r^2} \\right) \\frac{r \\, \\rho \\left( r \\right) \\, \\sigma_r^2 \\left( r \\right)}{\\sqrt{r^2 - R^2}} \\, dr
 ```
 """
-σlos(d::AbstractMassProfile, r::T, β::S) where {T <: Real, S <: Real} = σlos(d, promote(r, β)...)
-σlos(d::AbstractMassProfile, r::T, β::T) where T <: Real =
+σlos(d::AbstractDensity, r::T, β::S) where {T <: Real, S <: Real} = σlos(d, promote(r, β)...)
+σlos(d::AbstractDensity, r::T, β::T) where T <: Real =
     sqrt(2 / Σ(d,r) * quadgk(x->(1-β*(r/x)^2) * ρ(d,x) * σr(d,x,β)^2 * x / sqrt(x^2 - r^2), r, utilities.get_inf(r))[1])
 """
     Φ(d::AbstractDensity, r::Real)
@@ -394,7 +394,8 @@ However, these integrals are not finite for some mass distributions (e.g., [`Gen
 such that ``\\Phi(R_s)\\equiv0``.
 By default uses `G` in units such that if `rs` and `r` are in kpc, the potential ends up in `(km/s)^2`.
 """
-Φ(d::AbstractDensity, r::T) where T <: Real = -T(constants.Gvelkpc) * (M(d,r)/r + quadgk(x->x * ρ(d,x), r, utilities.get_inf(T))[1] * 4 * π)
+Φ(d::AbstractDensity, r::T) where T <: Real =
+    -T(constants.Gvelkpc) * (M(d,r)/r + quadgk(x->x * ρ(d,x), r, utilities.get_inf(T))[1] * 4 * π)
 """
     ∇Φ(d::AbstractDensity, r::Real)
     ∇Φ(uu::u.AccelerationUnits, d::AbstractDensity, r::Real)
