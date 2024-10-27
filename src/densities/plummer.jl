@@ -82,8 +82,12 @@ end
 
 Returns the unscaled density for a Plummer profile at radius `r` with total mass `M` and Plummer scale radius `a`. 
 """
-plummer_unscaled_density(r, M, a) =
-    (interior = (1 + (r/a)^2); interior2 = interior^2; sqrt( inv( interior2^2 * interior ) ) ) # (1+(r/a)^2)^(-5/2)
+function plummer_unscaled_density(r, M, a)
+    interior = (1 + (r/a)^2)
+    interior2 = interior^2
+    return sqrt(inv(interior2^2 * interior)) # (1+(r/a)^2)^(-5/2)
+end
+# plummer_unscaled_density(r, M, a) = @fastmath sqrt( inv((1+(r/a)^2)^5) )
 """
     plummer_unscaled_density_deriv(r, M, a)
 
