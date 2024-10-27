@@ -327,10 +327,10 @@ if ``\\Phi \\to 0`` for ``r \\to \\infty``; see the note for [`Φ`](@ref).
 
 By default uses `G` in units such that if `rs` and `r` are in kpc, the velocity ends up in `km/s`. For example, for [`GeneralIsothermal`](@ref) we have `[G] = [kpc * km^2 / Msun / s^2]` so that the velocity ends up in `km/s`. 
 """
-Vesc(d::AbstractDensity,r::Real) = sqrt( 2 * abs(Φ(d, r)) )
+Vesc(d::AbstractDensity, r::Real) = sqrt(2 * abs(Φ(d, r)))
 """
     Vmax(d::AbstractDensity)
-    Vmax(uu::Unitful.VelocityUnits,d::AbstractDensity)
+    Vmax(uu::Unitful.VelocityUnits, d::AbstractDensity)
 
 Returns the maximum circular velocity of `d` in [km/s] and the corresponding radius in [kpc]. Can be found by solving
 
@@ -339,7 +339,7 @@ Returns the maximum circular velocity of `d` in [km/s] and the corresponding rad
 ```
 for `r`, where ``v_c`` is the circular velocity, then evaluating the circular velocity at `r`. 
 """
-Vmax(d::AbstractDensity,r::Real)
+Vmax(d::AbstractDensity)
 """
     σr(d::AbstractDensity, r::Real, β::Real)
 Returns the radial velocity dispersion in [km/s] of `d` at radius `r` for constant velocity anisotropy `β` given by Equation 4.216 in Binney & Tremaine Galactic Dynamics 2E,
@@ -405,7 +405,7 @@ By default uses `G` in units such that if `rs` and `r` are in kpc, the potential
 The gradient of the potential `Φ(d,r)` evaluated at radius `r`.
 By default uses `G` in units such that if the length units of `d.rs`, `r`, and `d.ρ0` are kpc, the derivative of the potential is returned as `[km/s^2]`.
 """
-∇Φ(d::AbstractDensity,r::Real)
+∇Φ(d::AbstractDensity, r::Real)
 """
     ∇∇Φ(d::AbstractDensity, r::Real)
     ∇∇Φ(uu::GalaxyProfiles.∇∇ΦdimensionUnits, d::AbstractDensity, r::Real)
@@ -415,7 +415,7 @@ By default uses `G` in units such that if the length units of `d.rs`, `r`, and `
 The second order gradient of the potential `Φ(d,r)` evaluated at radius `r`.
 By default uses `G` in units such that if the length units of `d.rs`, `r`, and `d.ρ0` are kpc, the derivative of the potential is returned as `[km/s^2/kpc]`.
 """
-∇∇Φ(d::AbstractDensity,r::Real)
+∇∇Φ(d::AbstractDensity, r::Real)
 
 
 # check_vals(d::AbstractMassProfile,a::Number,T::DataType,S::DataType) = (promote_type(T,S), promote(params(d)...,a))
