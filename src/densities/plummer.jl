@@ -27,7 +27,7 @@ The default units of `Plummer` are `[M] = [Msun], [a, r] = [kpc]`. This is impor
 The following public methods are defined on this type:
  - [`Mtot`](@ref), [`ρ`](@ref), [`invρ`](@ref), [`∇ρ`](@ref), [`ρmean`](@ref), [`invρmean`](@ref), [`Σ`](@ref), [`∇Σ`](@ref), [`Σmean`](@ref), [`invΣ`](@ref), [`M`](@ref), [`∇M`](@ref), [`invM`](@ref), [`Mproj`](@ref), [`∇Mproj`](@ref), [`invMproj`](@ref), [`Vcirc`](@ref), [`Vesc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), [`∇∇Φ`](@ref), [`cdf2D`](@ref), [`cdf3D`](@ref), [`ccdf2D`](@ref), [`ccdf3D`](@ref), [`quantile2D`](@ref), [`quantile3D`](@ref), [`cquantile2D`](@ref), [`cquantile3D`](@ref).
 """
-struct Plummer{T<:Real} <: AbstractDensity
+struct Plummer{T <: Real} <: AbstractDensity
     M::T
     a::T
 end
@@ -45,7 +45,7 @@ Mtot(d::Plummer) = d.M
 
 Returns the 3-D half-light (or half-mass) radius given the Plummer scale radius `a`. This is equivalent to [`quantile3D(d::Plummer, 0.5)`](@ref quantile3D) but faster because the argument `x=0.5` is known at compile-time. Note that in projection (i.e., along a line-of-sight) the half-light radius is simply equal to the Plummer scale radius `a`, verifiable by [`quantile2D(d::Plummer, 0.5) == scale_radius(d)`](@ref quantile2D).
 """
-plummer_a_to_rh(a::T) where T = a / sqrt( inv( cbrt( T(1//2) )^2 ) - 1 ) # The constant denominator is ~inv(1.3).
+plummer_a_to_rh(a::T) where T <: Real = a / sqrt(cbrt(convert(float(T), 1//2))^-2 - 1) # The constant denominator is ~inv(1.3).
 """
     plummer_rh_to_a(a)
 
