@@ -44,8 +44,8 @@ struct CoreNFW{T <: Real} <: AbstractDensity
     n::T
 end
 function CoreNFW(ρ0::Real, rs::Real, rc::Real, n::Real)
-    T = promote_type( typeof(ρ0), typeof(rs), typeof(rc), typeof(n) )
-    return CoreNFW( NFW(convert(T, ρ0), convert(T, rs)), convert(T, rc), convert(T, n))
+    T = promote_type(typeof(ρ0), typeof(rs), typeof(rc), typeof(n))
+    return CoreNFW(NFW(convert(T, ρ0), convert(T, rs)), convert(T, rc), convert(T, n))
 end
 """
     CoreNFWGalaxy(ρ0::Real, rs::Real, t_sf::Real, rhalf::Real;
@@ -167,7 +167,7 @@ function ∇M(d::CoreNFW, r::Real)
     fn = f^n
     prof = d.NFW
     # Product rule
-    return fn * ∇M(prof, r) + n * sech(x)^2 * (fn / f) / rc * M(prof, r)
+    return fn * ∇M(prof, r) + n * sech(x)^2 * (fn/f) / rc * M(prof, r)
 end
 # function invM(d::NFW{T}, x::S) where {T, S<:Real}
 #     U = promote_type(T, S)
