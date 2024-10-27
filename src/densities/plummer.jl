@@ -93,17 +93,31 @@ end
 
 Returns the unscaled radial derivative of the density for a Plummer profile at radius `r` with total mass `M` and Plummer scale radius `a`. 
 """
-plummer_unscaled_density_deriv(r, M, a) =
-    (interior = (1 + (r/a)^2); interior2 = interior^2; interior4 = interior2^2;
-     -5r / a^2 / sqrt( interior4 * interior2 * interior) )
+function plummer_unscaled_density_deriv(r, M, a)
+    interior = (1 + (r/a)^2)
+    interior2 = interior^2
+    interior4 = interior2^2
+    return -5r / a^2 / sqrt(interior4 * interior2 * interior)
+end
 # plummer_unscaled_density_deriv(r, M, a) = -5r / (a^2 * (1+(r/a)^2)^(7/2))
-plummer_unscaled_ρmean(r, M, a) = a^4 * sqrt( 1 + (r/a)^2 ) / (a^2 + r^2)^2
-plummer_unscaled_Σ(r, M, a) = (a2 = a^2; 4/3 * a2*a2*a / (a2 + r^2)^2)
-# plummer_unscaled_Σ(r, M, a) = 4/3 * a^5 / (a^2 + r^2)^2
-plummer_unscaled_∇Σ(r, M, a) = (a2 = a^2; -16/3 * a2 * a2 * a * r / (a2 + r^2)^3)
-# plummer_unscaled_∇Σ(r, M, a) = -16/3 * a^5 * r / (a^2 + r^2)^3
+function plummer_unscaled_ρmean(r, M, a)
+    a2 = a^2
+    r2 = r^2
+    return a2 * a2 * sqrt(1 + r2/a2) / (a2 + r2)^2
+end
+# plummer_unscaled_ρmean(r, M, a) = a^4 * sqrt(1 + (r/a)^2) / (a^2 + r^2)^2
+function plummer_unscaled_Σ(r, M, a)
+    a2 = a^2
+    return 4a2 * a2 * a / 3(a2 + r^2)^2
+end
+# plummer_unscaled_Σ(r, M, a) = a^5 * 4 / 3 / (a^2 + r^2)^2
+function plummer_unscaled_∇Σ(r, M, a)
+    a2 = a^2
+    return -16a2 * a2 * a * r / 3(a2 + r^2)^3
+end
+# plummer_unscaled_∇Σ(r, M, a) = -16 * a^5 * r / 3 / (a^2 + r^2)^3
 # plummer_unscaled_Σmean(r, M, a) = 2a^2 * (1 - (1 + (r/a)^2)^(-3/2)) / (3r^2)
-plummer_unscaled_Σmean(r, M, a) = 4/3 * a^3 / (a^2 + r^2)
+plummer_unscaled_Σmean(r, M, a) = 4a^3 / 3(a^2 + r^2)
 # Dont really think these are that useful. Maybe just remove later.
 
 #### Evaluation
@@ -111,41 +125,40 @@ plummer_unscaled_Σmean(r, M, a) = 4/3 * a^3 / (a^2 + r^2)
 # function ρ(d::Plummer{T}, r::S) where {T,S} # = (3*self.M/(4.*np.pi*self.a**3.)) * self.unscaled_density(r)
 function ρ(d::Plummer, r::Real) # = (3*self.M/(4.*np.pi*self.a**3.)) * self.unscaled_density(r)
     r, M, a = promote(r, Mtot(d), scale_radius(d))
-    return 3M / (4 * typeof(r)(π) * a^3) * plummer_unscaled_density(r, M, a)
+    return 3M / (a^3 * 4 * π) * plummer_unscaled_density(r, M, a)
 end
-function invρ(d::Plummer, x::Real)
+function invρ(d::Plummer{T}, x::S) where {T <: Real, S <: Real}
     x, M, a = promote(x, Mtot(d), scale_radius(d))
-    U = typeof(x)
-    return a * sqrt( U(2^(-4/5) * 3^(2/5) * π^(-2/5)) * (a^3 * x / M)^U(-2/5) - 1 )
+    U = float(promote_type(T,S))
+    return a * sqrt( U(2^(-4/5) * 3^(2/5) * π^(-2/5)) * (a^3 * x / M)^(-2//5) - 1 )
 end
 function ∇ρ(d::Plummer, r::Real)
     r, M, a = promote(r, Mtot(d), scale_radius(d))
-    return 3M / (4 * typeof(r)(π) * a^3) * plummer_unscaled_density_deriv(r, M, a)
+    return 3M / (a^3 * 4 * π) * plummer_unscaled_density_deriv(r, M, a)
 end
 function ρmean(d::Plummer, r::Real)
     r, M, a = promote(r, Mtot(d), scale_radius(d))
-    return 3M / (4 * typeof(r)(π) * a^3) * plummer_unscaled_ρmean(r, M, a)
+    return 3M / (a^3 * 4 * π) * plummer_unscaled_ρmean(r, M, a)
 end
 function invρmean(d::Plummer, x::Real)
     x, M, a = promote(x, Mtot(d), scale_radius(d))
-    U = typeof(x)
-    return sqrt( M^U(2/3) * U(6/π)^U(2/3) / x^U(2/3) - 4a^2 ) / 2
+    return sqrt((M * 6 / (π * x))^(2//3) - 4a^2) / 2
 end
 function Σ(d::Plummer, r::Real)
     r, M, a = promote(r, Mtot(d), scale_radius(d))
-    return M/typeof(r)(π) * a^2 / (a^2 + r^2)^2 
+    return M * a^2 / π / (a^2 + r^2)^2 
 end
 function ∇Σ(d::Plummer, r::Real)
     r, M, a = promote(r, Mtot(d), scale_radius(d))
-    return -4/typeof(r)(π) * a^2 * M * r / (a^2 + r^2)^3 
+    return -a^2 * M * r * 4 / π / (a^2 + r^2)^3 
 end
 function Σmean(d::Plummer, r::Real)
     r, M, a = promote(r, Mtot(d), scale_radius(d))
-    return M / typeof(r)(π) / (a^2 + r^2) 
+    return M / (a^2 + r^2) / π
 end
 function invΣ(d::Plummer, x::Real)
     x, M, a = promote(x, Mtot(d), scale_radius(d))
-    return a * sqrt( sqrt(M / x / typeof(x)(π)) / a - 1)
+    return a * sqrt(sqrt(M / x / π) / a - 1)
 end
 function M(d::Plummer, r::Real)
     r, M, a = promote(r, Mtot(d), scale_radius(d))
@@ -157,7 +170,7 @@ function ∇M(d::Plummer, r::Real)
 end
 function invM(d::Plummer, x::Real) # Actually basing this off quantile3D from Aarseth 1974.
     x, M, a = promote(x, Mtot(d), scale_radius(d))
-    return scale_radius(d) / sqrt( cbrt( inv( (x/M)^2 ) ) - 1)
+    return scale_radius(d) / sqrt(cbrt((x/M)^-2) - 1)
 end
 function Mproj(d::Plummer, r::Real)
     r, M, a = promote(r, Mtot(d), scale_radius(d))
@@ -177,22 +190,25 @@ end
 function σr(d::Plummer, r::T, β::S) where {T <: Real, S <: Real}
     U = promote_type(T, S)
     # HypergeometricFunctions._₂F₁ will return NaN if z (last argument) is Inf (r=0), but it should return 1...
-    int_factor = r ≈ zero(T) ? one(U) : _₂F₁(-β, one(U), 4-β, -inv(r^2))
+    int_factor = r ≈ zero(T) ? one(U) : _₂F₁(-β, one(U), 4-β, -r^-2)
     return sqrt(-Φ(d, r) / (6-2β) * int_factor)
 end
-function Φ(d::Plummer, r::Real)
+function Φ(d::Plummer{T}, r::S) where {T, S <: Real}
     r, M, a = promote(r, Mtot(d), scale_radius(d))
-    return -typeof(r)(constants.Gvelkpc) * M / sqrt(r^2 + a^2)
+    U = float(promote_type(T,S))
+    return -U(constants.Gvelkpc) * M / sqrt(r^2 + a^2)
 end
-function ∇Φ(d::Plummer, r::Real)
+function ∇Φ(d::Plummer{T}, r::S) where {T, S <: Real}
     r, M, a = promote(r, Mtot(d), scale_radius(d))
-    return typeof(r)(constants.Gvelkpc2) * M * r / sqrt((r^2 + a^2)^3)
+    U = float(promote_type(T,S))
+    return U(constants.Gvelkpc2) * M * r / sqrt((r^2 + a^2)^3)
 end
-function ∇∇Φ(d::Plummer, r::Real) 
+function ∇∇Φ(d::Plummer{T}, r::S) where {T, S <: Real}
     r, M, a = promote(r, Mtot(d), scale_radius(d))
+    U = float(promote_type(T,S))
     denom = a^2 + r^2
     denom2 = denom^2
-    return typeof(r)(constants.Gvelkpc2) * M * (a^2 - 2r^2) / sqrt(denom2 * denom2 * denom)
+    return U(constants.Gvelkpc2) * M * (a^2 - 2r^2) / sqrt(denom2 * denom2 * denom)
 end
 cdf2D(d::Plummer, r::Real) = r^2 / (scale_radius(d)^2 + r^2) # Just Mproj(d,R) / Mtot(d). 
 # ccdf2D fallback to 1 - cdf2D(d,r) in common.jl is fine. 
@@ -201,9 +217,9 @@ function cdf3D(d::Plummer, r::Real) # Just M(d,R) / Mtot(d).
     return a * r^3 * sqrt(1 + (r/a)^2) / (a^2 + r^2)^2
 end
 # ccdf3D fallback to 1 - cdf3D(d,r) in common.jl is fine. 
-quantile2D(d::Plummer, x::Real) = scale_radius(d) * sqrt(x) / sqrt( 1 - x )
+quantile2D(d::Plummer, x::Real) = scale_radius(d) * sqrt(x) / sqrt(1-x)
 cquantile2D(d::Plummer, x::Real) = quantile2D(d, 1-x)
-quantile3D(d::Plummer, x::Real) = scale_radius(d) / sqrt( cbrt( inv( x^2 ) ) - 1) # This is the Aarseth 1974 result
+quantile3D(d::Plummer, x::Real) = scale_radius(d) / sqrt(cbrt(x^-2) - 1) # This is the Aarseth 1974 result
 # function quantile3D(d::Plummer, x::Real) # This is the full expansion but it is virtually the same as above. 
 #     a = scale_radius(d)
 #     a2 = a^2
