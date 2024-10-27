@@ -41,17 +41,17 @@ Mtot(d::Plummer) = d.M
 
 #### Convenience functions
 """
-    plummer_a_to_rh(a)
+    plummer_a_to_rh(a::Real)
 
 Returns the 3-D half-light (or half-mass) radius given the Plummer scale radius `a`. This is equivalent to [`quantile3D(d::Plummer, 0.5)`](@ref quantile3D) but faster because the argument `x=0.5` is known at compile-time. Note that in projection (i.e., along a line-of-sight) the half-light radius is simply equal to the Plummer scale radius `a`, verifiable by [`quantile2D(d::Plummer, 0.5) == scale_radius(d)`](@ref quantile2D).
 """
 plummer_a_to_rh(a::T) where T <: Real = a / sqrt(cbrt(convert(float(T), 1//2))^-2 - 1) # The constant denominator is ~inv(1.3).
 """
-    plummer_rh_to_a(a)
+    plummer_rh_to_a(a::Real)
 
 Returns the Plummer scale radius `a` given a 3-D half-light (or half-mass) radius. Note that in projection (i.e., along a line-of-sight) the half-light radius is simply equal to the Plummer scale radius `a`, verifiable by [`quantile2D(d::Plummer, 0.5) == scale_radius(d)`](@ref quantile2D).
 """
-plummer_rh_to_a(rh::T) where T = rh * sqrt( inv( cbrt( T(1//2) )^2 ) - 1 )
+plummer_rh_to_a(rh::T) where T <: Real = rh * sqrt(cbrt(convert(float(T), 1//2))^-2 - 1)
 """
     plummer_angular_avalue(absmag, sb, DM)
 
@@ -73,10 +73,10 @@ julia> isapprox( GalaxyProfiles.plummer_angular_avalue(-5, 25, 25), 4.32; rtol=1
 true
 ```
 """
-plummer_angular_avalue(absmag, sb, DM) = exp10( (sb - (absmag + DM))/5) / sqrt(π) * sqrt( inv( cbrt(0.5)^2 ) - 1 )
-# plummer_angular_avalue(absmag::T, sb::S, DM::V) where {T,S,V} =
-#     (U = promote_type(T,S,V); exp10( (sb - (absmag + DM))/5) / sqrt(U(π)) * sqrt( inv( cbrt( U(1//2) )^2 ) - 1 ) )
-
+function plummer_angular_avalue(absmag::T, sb::S, DM::V) where {T,S,V}
+    U = float(promote_type(T,S,V)) # Must be a float type
+    return exp10((sb - (absmag + DM)) / 5) / sqrt(U(π)) * sqrt(cbrt(U(1//2))^-2  - 1)
+end
 """
     plummer_unscaled_density(r, M, a)
 
