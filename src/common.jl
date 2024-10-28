@@ -474,9 +474,25 @@ We are thus taking a radial derivative of a radial integral. By applying the fun
     ∇∇Φ(d::AbstractDensity, r::Unitful.Length)
     ∇∇Φ(uu::GalaxyProfiles.∇∇ΦdimensionUnits, d::AbstractDensity, r::Unitful.Length)
 
-Returns the second radial derivative of of the potential `Φ(d,r)` [km s^-2 kpc^-1] evaluated at radius `r` [kpc].
+Returns the second radial derivative of the potential `Φ(d,r)` [km s^-2 kpc^-1] evaluated at radius `r` [kpc].
+
+As the first radial derivative ``\\nabla\\Phi(R) = \\frac{G M \\left( r \\right)}{r^2}``, by the product rule the second radial derivative is
+
+```math
+\\nabla\\nabla\\Phi(R) = G \\left( \\frac{\\nabla M(R)}{r^2} - \\frac{2 M(R)}{r^3} \\right)
+```
+which is used as the generic implementation through the methods [`M`](@ref) and [`∇M`](@ref).
+
+Note that this is *not* the same as the Laplacian operator that appears the Poisson equation ``\\nabla^2 \\Phi(R) = 4 \\pi G \\rho(R)``. In spherical coordinates, the radial component of the left hand side of Poisson's equation expands to
+
+```math
+\\nabla^2 \\Phi(R) = \\frac{1}{R^2} \\frac{\\partial}{\\partial R} \\left( R^2 \\frac{\\partial \\Phi(R)}{\\partial R} \\right)
+```
+
+which is not equivalent to the second radial gradient ``\\frac{\\partial^2 \\Phi(R)}{\\partial R^2}``, which is what this method returns.
 """
-∇∇Φ(d::AbstractDensity, r::Real)
+∇∇Φ(d::AbstractDensity, r::T) where T <: Real =
+    T(constants.Gvelkpc2) * (∇M(d, r) / r^2 - 2M(d, r) / r^3)
 
 
 # check_vals(d::AbstractMassProfile,a::Number,T::DataType,S::DataType) = (promote_type(T,S), promote(params(d)...,a))
