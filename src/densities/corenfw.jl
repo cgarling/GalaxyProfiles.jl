@@ -36,7 +36,7 @@ where the core radius ``r_c`` and ``n``, which controls how shallow the core is 
 # See also
  - Constructor that uses galaxy properties, [`CoreNFWGalaxy`](@ref).
 """
-struct CoreNFW{T <: Real} <: AbstractDensity
+struct CoreNFW{T <: Real} <: AbstractDensity{T}
     # We'll save the NFW object rather than ρ0 and rs so we don't have to create it
     # every time we want to evaluate the non-cored NFW profile
     NFW::NFW{T}

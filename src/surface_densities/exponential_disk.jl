@@ -17,7 +17,7 @@ The following public methods are defined on this type:
 # See also
  - Convenience constructor [`ExponentialDiskDHI`](@ref).
 """
-struct ExponentialDisk{T<:Real} <: AbstractSurfaceDensity
+struct ExponentialDisk{T <: Real} <: AbstractSurfaceDensity{T}
     Σ0::T
     rs::T
     # ExponentialDisk{T}(ρ0::T,rs::T) where {T} = new{T}(μ,σ)

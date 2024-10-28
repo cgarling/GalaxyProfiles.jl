@@ -27,7 +27,7 @@ The default units of `Plummer` are `[M] = [Msun], [a, r] = [kpc]`. This is impor
 The following public methods are defined on this type:
  - [`Mtot`](@ref), [`ρ`](@ref), [`invρ`](@ref), [`∇ρ`](@ref), [`ρmean`](@ref), [`invρmean`](@ref), [`Σ`](@ref), [`∇Σ`](@ref), [`Σmean`](@ref), [`invΣ`](@ref), [`M`](@ref), [`∇M`](@ref), [`invM`](@ref), [`Mproj`](@ref), [`∇Mproj`](@ref), [`invMproj`](@ref), [`Vcirc`](@ref), [`Vesc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), [`∇∇Φ`](@ref), [`cdf2D`](@ref), [`cdf3D`](@ref), [`ccdf2D`](@ref), [`ccdf3D`](@ref), [`quantile2D`](@ref), [`quantile3D`](@ref), [`cquantile2D`](@ref), [`cquantile3D`](@ref).
 """
-struct Plummer{T <: Real} <: AbstractDensity
+struct Plummer{T <: Real} <: AbstractDensity{T}
     M::T
     a::T
 end
@@ -160,10 +160,10 @@ function invΣ(d::Plummer, x::Real)
     x, M, a = promote(x, Mtot(d), scale_radius(d))
     return a * sqrt(sqrt(M / x / π) / a - 1)
 end
-function M(d::Plummer, r::Real)
-    r, M, a = promote(r, Mtot(d), scale_radius(d))
-    return a * M * r^3 * sqrt(1 + (r/a)^2) / (a^2 + r^2)^2
-end
+# function M(d::Plummer, r::Real)
+#     r, M, a = promote(r, Mtot(d), scale_radius(d))
+#     return a * M * r^3 * sqrt(1 + (r/a)^2) / (a^2 + r^2)^2
+# end
 function ∇M(d::Plummer, r::Real)
     r, M, a = promote(r, Mtot(d), scale_radius(d))
     return 3 * a * M * r^2 / (a^2 + r^2)^2 / sqrt(1 + (r/a)^2)

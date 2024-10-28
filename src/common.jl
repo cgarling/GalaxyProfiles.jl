@@ -61,7 +61,17 @@ Solve for the radius `r` [kpc] at which the density [M⊙ kpc^-3] is `x` for den
 
 When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `ρ(d,r)` be defined. For this method, `kws...` are passed to `Roots.find_zero`.
 """
-invρ(d::AbstractDensity, x::T, interval::NTuple{2,S}=(scale_radius(d)/100,100*scale_radius(d)); kws...) where {T<:Real, S<:Real} = (U = promote_type(T, S); x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->ρ(d,y)-x,(U(interval[1]),U(interval[2])); kws...))
+function invρ(d::AbstractDensity{T}, x::S,
+              interval::NTuple{2,V} =
+                  (scale_radius(d)/100, 100*scale_radius(d));
+              kws...) where {T <: Real, S <: Real, V <: Real}
+    U = promote_type(T, S, V)
+    if x <= 0
+        throw(DomainError(x, "x must be > 0"))
+    else
+        return find_zero(y->ρ(d,y)-x, (U(interval[1]), U(interval[2])); kws...)
+    end
+end
 """
     ∇ρ(d::AbstractDensity, r::Real)
     ∇ρ(uu::GalaxyProfiles.∇ρdimensionUnits, d::AbstractDensity, r::Real)
@@ -93,7 +103,17 @@ Solve for the radius `r` [kpc] inside which the average density is `x` [M⊙ kpc
 
 When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `ρmean(d,r)` or `M(d,r)` be defined. For this method, `kws...` are passed to `Roots.find_zero`.
 """
-invρmean(d::AbstractDensity, x::T, interval::NTuple{2,S}=(scale_radius(d)/100,100*scale_radius(d)); kws...) where {T<:Real, S<:Real} = (U = promote_type(T, S); x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->ρmean(d,y)-x,(U(interval[1]), U(interval[2])); kws...))
+function invρmean(d::AbstractDensity{T}, x::S,
+                  interval::NTuple{2,V} =
+                      (scale_radius(d)/100, 100*scale_radius(d));
+                  kws...) where {T <: Real, S <: Real, V <: Real}
+    U = promote_type(T, S, V)
+    if x <= 0
+        throw(DomainError(x, "x must be > 0"))
+    else
+        return find_zero(y->ρmean(d,y)-x, (U(interval[1]), U(interval[2])); kws...)
+    end
+end
 """
     Σ(d::AbstractMassProfile, r::Real)
     Σ(uu::GalaxyProfiles.SurfaceDensityUnits, d::AbstractMassProfile, r::Real)
@@ -130,7 +150,7 @@ Returns the radial derivative of the surface density [M⊙ kpc^-3] of the mass p
 
 Returns the mean projected surface density [M⊙ kpc^-2] of the mass profile `d` inside the radius `r` [kpc]. The generic method uses projected enclosed mass divided by area: `Mproj(d::AbstractMassProfile,r::Real) / (π * r^2)`.
 """
-Σmean(d::AbstractMassProfile, r::T) where T <: Real = Mproj(d,r) / r^2 / π
+Σmean(d::AbstractMassProfile, r::Real) = Mproj(d,r) / r^2 / π
 """
     invΣ(d::AbstractMassProfile, x::Real)
     invΣ(d::AbstractMassProfile, x::Real,
@@ -144,9 +164,19 @@ Solve for the radius `r` [kpc] at which the surface density [M⊙ kpc^-2] is `x`
 
 When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `Σ(d,r)` be defined. For this method, `kws...` are passed to `Roots.find_zero`.
 """
-invΣ(d::AbstractMassProfile, x::T, interval::NTuple{2,S}=(scale_radius(d)/100,100*scale_radius(d)); kws...) where {T<:Real, S<:Real} = (U = promote_type(T, S); x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->Σ(d,y)-x,(U(interval[1]), U(interval[2])); kws...))
+function invΣ(d::AbstractMassProfile{T}, x::S,
+              interval::NTuple{2,V} =
+                  (scale_radius(d)/100, 100*scale_radius(d));
+              kws...) where {T <: Real, S <: Real, V <: Real}
+    U = promote_type(T, S, V)
+    if x <= 0
+        throw(DomainError(x, "x must be > 0"))
+    else
+        return find_zero(y->Σ(d,y)-x, (U(interval[1]), U(interval[2])); kws...)
+    end
+end
 """
-    M(d::AbstractDensity, r::Real; kws...)
+    M(d::AbstractDensity, r::Real)
     M(uu::Unitful.MassUnits, d::AbstractDensity, r::Real)
     M(d::AbstractDensity, r::Unitful.Length)
     M(uu::Unitful.MassUnits, d::AbstractDensity, r::Unitful.Length)
@@ -157,9 +187,9 @@ Returns the total mass [M⊙] of the profile `d` enclosed within a spherical she
 M(\\lt R) = 4\\pi \\int_0^R r^2 ρ(r) dr
 ```
 
-When this method is not specialized for `d`, it will compute the numerical integral using `QuadGK.quadgk`; the provided `kws...` will be passed through. 
+When this method is not specialized for `d`, it will compute the numerical integral using `QuadGK.quadgk`.
 """
-M(d::AbstractDensity, r::Real; kws...) = quadgk(x->x^2 * ρ(d,x), zero(r), r)[1] * 4 * π
+M(d::AbstractDensity, r::Real) = quadgk(x->x^2 * ρ(d,x), zero(r), r)[1] * 4 * π
 """
     ∇M(d::AbstractDensity, r::Real)
     ∇M(uu::GalaxyProfiles.∇mdimensionUnits, d::AbstractDensity, r::Real)
@@ -168,7 +198,7 @@ M(d::AbstractDensity, r::Real; kws...) = quadgk(x->x^2 * ρ(d,x), zero(r), r)[1]
 
 The radial derivative of the enclosed mass [M⊙ kpc^-1] of profile `d` evaluated at radius `r`.
 """
-∇M(d::AbstractMassProfile, r::Real)
+∇M(d::AbstractDensity, r::Real)
 """
     invM(d::AbstractDensity, x::Real)
     invM(d::AbstractDensity, x::Real,
@@ -182,7 +212,17 @@ Solve for the radius `r` [kpc] at which the enclosed mass [M⊙] is `x` for prof
 
 When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `M(d,r)` be defined. For this method, `kws...` are passed to `Roots.find_zero`.
 """
-invM(d::AbstractDensity, x::T, interval::NTuple{2,S}=(scale_radius(d)/100,100*scale_radius(d)); kws...) where {T<:Real, S<:Real} = (U = promote_type(T, S); x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->M(d,y)-x,(U(interval[1]), U(interval[2])); kws...))
+function invM(d::AbstractDensity{T}, x::S,
+              interval::NTuple{2,V} =
+                  (scale_radius(d)/100, 100*scale_radius(d));
+              kws...) where {T <: Real, S <: Real, V <: Real}
+    U = promote_type(T, S, V)
+    if x <= 0
+        throw(DomainError(x, "x must be > 0"))
+    else
+        find_zero(y->M(d,y)-x, (U(interval[1]), U(interval[2])); kws...)
+    end
+end
 """
     Mtot(d::AbstractMassProfile)
     Mtot(uu::Unitful.MassUnits, d::AbstractMassProfile)
@@ -224,7 +264,17 @@ Solve for the radius `r` [kpc] at which the line-of-sight projected enclosed mas
 
 When this method is not specialized for `d`, it will use an interval bracketing method from [`Roots.jl`](https://github.com/JuliaMath/Roots.jl), requiring that `M(d,r)` be defined. For this method, `kws...` are passed to `Roots.find_zero`.
 """
-invMproj(d::AbstractMassProfile, x::T, interval::NTuple{2,S}=(scale_radius(d)/100,100*scale_radius(d)); kws...) where {T<:Real, S<:Real} = (U = promote_type(T, S); x <= 0 ? throw(DomainError(x,"x must be > 0")) : find_zero(y->Mproj(d,y)-x,(U(interval[1]), U(interval[2])); kws...))
+function invMproj(d::AbstractMassProfile{T}, x::S,
+                  interval::NTuple{2,V} =
+                      (scale_radius(d)/100, 100*scale_radius(d));
+                  kws...) where {T <: Real, S <: Real, V <: Real}
+    U = promote_type(T, S, V)
+    if x <= 0
+        throw(DomainError(x, "x must be > 0"))
+    else
+        return find_zero(y->Mproj(d,y)-x, (U(interval[1]), U(interval[2])); kws...)
+    end
+end
 """
     dynamical_time(d::Union{AbstractDensity, AbstractMassProfile}, r::Real)
     dynamical_time(d::Union{AbstractDensity, AbstractMassProfile}, r::Unitful.Length)
@@ -245,18 +295,19 @@ t_\\text{dyn} \\left( r \\right) &= \\pi \\, \\sqrt{ \\frac{r^3}{4 \\, G \\, M \
 \\end{aligned}
 ```
 
-where ``M \\left( r \\right)`` is the mass enclosed inside radius ``r``, provided by the method [`M`](@ref). This equation is used when the argument `d::AbstractMassProfile`.
+where ``M \\left( r \\right)`` is the mass enclosed inside radius ``r``, provided by the method [`M`](@ref). This equation is used when the argument `d::AbstractMassProfile`, with the substitution of the projected mass [`Mproj`](@ref) for the 3-D enclosed mass [`M`](@ref), which is undefined for profiles that do not have `ρ` densities. 
 
 # Alternative Definitions
 Note that some authors prefer to omit the factor of ``\\sqrt{ \\frac{1}{16} } = 1/4`` in the denominator of the first equation above; this is, for example, the convention used by galpy. Dynamical times thus defined will be four times larger than those calculated by this method. 
 """
-function dynamical_time(d::AbstractDensity, r::T) where {T <: Real}
+function dynamical_time(d::AbstractDensity{T}, r::S) where {T <: Real, S <: Real}
+    U = promote_type(T, S)
     # constants.Gkpc has time units of 1/s^2; 31557600 is seconds in year to return value in yr
     # return sqrt(inv(GalaxyProfiles.ρmean(d, r)) * 3 * π / 16 / T(constants.Gkpc)) / 31557600
-    return sqrt(inv(GalaxyProfiles.ρmean(d, r)) * 3 * π) / (4 * 31557600 * sqrt(T(constants.Gkpc)))
+    return sqrt(inv(GalaxyProfiles.ρmean(d, r)) * 3 * π) / (4 * 31557600 * sqrt(U(constants.Gkpc)))
 end
-dynamical_time(d::AbstractMassProfile, r::T) where {T <: Real} =
-    π * sqrt(r^3 / M(d, r)) / (2 * 31557600 * sqrt(T(constants.Gkpc)))
+dynamical_time(d::AbstractMassProfile{T}, r::S) where {T <: Real, S <: Real} =
+    π * sqrt(r^3 / Mproj(d, r)) / (2 * 31557600 * sqrt(convert(promote_type(T,S), constants.Gkpc)))
     # π * sqrt( r^3 / 4 / T(constants.Gkpc) / M(d, r) ) / 31557600
 """
     cdf2D(d::AbstractMassProfile, r::Real)
@@ -328,7 +379,8 @@ v_c^2(r) = \\frac{G M(r)}{r} = r \\frac{d\\Phi}{dr} = r\\nabla\\Phi(r)
 
 By default uses `G` in units such that if `rs` and `r` are in kpc, the velocity ends up in `km/s`. For example, for [`GeneralIsothermal`](@ref) we have `[G] = [kpc * km^2 / Msun / s^2]` so that the velocity ends up in `km/s`. This method has a generic implementation of `sqrt( GalaxyProfiles.constants.Gvelkpc * M(d::AbstractDensity,r) / r)`.
 """
-Vcirc(d::AbstractDensity, r::T) where T <: Real = sqrt(T(constants.Gvelkpc) * M(d, r) / r)
+Vcirc(d::AbstractDensity{T}, r::S) where {T <: Real, S <: Real} =
+    sqrt(convert(promote_type(T,S), constants.Gvelkpc) * M(d, r) / r)
 """
     Vesc(d::AbstractDensity, r::Real)
     Vesc(uu::Unitful.VelocityUnits, d::AbstractDensity, r::Real)
@@ -375,8 +427,11 @@ and as ``\\frac{d\\Phi}{dr} = -G M(r) / r^2`` we can alternatively write
 which is the generic method as we expect ``M(r)`` to be more commonly available than ``\\frac{d\\Phi}{dr}``.
 """
 σr(d::AbstractDensity, r::T, β::S) where {T <: Real, S <: Real} = σr(d, promote(r, β)...)
-σr(d::AbstractDensity, r::T, β::T) where T <: Real =
-    sqrt(T(constants.Gvelkpc) * quadgk(x -> x^2(β-1) * ρ(d, x) * M(d, x), r, utilities.get_inf(r))[1] / r^(2β) / ρ(d, r))
+function σr(d::AbstractDensity{T}, r::S, β::S) where {T <: Real, S <: Real}
+    U = promote_type(T, S)
+    return sqrt(U(constants.Gvelkpc) / r^(2β) / ρ(d, r) *
+        quadgk(x -> x^2(β-1) * ρ(d, x) * M(d, x), r, utilities.get_inf(r))[1])
+end
 # function σr(d::AbstractDensity, r::T, β::T) where T <: Real
 #     value = sqrt(quadgk(x -> x^2β * ρ(d, x) * ∇Φ(d, x), r, utilities.get_inf(r))[1] / r^(2β) / ρ(d, r))
 #     # Convert from km^(1/2) kpc^(1/2) / s to km/s
@@ -391,8 +446,7 @@ Returns the line-of-sight projected velocity dispersion [km/s] of `d` at project
 \\sigma_{\\text{LOS}}^2 \\left( R \\right) = \\frac{2}{\\Sigma \\left( R \\right)} \\int_R^\\infty \\left(1 - \\beta \\frac{R^2}{r^2} \\right) \\frac{r \\, \\rho \\left( r \\right) \\, \\sigma_r^2 \\left( r \\right)}{\\sqrt{r^2 - R^2}} \\, dr
 ```
 """
-σlos(d::AbstractDensity, r::T, β::S) where {T <: Real, S <: Real} = σlos(d, promote(r, β)...)
-σlos(d::AbstractDensity, r::T, β::T) where T <: Real =
+σlos(d::AbstractDensity, r::Real, β::Real) =
     sqrt(2 / Σ(d,r) * quadgk(x->(1-β*(r/x)^2) * ρ(d,x) * σr(d,x,β)^2 * x / sqrt(x^2 - r^2), r, utilities.get_inf(r))[1])
 """
     Φ(d::AbstractDensity, r::Real)
@@ -429,9 +483,9 @@ The above integrals are not finite for some mass distributions (e.g., [`GeneralI
 ```
 such that ``\\Phi(R_s)\\equiv0``.
 """
-Φ(d::AbstractDensity, r::T) where T <: Real =
-    -T(constants.Gvelkpc) * (M(d,r)/r + quadgk(x->x * ρ(d,x), r, utilities.get_inf(T))[1] * 4 * π)
-    # -T(constants.Gvelkpc) * quadgk(x->M(d,x) / x^2, r, utilities.get_inf(T))[1]
+Φ(d::AbstractDensity{T}, r::S) where {T <: Real, S <: Real} =
+    -convert(promote_type(T,S), constants.Gvelkpc) *
+    (M(d,r)/r + quadgk(x->x * ρ(d,x), r, utilities.get_inf(T))[1] * 4 * π)
 """
     ∇Φ(d::AbstractDensity, r::Real)
     ∇Φ(uu::u.AccelerationUnits, d::AbstractDensity, r::Real)
@@ -467,7 +521,8 @@ We are thus taking a radial derivative of a radial integral. By applying the fun
 \\end{aligned}
 ```
 """
-∇Φ(d::AbstractDensity, r::T) where T <: Real = T(constants.Gvelkpc2) * M(d, r) / r^2
+∇Φ(d::AbstractDensity{T}, r::S) where {T <: Real, S <: Real} =
+    convert(promote_type(T,S), constants.Gvelkpc2) * M(d, r) / r^2
 """
     ∇∇Φ(d::AbstractDensity, r::Real)
     ∇∇Φ(uu::GalaxyProfiles.∇∇ΦdimensionUnits, d::AbstractDensity, r::Real)
@@ -491,8 +546,8 @@ Note that this is *not* the same as the Laplacian operator that appears the Pois
 
 which is not equivalent to the second radial gradient ``\\frac{\\partial^2 \\Phi(R)}{\\partial R^2}``, which is what this method returns.
 """
-∇∇Φ(d::AbstractDensity, r::T) where T <: Real =
-    T(constants.Gvelkpc2) * (∇M(d, r) / r^2 - 2M(d, r) / r^3)
+∇∇Φ(d::AbstractDensity{T}, r::S) where {T <: Real, S <: Real} =
+    convert(promote_type(T, S), constants.Gvelkpc2) * (∇M(d, r) / r^2 - 2M(d, r) / r^3)
 
 
 # check_vals(d::AbstractMassProfile,a::Number,T::DataType,S::DataType) = (promote_type(T,S), promote(params(d)...,a))

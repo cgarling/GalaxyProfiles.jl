@@ -8,15 +8,15 @@ using SpecialFunctions: gamma, gamma_inc, gamma_inc_inv
 using QuadGK: quadgk
 using Requires: @require
 
-""" Supertype for all mass profiles. """
-abstract type AbstractMassProfile end
+""" `AbstractMassProfile{T <: Real}`: abstract supertype for all mass profiles. """
+abstract type AbstractMassProfile{T <: Real} end
 Base.Broadcast.broadcastable(m::AbstractMassProfile) = Ref(m)
 
-""" Abstract type `(<:AbstractMassProfile)` for 3D density profiles. """
-abstract type AbstractDensity <: AbstractMassProfile end
+""" `AbstractDensity{T} <: AbstractMassProfile{T}`: abstract supertype for all 3D density profiles. """
+abstract type AbstractDensity{T} <: AbstractMassProfile{T} end
 
 """ Abstract type `(<:AbstractMassProfile)` for surface density profiles for which 3D quantities are not defined. Radii for instances of `AbstractSurfaceDensity` are always 2D. """
-abstract type AbstractSurfaceDensity <: AbstractMassProfile end
+abstract type AbstractSurfaceDensity{T} <: AbstractMassProfile{T} end
 
 # mutable struct UnitDefaults{T<:u.FreeUnits{S,u.𝐋,nothing} where S, V<:u.FreeUnits{Z,u.𝐌,nothing} where Z}
 #     length::T
