@@ -21,7 +21,7 @@ The following methods are specialized on this type:
 # See also
  - [`SIS`](@ref)
 """
-struct GeneralIsothermal{T <: Real} <: AbstractSurfaceDensity
+struct GeneralIsothermal{T <: Real} <: AbstractDensity{T}
     ρ0::T
     rs::T
     α::T

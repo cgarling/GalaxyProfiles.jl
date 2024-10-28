@@ -10,7 +10,7 @@
 # end
 # Sersic(μ_e::Real, r_e::Real, n::Real, q::Real) = Sersic(promote(μ_e,r_e,n,q)...)
 
-struct Sersic{T<:Real} # <: AbstractSurfaceDensity
+struct Sersic{T <: Real} <: AbstractSurfaceDensity{T}
     Σ0::T
     r_e::T
     n::T
