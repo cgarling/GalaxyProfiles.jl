@@ -3,17 +3,17 @@ module GalaxyProfilesUnitfulExt # Same name as file
 # for relative module path conventions
 
 if isdefined(Base, :get_extension)
-    import GalaxyProfiles: AbstractMassProfile, AbstractDensity, ExponentialDisk, ExponentialDiskDHI, GeneralIsothermal, SIS, NFW, scale_radius, ρ, invρ, ∇ρ, ρmean, invρmean, Σ, ∇Σ, Σmean, invΣ, M, ∇M, invM, Mtot, Mproj, ∇Mproj, invMproj, dynamical_time, Vcirc, Vesc, Vmax, σr, σlos, Φ, ∇Φ, ∇∇Φ
+    import GalaxyProfiles: AbstractMassProfile, AbstractDensity, ExponentialDisk, ExponentialDiskDHI, GeneralIsothermal, SIS, NFW, CoreNFW, Plummer, scale_radius, ρ, invρ, ∇ρ, ρmean, invρmean, Σ, ∇Σ, Σmean, invΣ, M, ∇M, invM, Mtot, Mproj, ∇Mproj, invMproj, dynamical_time, Vcirc, Vesc, Vmax, σr, σlos, Φ, ∇Φ, ∇∇Φ
     import Unitful as u
     import UnitfulAstro as ua
-else
+else # For Julia < 1.9 without package extensions
     # Up one module = ..
-    import ..GalaxyProfiles: AbstractMassProfile, AbstractDensity, ExponentialDisk, ExponentialDiskDHI, GeneralIsothermal, SIS, NFW, scale_radius, ρ, invρ, ∇ρ, ρmean, invρmean, Σ, ∇Σ, Σmean, invΣ, M, ∇M, invM, Mtot, Mproj, ∇Mproj, invMproj, dynamical_time, Vcirc, Vesc, Vmax, σr, σlos, Φ, ∇Φ, ∇∇Φ
+    import ..GalaxyProfiles: AbstractMassProfile, AbstractDensity, ExponentialDisk, ExponentialDiskDHI, GeneralIsothermal, SIS, NFW, CoreNFW, Plummer, scale_radius, ρ, invρ, ∇ρ, ρmean, invρmean, Σ, ∇Σ, Σmean, invΣ, M, ∇M, invM, Mtot, Mproj, ∇Mproj, invMproj, dynamical_time, Vcirc, Vesc, Vmax, σr, σlos, Φ, ∇Φ, ∇∇Φ
     import ..Unitful as u
     import ..UnitfulAstro as ua
 end
 
-# Define dimensionalities for dispatch
+# Define dimensions for dispatch
 # 1*ua.Msun/ua.pc^2 isa GalaxyProfiles.SurfaceDensity
 # ua.Msun/ua.pc^2 isa GalaxyProfiles.SurfaceDensityUnits
 # Things like SurfaceDensityUnits are created automatically by @derived_dimension SurfaceDensity u.𝐌/u.𝐋^2
@@ -24,14 +24,15 @@ u.@derived_dimension ∇∇Φdimension u.𝐓^-2
 u.@derived_dimension ∇Mdimension u.𝐌/u.𝐋
 # u.@derived_dimension ∇Φdimension u.𝐋/u.𝐓^2  # this is just u.AccelerationUnits
 
-# module to hold default units
-module defaultunits
+#########################################################################################
+
+module defaultunits # module to hold default units
 
 # Up two modules = ...
 # import ...UnitfulAstro as ua
 # import ...Unitful as u
 # Actually, just import u and ua from one module above
-import ..u # Not sure why this doesn't work with package extension
+import ..u
 import ..ua
 
 const time = u.yr # for timescales
@@ -48,13 +49,9 @@ const ∇∇Φunit = u.km/u.s^2/ua.kpc # u.km^2 / u.s^2 / ua.kpc^2
 
 end # defaultunits module
 
+#########################################################################################
 
 # General functions for converting units
-# Should check out how to have user-controllable default units, rather than the hard-coded values here
-# convert_density(ρ0::u.Density) = u.ustrip(ua.Msun/ua.kpc^3, ρ0)
-# convert_mass(M::u.Mass) = u.ustrip(ua.Msun, M)
-# convert_surface_density(Σ0::SurfaceDensity) = u.ustrip(ua.Msun/ua.kpc^2, Σ0)
-# convert_length(r::u.Length) = u.ustrip(ua.kpc, r)
 homogenize_units(ρ::u.Density) = u.ustrip(defaultunits.density, ρ)
 homogenize_units(M::u.Mass) = u.ustrip(defaultunits.mass, M)
 homogenize_units(Σ::SurfaceDensity) = u.ustrip(defaultunits.surfacedensity, Σ)
@@ -63,6 +60,8 @@ homogenize_units(r::u.Length) = u.ustrip(defaultunits.length, r)
 homogenize_units(x::u.Quantity) = throw(ArgumentError("No `homogenize_units` rule for input."))
 # Fallback for non-unit numbers
 homogenize_units(x::Real) = x
+
+#########################################################################################
 
 # Create Unitful constructors for our various composite types
 ExponentialDisk(Σ0::SurfaceDensity, rs::u.Length) = ExponentialDisk(homogenize_units(Σ0), homogenize_units(rs))
@@ -86,9 +85,13 @@ SIS(ρ0::u.Density, rs::u.Length) = SIS(homogenize_units(ρ0), homogenize_units(
 SIS(rs::u.Length, M::u.Mass, Rmax::u.Length) = SIS(homogenize_units(rs), homogenize_units(M), homogenize_units(Rmax))
 
 NFW(ρ0::u.Density, rs::u.Length) = NFW(homogenize_units(ρ0), homogenize_units(rs))
+Plummer(M::u.Mass, a::u.Length) = Plummer(homogenize_units(M), homogenize_units(a))
+CoreNFW(ρ0::u.Density, rs::u.Length, rc::u.Length, n::Real) =
+    CoreNFW(homogenize_units(ρ0), homogenize_units(rs), homogenize_units(rc), n)
 
 #########################################################################################
 
+# Common methods supporting Unitful arguments
 scale_radius(uu::u.LengthUnits, d::AbstractMassProfile) = scale_radius(d) * defaultunits.length |> uu
 ρ(d::AbstractDensity, r::u.Length) = ρ(d, homogenize_units(r)) * defaultunits.density
 ρ(uu::u.DensityUnits, d::AbstractDensity, r::u.Length) = ρ(d, r) |> uu
