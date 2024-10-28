@@ -65,12 +65,9 @@ function invρ(d::AbstractDensity{T}, x::S,
               interval::NTuple{2,V} =
                   (scale_radius(d)/100, 100*scale_radius(d));
               kws...) where {T <: Real, S <: Real, V <: Real}
+    @assert x > 0 "x must be > 0"
     U = promote_type(T, S, V)
-    if x <= 0
-        throw(DomainError(x, "x must be > 0"))
-    else
-        return find_zero(y->ρ(d,y)-x, (U(interval[1]), U(interval[2])); kws...)
-    end
+    return find_zero(y->ρ(d,y)-x, (U(interval[1]), U(interval[2])); kws...)
 end
 """
     ∇ρ(d::AbstractDensity, r::Real)
@@ -107,12 +104,9 @@ function invρmean(d::AbstractDensity{T}, x::S,
                   interval::NTuple{2,V} =
                       (scale_radius(d)/100, 100*scale_radius(d));
                   kws...) where {T <: Real, S <: Real, V <: Real}
+    @assert x > 0 "x must be > 0"
     U = promote_type(T, S, V)
-    if x <= 0
-        throw(DomainError(x, "x must be > 0"))
-    else
-        return find_zero(y->ρmean(d,y)-x, (U(interval[1]), U(interval[2])); kws...)
-    end
+    return find_zero(y->ρmean(d,y)-x, (U(interval[1]), U(interval[2])); kws...)
 end
 """
     Σ(d::AbstractMassProfile, r::Real)
@@ -168,12 +162,9 @@ function invΣ(d::AbstractMassProfile{T}, x::S,
               interval::NTuple{2,V} =
                   (scale_radius(d)/100, 100*scale_radius(d));
               kws...) where {T <: Real, S <: Real, V <: Real}
+    @assert x > 0 "x must be > 0"
     U = promote_type(T, S, V)
-    if x <= 0
-        throw(DomainError(x, "x must be > 0"))
-    else
-        return find_zero(y->Σ(d,y)-x, (U(interval[1]), U(interval[2])); kws...)
-    end
+    return find_zero(y->Σ(d,y)-x, (U(interval[1]), U(interval[2])); kws...)
 end
 """
     M(d::AbstractDensity, r::Real)
@@ -216,12 +207,9 @@ function invM(d::AbstractDensity{T}, x::S,
               interval::NTuple{2,V} =
                   (scale_radius(d)/100, 100*scale_radius(d));
               kws...) where {T <: Real, S <: Real, V <: Real}
+    @assert x > 0 "x must be > 0"
     U = promote_type(T, S, V)
-    if x <= 0
-        throw(DomainError(x, "x must be > 0"))
-    else
-        find_zero(y->M(d,y)-x, (U(interval[1]), U(interval[2])); kws...)
-    end
+    return find_zero(y->M(d,y)-x, (U(interval[1]), U(interval[2])); kws...)
 end
 """
     Mtot(d::AbstractMassProfile)
@@ -268,12 +256,9 @@ function invMproj(d::AbstractMassProfile{T}, x::S,
                   interval::NTuple{2,V} =
                       (scale_radius(d)/100, 100*scale_radius(d));
                   kws...) where {T <: Real, S <: Real, V <: Real}
+    @assert x > 0 "x must be > 0"
     U = promote_type(T, S, V)
-    if x <= 0
-        throw(DomainError(x, "x must be > 0"))
-    else
-        return find_zero(y->Mproj(d,y)-x, (U(interval[1]), U(interval[2])); kws...)
-    end
+    return find_zero(y->Mproj(d,y)-x, (U(interval[1]), U(interval[2])); kws...)
 end
 """
     dynamical_time(d::Union{AbstractDensity, AbstractMassProfile}, r::Real)
@@ -548,6 +533,5 @@ which is not equivalent to the second radial gradient ``\\frac{\\partial^2 \\Phi
 """
 ∇∇Φ(d::AbstractDensity{T}, r::S) where {T <: Real, S <: Real} =
     convert(promote_type(T, S), constants.Gvelkpc2) * (∇M(d, r) / r^2 - 2M(d, r) / r^3)
-
 
 # check_vals(d::AbstractMassProfile,a::Number,T::DataType,S::DataType) = (promote_type(T,S), promote(params(d)...,a))
