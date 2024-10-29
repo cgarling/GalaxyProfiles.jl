@@ -1,3 +1,6 @@
+using GalaxyProfiles
+using Test
+
 @testset "Plummer" begin
     # Test constructor
     @test Plummer(1.0,1.0) isa Plummer{Float64}

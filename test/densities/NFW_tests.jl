@@ -7,6 +7,9 @@
 # print(tdyn(p, 2*10*u.kpc))
 # # 113.72905 Gyr
 
+using GalaxyProfiles
+using Test
+
 @testset "NFW" begin
     @testset "Float64" begin
         @test NFW(1.0,1.0) isa NFW{Float64}
