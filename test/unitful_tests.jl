@@ -1,4 +1,9 @@
-# this testset will be exhaustive; if the units work on this one, they should work on most other ones too.
+# Test type constructors and common methods with Unitful.jl arguments
+
+using GalaxyProfiles
+using Test
+import Unitful as u
+import UnitfulAstro as ua
 
 if isdefined(Base, :get_extension)
     ext = Base.get_extension(GalaxyProfiles, :GalaxyProfilesUnitfulExt)
@@ -7,15 +12,96 @@ else # For Julia < 1.9 without package extensions
     defaultunits = GalaxyProfiles.GalaxyProfilesUnitfulExt.defaultunits
 end
 
+@testset "Unitful Constructors" begin
+    @testset "NFW" begin
+        @testset "Float64" begin
+            @test NFW(1.0*defaultunits.density, 1.0*defaultunits.length) isa NFW{Float64}
+            @test NFW(1.0*defaultunits.density, 1.0*defaultunits.length) == NFW(1.0, 1.0)
+        end
+        @testset "Float32" begin
+            @test NFW(1.0f0*defaultunits.density, 1*defaultunits.length) isa NFW{Float32}
+            @test NFW(1.0f0*defaultunits.density, 1.0f0*defaultunits.length) == NFW(1.0f0, 1.0f0)
+            @test NFW(1*defaultunits.density, 1.0f0*defaultunits.length) isa NFW{Float32}
+        end
+    end
+    
+    @testset "ExponentialDisk" begin
+        @testset "Float64" begin
+            @test ExponentialDisk(1.0*defaultunits.surfacedensity,1.0*defaultunits.length) isa ExponentialDisk{Float64}
+            @test ExponentialDisk(1.0*defaultunits.surfacedensity,1.0*defaultunits.length) == ExponentialDisk(1.0,1.0)
+            @test ExponentialDisk(1.0*defaultunits.length; M=1.0*defaultunits.mass) isa ExponentialDisk{Float64}
+            @test ExponentialDisk(1.0*defaultunits.length; Σ0=1.0*defaultunits.surfacedensity) isa ExponentialDisk{Float64}
+            @test ExponentialDiskDHI(1.0*defaultunits.length,1.0*defaultunits.mass) isa ExponentialDisk{Float64}
+            #################################
+            @test ExponentialDiskDHI(1.0*defaultunits.length,1.0*defaultunits.mass,1e6*defaultunits.surfacedensity) isa ExponentialDisk{Float64}
+            @test ExponentialDiskDHI(1.0*defaultunits.length,1.0f0*defaultunits.mass,1e6*defaultunits.surfacedensity) isa ExponentialDisk{Float64}        
+        end
+        @testset "Float32" begin
+            @test ExponentialDisk(1.0f0,1.0f0) isa ExponentialDisk{Float32}
+            @test ExponentialDisk(1.0f0,1) isa ExponentialDisk{Float32}
+            @test ExponentialDisk(1,1.0f0) isa ExponentialDisk{Float32}
+            @test ExponentialDisk(1.0f0*defaultunits.length; M=1.0f0*defaultunits.mass) isa ExponentialDisk{Float32}
+            @test ExponentialDisk(1.0f0*defaultunits.length; Σ0=1.0f0*defaultunits.surfacedensity) isa ExponentialDisk{Float32}
+            ##################################
+            @test ExponentialDiskDHI(1.0f0*defaultunits.length,1.0f0*defaultunits.mass) isa ExponentialDisk{Float32}
+            @test ExponentialDiskDHI(1.0f0*defaultunits.length,1.0f0*defaultunits.mass,1f6*defaultunits.surfacedensity) isa ExponentialDisk{Float32}
+        end
+    end
+
+    @testset "Plummer" begin
+        @testset "Float64" begin
+            @test Plummer(1.0*defaultunits.mass, 1.0*defaultunits.length) isa Plummer{Float64}
+            @test Plummer(1.0*defaultunits.mass, 1.0*defaultunits.length) == Plummer(1.0, 1.0)
+        end
+        @testset "Float32" begin
+            @test Plummer(1.0f0*defaultunits.mass, 1*defaultunits.length) isa Plummer{Float32}
+            @test Plummer(1.0f0*defaultunits.mass, 1.0f0*defaultunits.length) == Plummer(1.0f0, 1.0f0)
+            @test Plummer(1*defaultunits.mass, 1.0f0*defaultunits.length) isa Plummer{Float32}
+        end
+    end
+
+    @testset "GeneralIsothermal" begin
+        @testset "Float64" begin
+            @test GeneralIsothermal(1.0 * defaultunits.density,
+                                    1.0 * defaultunits.length, 1.0) isa GeneralIsothermal{Float64}
+            @test GeneralIsothermal(1.0 * defaultunits.density,
+                                    1.0 * defaultunits.length, 1.0) == GeneralIsothermal(1.0, 1.0, 1.0)
+        end
+        @testset "Float32" begin
+            @test GeneralIsothermal(1.0f0 * defaultunits.density,
+                                    1.0f0 * defaultunits.length, 1.0f0) isa GeneralIsothermal{Float32}
+            @test GeneralIsothermal(1.0f0 * defaultunits.density,
+                                    1.0f0 * defaultunits.length, 1) isa GeneralIsothermal{Float32}
+        end
+    end
+
+    @testset "SIS" begin
+        @testset "Float64" begin
+            @test SIS(1.0*defaultunits.density, 1.0*defaultunits.length) isa GeneralIsothermal{Float64}
+            @test SIS(1.0*defaultunits.density, 1.0*defaultunits.length) == SIS(1.0, 1.0)
+            @test SIS(1.0*defaultunits.length, 1.0*defaultunits.mass, 10.0*defaultunits.length) isa GeneralIsothermal{Float64}
+        end
+        @testset "Float32" begin
+            @test SIS(1.0f0*defaultunits.density, 1*defaultunits.length) isa GeneralIsothermal{Float32}
+            @test SIS(1.0f0*defaultunits.density, 1.0f0*defaultunits.length) == SIS(1.0f0, 1.0f0)
+            @test SIS(1.0f0*defaultunits.length, 1.0f0*defaultunits.mass, 10.0f0*defaultunits.length) isa GeneralIsothermal{Float32}
+            @test SIS(1*defaultunits.density, 1.0f0*defaultunits.length) isa GeneralIsothermal{Float32}
+        end
+    end    
+end
+
+
+######################################################################
+######################################################################
+
+
+# This testset will exhaustively test the Unitful.jl extension methods. For simplicity we will test with a single density profile (GeneralIsothermal) and a single surface density profile (ExponentialDisk). If the units work on these types, they should work on all others as well.
 @testset "GeneralIsothermal Units" begin
     @testset "Float64" begin
-        @test GeneralIsothermal(1.0*ua.Msun/ua.kpc^3,1.0*ua.kpc,1.0) isa GeneralIsothermal{Float64}
-        @test GeneralIsothermal(1.0*ua.Msun/ua.kpc^3,1.0*ua.kpc,1) isa GeneralIsothermal{Float64}
-        @test GeneralIsothermal(1.0*ua.Msun/ua.kpc^3,1*ua.kpc,1.0f0) isa GeneralIsothermal{Float64}
-        @test GeneralIsothermal(1.0*u.kg/u.m^3,1.0*u.m,1.0) isa GeneralIsothermal{Float64}
-        # this should construct d = GeneralIsothermal(1.0,1.0,1.0); then run tests with Reals
-        d = GeneralIsothermal(1.0*defaultunits.density,
-                              1.0*defaultunits.length,1.0)
+        # As tested in the constructor section above,
+        # this should construct d = GeneralIsothermal(1.0, 1.0, 1.0)
+        d = GeneralIsothermal(1.0 * defaultunits.density,
+                              1.0 * defaultunits.length, 1.0)
         @test d == GeneralIsothermal(1.0,1.0,1.0)
         @test @inferred ρ(d,1.0) == 1.0 
         @test ρ(d,1.0) isa Float64
@@ -74,8 +160,8 @@ end
         @test Σ(d,1.0*defaultunits.length) |> u.ustrip isa Float64        
         @test Σ(d,1.0f0*defaultunits.length) |> u.ustrip isa Float64        
 
-        # this should construct d = GeneralIsothermal(1.0,1.0,2.0); then run tests with Reals
-        d = GeneralIsothermal(1.0*defaultunits.density,1.0*defaultunits.length,2.0)
+        # This should construct d = GeneralIsothermal(1.0, 1.0, 2.0); then test with Real arguments
+        d = GeneralIsothermal(1.0 * defaultunits.density, 1.0 * defaultunits.length, 2.0)
         @test d == GeneralIsothermal(1.0,1.0,2.0)
         
         @test @inferred invΣ(d,π) == 1.0
@@ -288,11 +374,5 @@ end
         @test ∇∇Φ(d,1.0*defaultunits.length) |> u.ustrip isa Float64
         @test ∇∇Φ(d,1.0f0*defaultunits.length) |> u.ustrip isa Float64
         ####################################
-    end
-
-    # float32 behavior has already been validated for the Real components; just do a few tests here
-    @testset "Float32" begin
-        @test GeneralIsothermal(1.0f0 * defaultunits.density,1.0f0 * defaultunits.length,1.0f0) isa GeneralIsothermal{Float32}
-        @test GeneralIsothermal(1.0f0 * defaultunits.density,1.0f0 * defaultunits.length,1) isa GeneralIsothermal{Float32}
     end
 end

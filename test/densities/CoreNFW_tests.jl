@@ -2,6 +2,8 @@
 # Test equivalence of dynamical time (Equation 19 in Read et al. 2016)
 # import GalaxyProfiles; using Test; import UnitfulAstro as ua; import PhysicalConstants.CODATA2018: G; p = GalaxyProfiles.NFW(1e3,10.0); @test 2π * sqrt( (p.rs*ua.kpc)^3 / G / GalaxyProfiles.M(p, p.rs*ua.kpc)) |> ua.yr ≈ 2π * sqrt( (p.rs*ua.kpc)^3 / G / GalaxyProfiles.M(p, p.rs*ua.kpc)) |> ua.yr
 
+using GalaxyProfiles
+using Test
 
 @testset "CoreNFW" begin
     @testset "Float64" begin

@@ -1,3 +1,6 @@
+using GalaxyProfiles
+using Test
+
 @testset "ExponentialDisk" begin
     @testset "Float64" begin
         @test ExponentialDisk(1.0,1.0) isa ExponentialDisk{Float64}

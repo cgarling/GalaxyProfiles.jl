@@ -1,3 +1,6 @@
+using GalaxyProfiles
+using Test
+
 @testset "GeneralIsothermal" begin
     @testset "Float64" begin
         @test GeneralIsothermal(1.0,1.0,1.0) isa GeneralIsothermal{Float64}
