@@ -82,40 +82,16 @@ end
 
 Returns the unscaled density for a Plummer profile at radius `r` with total mass `M` and Plummer scale radius `a`. 
 """
-function plummer_unscaled_density(r, M, a)
-    interior = (1 + (r/a)^2)
-    interior2 = interior^2
-    return sqrt(inv(interior2^2 * interior)) # (1+(r/a)^2)^(-5/2)
-end
-# plummer_unscaled_density(r, M, a) = @fastmath sqrt( inv((1+(r/a)^2)^5) )
+plummer_unscaled_density(r, M, a) = @fastpow sqrt((1+(r/a)^2)^-5)
 """
     plummer_unscaled_density_deriv(r, M, a)
 
 Returns the unscaled radial derivative of the density for a Plummer profile at radius `r` with total mass `M` and Plummer scale radius `a`. 
 """
-function plummer_unscaled_density_deriv(r, M, a)
-    interior = (1 + (r/a)^2)
-    interior2 = interior^2
-    interior4 = interior2^2
-    return -5r / a^2 / sqrt(interior4 * interior2 * interior)
-end
-# plummer_unscaled_density_deriv(r, M, a) = -5r / (a^2 * (1+(r/a)^2)^(7/2))
-function plummer_unscaled_ρmean(r, M, a)
-    a2 = a^2
-    r2 = r^2
-    return a2 * a2 * sqrt(1 + r2/a2) / (a2 + r2)^2
-end
-# plummer_unscaled_ρmean(r, M, a) = a^4 * sqrt(1 + (r/a)^2) / (a^2 + r^2)^2
-function plummer_unscaled_Σ(r, M, a)
-    a2 = a^2
-    return 4a2 * a2 * a / 3(a2 + r^2)^2
-end
-# plummer_unscaled_Σ(r, M, a) = a^5 * 4 / 3 / (a^2 + r^2)^2
-function plummer_unscaled_∇Σ(r, M, a)
-    a2 = a^2
-    return -16a2 * a2 * a * r / 3(a2 + r^2)^3
-end
-# plummer_unscaled_∇Σ(r, M, a) = -16 * a^5 * r / 3 / (a^2 + r^2)^3
+plummer_unscaled_density_deriv(r, M, a) = @fastpow -5r / (a^2 * sqrt((1+(r/a)^2)^7))
+plummer_unscaled_ρmean(r, M, a) = @fastpow a^4 * sqrt(1 + (r/a)^2) / (a^2 + r^2)^2
+plummer_unscaled_Σ(r, M, a) = @fastpow 4a^5 / 3(a^2 + r^2)^2
+plummer_unscaled_∇Σ(r, M, a) = @fastpow -16a^5 * r / 3(a^2 + r^2)^3
 # plummer_unscaled_Σmean(r, M, a) = 2a^2 * (1 - (1 + (r/a)^2)^(-3/2)) / (3r^2)
 plummer_unscaled_Σmean(r, M, a) = 4a^3 / 3(a^2 + r^2)
 # Dont really think these are that useful. Maybe just remove later.
@@ -146,11 +122,11 @@ function invρmean(d::Plummer, x::Real)
 end
 function Σ(d::Plummer, r::Real)
     r, M, a = promote(r, Mtot(d), scale_radius(d))
-    return M * a^2 / π / (a^2 + r^2)^2 
+    return M * a^2 / π / (a^2 + r^2)^2
 end
 function ∇Σ(d::Plummer, r::Real)
     r, M, a = promote(r, Mtot(d), scale_radius(d))
-    return -a^2 * M * r * 4 / π / (a^2 + r^2)^3 
+    return -a^2 * M * r * 4 / π / (a^2 + r^2)^3
 end
 function Σmean(d::Plummer, r::Real)
     r, M, a = promote(r, Mtot(d), scale_radius(d))
