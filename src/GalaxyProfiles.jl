@@ -1,5 +1,6 @@
 module GalaxyProfiles
 
+using FastPow: @fastpow
 using HypergeometricFunctions: _₂F₁ # For Plummer σr
 using Random: AbstractRNG,rand,rand!,default_rng
 using Roots: find_zero
