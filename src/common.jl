@@ -298,9 +298,9 @@ dynamical_time(d::AbstractMassProfile{T}, r::S) where {T <: Real, S <: Real} =
     cdf2D(d::AbstractMassProfile, r::Real)
     cdf2D(d::AbstractMassProfile, r::Unitful.Quantity)
 
-Returns the value of the cumulative distribution function of the profile `d` at `r` [kpc] in two dimensions (i.e., along a line of sight). This is defined as `Σ(d,r) / Mtot(d)`.
+Returns the value of the cumulative distribution function of the mass profile `d` at `r` [kpc] in two dimensions (i.e., projected along a line of sight). This is defined as `Mproj(d,r) / Mtot(d)`.
 """
-cdf2D(d::AbstractMassProfile, r::Real) = Σ(d,r) / Mtot(d)
+cdf2D(d::AbstractMassProfile, r::Real) = Mproj(d,r) / Mtot(d)
 """
     cdf3D(d::AbstractDensity, r::Real)
     cdf3D(d::AbstractDensity, r::Unitful.Quantity)

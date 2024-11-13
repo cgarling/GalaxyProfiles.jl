@@ -4,7 +4,7 @@
 # both should give the same answer to high precision.
 
 using GalaxyProfiles
-import GalaxyProfiles: ρ, params, scale_radius, Mtot # Explicitly import to extend methods
+import GalaxyProfiles: ρ, params, scale_radius, Mtot, ∇M # Explicitly import to extend methods
 using Test
 
 # Define new Plummer struct -- implement only subset of methods
@@ -18,13 +18,13 @@ params(d::Plummer2) = (d.M, d.a)
 scale_radius(d::Plummer2) = d.a
 Mtot(d::Plummer2) = d.M
 ρ(d::Plummer2, r::Real) = ρ(Plummer(params(d)...), r)
+∇M(d::Plummer2, r::Real) = ∇M(Plummer(params(d)...), r) # Required to test ∇∇Φ
 
 @testset "Common Methods -- Densities" begin
     # Construct instances and run tests
     types = (Float64, Float32)
     type_labels = ("Float64", "Float32")
     for i in eachindex(types, type_labels)
-        # @testset "$type_labels[i]" begin
         tl = type_labels[i]
         @testset "$tl" begin
             T = types[i]
@@ -51,13 +51,7 @@ Mtot(d::Plummer2) = d.M
             # @test ∇Mproj(p, r) ≈ ∇Mproj(p2, r)
             @test invMproj(p, Mproj(p,r)) ≈ invMproj(p2, Mproj(p2,r))
             # dynamical_time always uses the common function
-
-            
-            # Currently fails -- common uses Σ(d,r) / Mtot(d) while Plummer uses Mproj/Mtot
-            # I think Mproj/Mtot is correct?
             @test cdf2D(p, r) ≈ cdf2D(p2, r)
-
-            
             # ccdf2D always uses common function
             @test cdf3D(p, r) ≈ cdf3D(p2, r)
             # ccdf3D always uses common function
@@ -70,6 +64,9 @@ Mtot(d::Plummer2) = d.M
             # No Vmax common function
             @test σr(p, r, zero(T)) ≈ σr(p2, r, zero(T))
             @test σlos(p, r, zero(T)) ≈ σlos(p2, r, zero(T))
+            @test Φ(p, r) ≈ Φ(p2, r)
+            @test ∇Φ(p, r) ≈ ∇Φ(p2, r)
+            @test ∇∇Φ(p, r) ≈ ∇∇Φ(p2, r)
         end
     end
 end
