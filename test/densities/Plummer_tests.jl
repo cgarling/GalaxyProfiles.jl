@@ -10,7 +10,8 @@ using Test
     types = (Float64, Float32)
     type_labels = ("Float64", "Float32")
     for i in eachindex(types, type_labels)
-        @testset "$type_labels[i]" begin
+        tl = type_labels[i]
+        @testset "$tl" begin
             T = types[i]
             d = Plummer(T(1.0),T(1.0))
             @test @inferred ρ(d,1.0) ≈ 0.04220232731986435
