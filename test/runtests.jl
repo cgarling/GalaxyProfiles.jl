@@ -19,6 +19,9 @@
 using Test, SafeTestsets
 
 @testset "GalaxyProfiles.jl" verbose=true begin
+    
+    @safetestset "Common Fallback Methods" include("common_tests.jl")
+    
     @testset "Densities" verbose=true begin
         @safetestset "NFW" include("densities/NFW_tests.jl")
         @safetestset "CoreNFW" include("densities/CoreNFW_tests.jl")
@@ -32,6 +35,5 @@ using Test, SafeTestsets
     end
 
     @safetestset "Unitful.jl Extension" include("unitful_tests.jl")
-
 
 end
