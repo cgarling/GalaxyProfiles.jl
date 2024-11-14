@@ -4,7 +4,7 @@
 # both should give the same answer to high precision.
 
 using GalaxyProfiles
-import GalaxyProfiles: ρ, params, scale_radius, Mtot, ∇M # Explicitly import to extend methods
+import GalaxyProfiles: ρ, params, scale_radius, Mtot, ∇M, AbstractSurfaceDensity, Σ # Explicitly import to extend methods
 using Test
 
 # Define new Plummer struct -- implement only subset of methods
@@ -71,7 +71,40 @@ Mtot(d::Plummer2) = d.M
     end
 end
 
+
+# Define new ExponentialDisk struct -- implement only subset of methods
+# to test the fallbacks against the methods specialized on the ExponentialDisk type
+struct ExponentialDisk2{T <: Real} <: AbstractSurfaceDensity{T}
+    Σ0::T
+    rs::T
+end
+ExponentialDisk2(Σ0::Real, rs::Real) = ExponentialDisk2(promote(Σ0,rs)...)
+params(d::ExponentialDisk2) = (d.Σ0, d.rs)
+scale_radius(d::ExponentialDisk2) = d.rs
+Mtot(d::ExponentialDisk2) = Mtot(ExponentialDisk(params(d)...))
+Σ(d::ExponentialDisk2, r::Real) = Σ(ExponentialDisk(params(d)...), r)
+
 @testset "Common Methods -- Surface Densities" begin
+    # Construct instances and run tests
+    types = (Float64, Float32)
+    type_labels = ("Float64", "Float32")
+    for i in eachindex(types, type_labels)
+        tl = type_labels[i]
+        @testset "$tl" begin
+            T = types[i]
+            Σ0, rs = T(1e2), T(2)
+            r = T(1//2)
+            p = ExponentialDisk(Σ0, rs)
+            p2 = ExponentialDisk2(Σ0, rs)
 
-
+            # Test common methods
+            # @test ∇Σ(p, r) ≈ ∇Σ(p2, r)
+            @test Σmean(p, r) ≈ Σmean(p2, r)
+            @test invΣ(p, Σ(p,r)) ≈ invΣ(p2, Σ(p2,r))
+            @test Mproj(p, r) ≈ Mproj(p2, r)
+            # @test ∇Mproj(p, r) ≈ ∇Mproj(p2, r)
+            @test invMproj(p, Mproj(p,r)) ≈ invMproj(p2, Mproj(p2,r))
+            @test cdf2D(p, r) ≈ cdf2D(p2, r)
+        end
+    end
 end
