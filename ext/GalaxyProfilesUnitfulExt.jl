@@ -129,6 +129,7 @@ M(uu::u.MassUnits, d::AbstractDensity, r::Real) = M(d, r) * defaultunits.mass |>
 invM(d::AbstractDensity, x::u.Mass) = invM(d, homogenize_units(x)) * defaultunits.length
 invM(uu::u.LengthUnits, d::AbstractMassProfile, x::u.Mass) = invM(d, x) |> uu
 invM(uu::u.LengthUnits, d::AbstractMassProfile, x::Real) = invM(d, x) * defaultunits.length |> uu
+Mtot(uu::u.MassUnits, d::AbstractMassProfile) = Mtot(d) * defaultunits.mass |> uu
 Mproj(d::AbstractDensity, r::u.Length) = Mproj(d, homogenize_units(r)) * defaultunits.mass
 Mproj(uu::u.MassUnits, d::AbstractDensity, r::u.Length) = Mproj(d, r) |> uu
 Mproj(uu::u.MassUnits, d::AbstractDensity, r::Real) = Mproj(d, r) * defaultunits.mass |> uu
