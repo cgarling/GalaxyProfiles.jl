@@ -3,12 +3,12 @@ module GalaxyProfilesUnitfulExt # Same name as file
 # for relative module path conventions
 
 if isdefined(Base, :get_extension)
-    import GalaxyProfiles: AbstractMassProfile, AbstractDensity, ExponentialDisk, ExponentialDiskDHI, GeneralIsothermal, SIS, NFW, CoreNFW, Plummer, scale_radius, ρ, invρ, ∇ρ, ρmean, invρmean, Σ, ∇Σ, Σmean, invΣ, M, ∇M, invM, Mtot, Mproj, ∇Mproj, invMproj, dynamical_time, Vcirc, Vesc, Vmax, σr, σlos, Φ, ∇Φ, ∇∇Φ
+    import GalaxyProfiles: AbstractMassProfile, AbstractDensity, ExponentialDisk, ExponentialDiskDHI, Sersic, GeneralIsothermal, SIS, NFW, CoreNFW, Plummer, scale_radius, ρ, invρ, ∇ρ, ρmean, invρmean, Σ, ∇Σ, Σmean, invΣ, M, ∇M, invM, Mtot, Mproj, ∇Mproj, invMproj, dynamical_time, Vcirc, Vesc, Vmax, σr, σlos, Φ, ∇Φ, ∇∇Φ
     import Unitful as u
     import UnitfulAstro as ua
 else # For Julia < 1.9 without package extensions
     # Up one module = ..
-    import ..GalaxyProfiles: AbstractMassProfile, AbstractDensity, ExponentialDisk, ExponentialDiskDHI, GeneralIsothermal, SIS, NFW, CoreNFW, Plummer, scale_radius, ρ, invρ, ∇ρ, ρmean, invρmean, Σ, ∇Σ, Σmean, invΣ, M, ∇M, invM, Mtot, Mproj, ∇Mproj, invMproj, dynamical_time, Vcirc, Vesc, Vmax, σr, σlos, Φ, ∇Φ, ∇∇Φ
+    import ..GalaxyProfiles: AbstractMassProfile, AbstractDensity, ExponentialDisk, ExponentialDiskDHI, Sersic, GeneralIsothermal, SIS, NFW, CoreNFW, Plummer, scale_radius, ρ, invρ, ∇ρ, ρmean, invρmean, Σ, ∇Σ, Σmean, invΣ, M, ∇M, invM, Mtot, Mproj, ∇Mproj, invMproj, dynamical_time, Vcirc, Vesc, Vmax, σr, σlos, Φ, ∇Φ, ∇∇Φ
     import ..Unitful as u
     import ..UnitfulAstro as ua
 end
@@ -77,6 +77,8 @@ function ExponentialDisk(rs::u.Length; M=nothing, Σ0=nothing)
     end
 end
 ExponentialDiskDHI(DHI::u.Length, MHI::u.Mass, ΣDHI::SurfaceDensity=1*ua.Msun/ua.pc^2) = ExponentialDiskDHI(homogenize_units(DHI), homogenize_units(MHI), homogenize_units(ΣDHI))
+
+Sersic(Σ0::SurfaceDensity, r_e::u.Length, n::Real, q::Real) = Sersic(homogenize_units(Σ0), homogenize_units(r_e), n, q)
 
 GeneralIsothermal(ρ0::u.Density, rs::u.Length, α::Real) = GeneralIsothermal(homogenize_units(ρ0), homogenize_units(rs), α)
 GeneralIsothermal(rs::u.Length, α::Real, M::u.Mass, Rmax::u.Length) = GeneralIsothermal(homogenize_units(rs), α, homogenize_units(M), homogenize_units(Rmax))

@@ -17,7 +17,7 @@
 Type describing Sersic surface density profile, typically used to model the surface brightness profile of galaxies in images.
 
 # Arguments
- - `Σ0`: central surface density
+ - `Σ0`: surface density at radius `r = r_e`
  - `r_e`: Sersic scale radius
  - `n`: Sersic index controlling how steep/shallow the profile is
  - `q`: minor-to-major axis ratio
