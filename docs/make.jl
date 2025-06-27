@@ -12,6 +12,7 @@ makedocs(
     format = Documenter.HTML(;prettyurls = get(ENV, "CI", nothing) == "true"),
     authors = "Chris Garling",
     pages = ["index.md","types.md","methods.md","guide.md","units.md","docindex.md"],
+    push_preview = true,
     doctest = true,
     linkcheck = true,
     # Do not error if we are missing a docstring in the module or if an external link is invalid
