@@ -22,6 +22,7 @@ The following concrete types, representing specific surface density profiles, ar
 
 ```@docs
 ExponentialDisk
+Sersic
 ```
 
 ## Retrieving Parameters
