@@ -1,0 +1,20 @@
+# GalaxyProfiles.jl API
+
+## Defined Types
+```@autodocs
+Modules = [GalaxyProfiles]
+Order = [:type]
+```
+
+## Convenience Constructors
+
+```@docs
+SIS
+```
+
+## Defined Methods and Functions
+```@autodocs
+Modules = [GalaxyProfiles]
+Order = [:function]
+Filter = t -> !in(t,[SIS])
+```
