@@ -18,8 +18,9 @@ makedocs(
     warnonly = [:missing_docs, :linkcheck]    
 )
 
-# deploydocs(;
-#     repo = "github.com/cgarling/GalaxyProfiles.jl.git",
-#     versions = ["stable" => "v^", "v#.#"],
-#     push_preview=true,
-# )
+deploydocs(;
+    repo = "github.com/cgarling/GalaxyProfiles.jl.git",
+    versions = ["stable" => "v^", "v#.#"],
+    devbranch="main",
+    push_preview=true,
+)

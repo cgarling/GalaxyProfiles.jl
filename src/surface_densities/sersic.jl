@@ -9,7 +9,30 @@
 #     # Sersic{T}(μ_e::T,r_e::T,n::T,q::T) where {T} = new{T}(μ_e,r_e,n,q)
 # end
 # Sersic(μ_e::Real, r_e::Real, n::Real, q::Real) = Sersic(promote(μ_e,r_e,n,q)...)
+#  - [`Σ`](@ref), [`∇Σ`](@ref), [`invΣ`](@ref), [`Mproj`](@ref), [`∇Mproj`](@ref), [`invMproj`](@ref), [`Mtot`](@ref), [`cdf2D`](@ref), [`ccdf2D`](@ref), [`quantile2D`](@ref), [`cquantile2D`](@ref)
 
+"""
+    Sersic(Σ0, r_e, n, q)
+
+Type describing Sersic surface density profile, typically used to model the surface brightness profile of galaxies in images.
+
+# Arguments
+ - `Σ0`: central surface density
+ - `r_e`: Sersic scale radius
+ - `n`: Sersic index controlling how steep/shallow the profile is
+ - `q`: minor-to-major axis ratio
+
+```math
+\\Sigma(r) = \\Sigma_0 \\times \\exp \\left( -b_n \\left[ \\left(\\frac{r}{r_e} \\right)^{1/n} - 1 \\right] \\right)
+```
+
+where `b_n` is derived from the Sersic index `n` (see equations 3, 4 of Graham & Driver 2005).
+
+The fields of `Sersic` are `Σ0, r_e, n, q`. There are no methods defined for `Sersic` which use physical constants with units (e.g., `G`), so as long as `Sersic.r_e` and the radius `r` you provide to methods are in the same units, and `Σ0` is in units of `[M/[r,r_e]^2]`everything will work out. Generally just want to make sure the length units are uniform.
+
+The following public methods are defined on this type:
+ - [`Σ`](@ref), [`∇Σ`](@ref), [`invΣ`](@ref), [`Mproj`](@ref), [`∇Mproj`](@ref), [`Mtot`](@ref)
+"""
 struct Sersic{T <: Real} <: AbstractSurfaceDensity{T}
     Σ0::T
     r_e::T
@@ -18,6 +41,7 @@ struct Sersic{T <: Real} <: AbstractSurfaceDensity{T}
     # Sersic{T}(μ_e::T,r_e::T,n::T,q::T) where {T} = new{T}(μ_e,r_e,n,q)
 end
 Sersic(Σ0::Real, r_e::Real, n::Real, q::Real) = Sersic(promote(Σ0,r_e,n,q)...)
+
 
 #### Parameters
 scale_radius(d::Sersic) = d.r_e
