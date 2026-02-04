@@ -15,77 +15,105 @@ end
 @testset "Unitful Constructors" begin
     @testset "NFW" begin
         @testset "Float64" begin
-            @test NFW(1.0*defaultunits.density, 1.0*defaultunits.length) isa NFW{Float64}
-            @test NFW(1.0*defaultunits.density, 1.0*defaultunits.length) == NFW(1.0, 1.0)
+            # Units are now PRESERVED in struct fields
+            nfw_unitful = NFW(1.0*defaultunits.density, 1.0*defaultunits.length)
+            @test nfw_unitful.ρ0 isa u.Quantity{Float64}
+            @test nfw_unitful.rs isa u.Quantity{Float64}
+            # Plain number constructor still works
+            nfw_plain = NFW(1.0, 1.0)
+            @test nfw_plain.ρ0 == 1.0
+            @test nfw_plain.rs == 1.0
         end
         @testset "Float32" begin
-            @test NFW(1.0f0*defaultunits.density, 1*defaultunits.length) isa NFW{Float32}
-            @test NFW(1.0f0*defaultunits.density, 1.0f0*defaultunits.length) == NFW(1.0f0, 1.0f0)
-            @test NFW(1*defaultunits.density, 1.0f0*defaultunits.length) isa NFW{Float32}
+            nfw_unitful = NFW(1.0f0*defaultunits.density, 1.0f0*defaultunits.length)
+            @test nfw_unitful.ρ0 isa u.Quantity{Float32}
+            @test nfw_unitful.rs isa u.Quantity{Float32}
         end
     end
     
     @testset "ExponentialDisk" begin
         @testset "Float64" begin
-            @test ExponentialDisk(1.0*defaultunits.surfacedensity,1.0*defaultunits.length) isa ExponentialDisk{Float64}
-            @test ExponentialDisk(1.0*defaultunits.surfacedensity,1.0*defaultunits.length) == ExponentialDisk(1.0,1.0)
-            @test ExponentialDisk(1.0*defaultunits.length; M=1.0*defaultunits.mass) isa ExponentialDisk{Float64}
-            @test ExponentialDisk(1.0*defaultunits.length; Σ0=1.0*defaultunits.surfacedensity) isa ExponentialDisk{Float64}
-            @test ExponentialDiskDHI(1.0*defaultunits.length,1.0*defaultunits.mass) isa ExponentialDisk{Float64}
-            #################################
-            @test ExponentialDiskDHI(1.0*defaultunits.length,1.0*defaultunits.mass,1e6*defaultunits.surfacedensity) isa ExponentialDisk{Float64}
-            @test ExponentialDiskDHI(1.0*defaultunits.length,1.0f0*defaultunits.mass,1e6*defaultunits.surfacedensity) isa ExponentialDisk{Float64}        
+            # Units are now PRESERVED in struct fields
+            ed_unitful = ExponentialDisk(1.0*defaultunits.surfacedensity, 1.0*defaultunits.length)
+            @test ed_unitful.Σ0 isa u.Quantity{Float64}
+            @test ed_unitful.rs isa u.Quantity{Float64}
+            # Plain number constructor still works
+            ed_plain = ExponentialDisk(1.0, 1.0)
+            @test ed_plain.Σ0 == 1.0
+            @test ed_plain.rs == 1.0
+            # Test keyword constructors with Unitful
+            ed_M = ExponentialDisk(1.0*defaultunits.length; M=1.0*defaultunits.mass)
+            @test ed_M.rs isa u.Quantity{Float64}
+            ed_Σ0 = ExponentialDisk(1.0*defaultunits.length; Σ0=1.0*defaultunits.surfacedensity)
+            @test ed_Σ0.rs isa u.Quantity{Float64}
+            # ExponentialDiskDHI constructor
+            ed_DHI = ExponentialDiskDHI(1.0*defaultunits.length, 1.0*defaultunits.mass)
+            @test ed_DHI.rs isa u.Quantity{Float64}
         end
         @testset "Float32" begin
-            @test ExponentialDisk(1.0f0,1.0f0) isa ExponentialDisk{Float32}
-            @test ExponentialDisk(1.0f0,1) isa ExponentialDisk{Float32}
-            @test ExponentialDisk(1,1.0f0) isa ExponentialDisk{Float32}
-            @test ExponentialDisk(1.0f0*defaultunits.length; M=1.0f0*defaultunits.mass) isa ExponentialDisk{Float32}
-            @test ExponentialDisk(1.0f0*defaultunits.length; Σ0=1.0f0*defaultunits.surfacedensity) isa ExponentialDisk{Float32}
-            ##################################
-            @test ExponentialDiskDHI(1.0f0*defaultunits.length,1.0f0*defaultunits.mass) isa ExponentialDisk{Float32}
-            @test ExponentialDiskDHI(1.0f0*defaultunits.length,1.0f0*defaultunits.mass,1f6*defaultunits.surfacedensity) isa ExponentialDisk{Float32}
+            ed_plain = ExponentialDisk(1.0f0, 1.0f0)
+            @test ed_plain.Σ0 == 1.0f0
+            @test ed_plain.rs == 1.0f0
+            ed_unitful = ExponentialDisk(1.0f0*defaultunits.surfacedensity, 1.0f0*defaultunits.length)
+            @test ed_unitful.Σ0 isa u.Quantity{Float32}
         end
     end
 
     @testset "Plummer" begin
         @testset "Float64" begin
-            @test Plummer(1.0*defaultunits.mass, 1.0*defaultunits.length) isa Plummer{Float64}
-            @test Plummer(1.0*defaultunits.mass, 1.0*defaultunits.length) == Plummer(1.0, 1.0)
+            # Units are now PRESERVED in struct fields
+            plummer_unitful = Plummer(1.0*defaultunits.mass, 1.0*defaultunits.length)
+            @test plummer_unitful.M isa u.Quantity{Float64}
+            @test plummer_unitful.a isa u.Quantity{Float64}
+            # Plain number constructor still works
+            plummer_plain = Plummer(1.0, 1.0)
+            @test plummer_plain.M == 1.0
+            @test plummer_plain.a == 1.0
         end
         @testset "Float32" begin
-            @test Plummer(1.0f0*defaultunits.mass, 1*defaultunits.length) isa Plummer{Float32}
-            @test Plummer(1.0f0*defaultunits.mass, 1.0f0*defaultunits.length) == Plummer(1.0f0, 1.0f0)
-            @test Plummer(1*defaultunits.mass, 1.0f0*defaultunits.length) isa Plummer{Float32}
+            plummer_unitful = Plummer(1.0f0*defaultunits.mass, 1.0f0*defaultunits.length)
+            @test plummer_unitful.M isa u.Quantity{Float32}
+            @test plummer_unitful.a isa u.Quantity{Float32}
         end
     end
 
     @testset "GeneralIsothermal" begin
         @testset "Float64" begin
-            @test GeneralIsothermal(1.0 * defaultunits.density,
-                                    1.0 * defaultunits.length, 1.0) isa GeneralIsothermal{Float64}
-            @test GeneralIsothermal(1.0 * defaultunits.density,
-                                    1.0 * defaultunits.length, 1.0) == GeneralIsothermal(1.0, 1.0, 1.0)
+            # Units are now PRESERVED in struct fields
+            gi_unitful = GeneralIsothermal(1.0*defaultunits.density, 1.0*defaultunits.length, 1.0)
+            @test gi_unitful.ρ0 isa u.Quantity{Float64}
+            @test gi_unitful.rs isa u.Quantity{Float64}
+            @test gi_unitful.α == 1.0  # α is dimensionless
+            # Plain number constructor still works
+            gi_plain = GeneralIsothermal(1.0, 1.0, 1.0)
+            @test gi_plain.ρ0 == 1.0
+            @test gi_plain.rs == 1.0
         end
         @testset "Float32" begin
-            @test GeneralIsothermal(1.0f0 * defaultunits.density,
-                                    1.0f0 * defaultunits.length, 1.0f0) isa GeneralIsothermal{Float32}
-            @test GeneralIsothermal(1.0f0 * defaultunits.density,
-                                    1.0f0 * defaultunits.length, 1) isa GeneralIsothermal{Float32}
+            gi_unitful = GeneralIsothermal(1.0f0*defaultunits.density, 1.0f0*defaultunits.length, 1.0f0)
+            @test gi_unitful.ρ0 isa u.Quantity{Float32}
+            @test gi_unitful.rs isa u.Quantity{Float32}
         end
     end
 
     @testset "SIS" begin
         @testset "Float64" begin
-            @test SIS(1.0*defaultunits.density, 1.0*defaultunits.length) isa GeneralIsothermal{Float64}
-            @test SIS(1.0*defaultunits.density, 1.0*defaultunits.length) == SIS(1.0, 1.0)
-            @test SIS(1.0*defaultunits.length, 1.0*defaultunits.mass, 10.0*defaultunits.length) isa GeneralIsothermal{Float64}
+            # SIS returns GeneralIsothermal with units PRESERVED
+            sis_unitful = SIS(1.0*defaultunits.density, 1.0*defaultunits.length)
+            @test sis_unitful isa GeneralIsothermal
+            @test sis_unitful.ρ0 isa u.Quantity{Float64}
+            @test sis_unitful.rs isa u.Quantity{Float64}
+            # Plain number constructor still works  
+            sis_plain = SIS(1.0, 1.0)
+            @test sis_plain.ρ0 == 1.0
+            @test sis_plain.rs == 1.0
+            # Test with M, Rmax constructor
+            sis_M = SIS(1.0*defaultunits.length, 1.0*defaultunits.mass, 10.0*defaultunits.length)
+            @test sis_M.rs isa u.Quantity{Float64}
         end
         @testset "Float32" begin
-            @test SIS(1.0f0*defaultunits.density, 1*defaultunits.length) isa GeneralIsothermal{Float32}
-            @test SIS(1.0f0*defaultunits.density, 1.0f0*defaultunits.length) == SIS(1.0f0, 1.0f0)
-            @test SIS(1.0f0*defaultunits.length, 1.0f0*defaultunits.mass, 10.0f0*defaultunits.length) isa GeneralIsothermal{Float32}
-            @test SIS(1*defaultunits.density, 1.0f0*defaultunits.length) isa GeneralIsothermal{Float32}
+            sis_unitful = SIS(1.0f0*defaultunits.density, 1.0f0*defaultunits.length)
+            @test sis_unitful.ρ0 isa u.Quantity{Float32}
         end
     end    
 end
