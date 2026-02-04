@@ -12,8 +12,8 @@ if !isdefined(Base, :get_extension)
     using Requires: @require
 end
 
-""" `AbstractMassProfile{T <: Real}`: abstract supertype for all mass profiles. """
-abstract type AbstractMassProfile{T <: Real} end
+""" `AbstractMassProfile{T <: Number}`: abstract supertype for all mass profiles. """
+abstract type AbstractMassProfile{T <: Number} end
 Base.Broadcast.broadcastable(m::AbstractMassProfile) = Ref(m)
 
 """ `AbstractDensity{T} <: AbstractMassProfile{T}`: abstract supertype for all 3D density profiles. """

@@ -1,6 +1,5 @@
 """
-    Plummer(M::Real, a::Real)
-    Plummer(M::Unitful.Mass, a::Unitful.Length)
+    Plummer(M, a)
 
 Type implementing the density profile first proposed by [Plummer 1911](http://adsabs.harvard.edu/abs/1911MNRAS..71..460P) (see also [Dejonghe 1987](https://ui.adsabs.harvard.edu/abs/1987MNRAS.224...13D/abstract)); this density profile is defined by the potential
 
@@ -22,16 +21,19 @@ r_h = \\frac{a}{\\sqrt{ 0.5^{-2/3} - 1} }
 
 the method [`GalaxyProfiles.plummer_a_to_rh`](@ref) is provided to perform this conversion. In projection (i.e., along a line-of-sight) the half-light radius is equal to the Plummer scale radius `a`, verifiable by [`quantile2D(d::Plummer, 0.5) == scale_radius(d)`](@ref quantile2D). 
 
-The default units of `Plummer` are `[M] = [Msun], [a, r] = [kpc]`. This is important for quantities like [`Vcirc`](@ref), [`Vesc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), and [`∇∇Φ`](@ref) which involve the gravitational constant `G`; these will give incorrect results if the fields of `Plummer` or the provided `r` are in different units.
+Both `M` and `a` can be plain `Real` numbers (e.g., `Float64`, `Int`) or `Unitful.Quantity` types (e.g., `1.0u"Msun"`, `1.0u"kpc"`). When using Unitful quantities, the units are preserved and propagated through all calculations, ensuring dimensional correctness. When using plain numbers, the default assumed units are `[M] = [Msun], [a, r] = [kpc]`, which is important for quantities like [`Vcirc`](@ref), [`Vesc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), and [`∇∇Φ`](@ref) that involve the gravitational constant `G`.
 
 The following public methods are defined on this type:
  - [`Mtot`](@ref), [`ρ`](@ref), [`invρ`](@ref), [`∇ρ`](@ref), [`ρmean`](@ref), [`invρmean`](@ref), [`Σ`](@ref), [`∇Σ`](@ref), [`Σmean`](@ref), [`invΣ`](@ref), [`M`](@ref), [`∇M`](@ref), [`invM`](@ref), [`Mproj`](@ref), [`∇Mproj`](@ref), [`invMproj`](@ref), [`Vcirc`](@ref), [`Vesc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), [`∇∇Φ`](@ref), [`cdf2D`](@ref), [`cdf3D`](@ref), [`ccdf2D`](@ref), [`ccdf3D`](@ref), [`quantile2D`](@ref), [`quantile3D`](@ref), [`cquantile2D`](@ref), [`cquantile3D`](@ref).
 """
-struct Plummer{T <: Real} <: AbstractDensity{T}
-    M::T
-    a::T
+struct Plummer{TM, Ta, T} <: AbstractDensity{T}
+    M::TM
+    a::Ta
+    function Plummer(M::TM, a::Ta) where {TM, Ta}
+        T = typeof(oneunit(TM) * oneunit(Ta))
+        new{TM, Ta, T}(M, a)
+    end
 end
-Plummer(M::Real, a::Real) = Plummer(promote(M,a)...)
 
 #### Parameters
 
@@ -99,8 +101,9 @@ plummer_unscaled_Σmean(r, M, a) = 4a^3 / 3(a^2 + r^2)
 #### Evaluation
 
 # function ρ(d::Plummer{T}, r::S) where {T,S} # = (3*self.M/(4.*np.pi*self.a**3.)) * self.unscaled_density(r)
-function ρ(d::Plummer, r::Real) # = (3*self.M/(4.*np.pi*self.a**3.)) * self.unscaled_density(r)
-    r, M, a = promote(r, Mtot(d), scale_radius(d))
+function ρ(d::Plummer, r) # = (3*self.M/(4.*np.pi*self.a**3.)) * self.unscaled_density(r)
+    # Don't promote - let units propagate naturally
+    M, a = Mtot(d), scale_radius(d)
     return 3M / (a^3 * 4 * π) * plummer_unscaled_density(r, M, a)
 end
 function invρ(d::Plummer{T}, x::S) where {T <: Real, S <: Real}

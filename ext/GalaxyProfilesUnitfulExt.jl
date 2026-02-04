@@ -87,7 +87,8 @@ SIS(ρ0::u.Density, rs::u.Length) = SIS(homogenize_units(ρ0), homogenize_units(
 SIS(rs::u.Length, M::u.Mass, Rmax::u.Length) = SIS(homogenize_units(rs), homogenize_units(M), homogenize_units(Rmax))
 
 NFW(ρ0::u.Density, rs::u.Length) = NFW(homogenize_units(ρ0), homogenize_units(rs))
-Plummer(M::u.Mass, a::u.Length) = Plummer(homogenize_units(M), homogenize_units(a))
+# Plummer constructor removed - units are now preserved in the struct directly
+#Plummer(M::u.Mass, a::u.Length) = Plummer(homogenize_units(M), homogenize_units(a))
 CoreNFW(ρ0::u.Density, rs::u.Length, rc::u.Length, n::Real) =
     CoreNFW(homogenize_units(ρ0), homogenize_units(rs), homogenize_units(rc), n)
 
@@ -95,9 +96,10 @@ CoreNFW(ρ0::u.Density, rs::u.Length, rc::u.Length, n::Real) =
 
 # Common methods supporting Unitful arguments
 scale_radius(uu::u.LengthUnits, d::AbstractMassProfile) = scale_radius(d) * defaultunits.length |> uu
-ρ(d::AbstractDensity, r::u.Length) = ρ(d, homogenize_units(r)) * defaultunits.density
-ρ(uu::u.DensityUnits, d::AbstractDensity, r::u.Length) = ρ(d, r) |> uu
-ρ(uu::u.DensityUnits, d::AbstractDensity, r::Real) = ρ(d, r) * defaultunits.density |> uu
+# ρ methods removed - units are now handled naturally in the core methods
+# ρ(d::AbstractDensity, r::u.Length) = ρ(d, homogenize_units(r)) * defaultunits.density
+# ρ(uu::u.DensityUnits, d::AbstractDensity, r::u.Length) = ρ(d, r) |> uu
+# ρ(uu::u.DensityUnits, d::AbstractDensity, r::Real) = ρ(d, r) * defaultunits.density |> uu
 invρ(d::AbstractDensity, x::u.Density) = invρ(d, homogenize_units(x)) * defaultunits.length
 invρ(uu::u.LengthUnits, d::AbstractDensity, x::u.Density) = invρ(d, x) |> uu
 invρ(uu::u.LengthUnits, d::AbstractDensity, x::Real) = invρ(d, x) * defaultunits.length |> uu
