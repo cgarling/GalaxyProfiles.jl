@@ -30,7 +30,7 @@ sample2D_r(d::AbstractMassProfile) = sample2D_r(default_rng(), d)
     sample2D(d::AbstractMassProfile, center::SkyCoords.AbstractSkyCoords, distance; 
              dims..., rng=Random.default_rng())
 
-Sample 2D sky coordinates from the mass profile `d`.
+Sample 2D sky coordinates from the mass profile `d`. Requires that [`sample2D_r`](@ref) is implemented for the profile `d`.
 
 # Arguments
 - `d::AbstractMassProfile`: The mass profile to sample from
