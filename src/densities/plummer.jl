@@ -151,15 +151,15 @@ function invM(d::Plummer, x::Real) # Actually basing this off quantile3D from Aa
     x, M, a = promote(x, Mtot(d), scale_radius(d))
     return scale_radius(d) / sqrt(cbrt((x/M)^-2) - 1)
 end
-function Mproj(d::Plummer, r::Real)
-    r, M, a = promote(r, Mtot(d), scale_radius(d))
+function Mproj(d::Plummer, r)
+    M, a = Mtot(d), scale_radius(d)
     return M * r^2 / (a^2 + r^2)
 end
-function ∇Mproj(d::Plummer, r::Real)
+function ∇Mproj(d::Plummer, r)
     M, a = Mtot(d), scale_radius(d)
     return 2a^2 * M * r / (a^2 + r^2)^2
 end
-function invMproj(d::Plummer, x::Real)
+function invMproj(d::Plummer, x)
     M, a = Mtot(d), scale_radius(d)
     return a * sqrt(x) / sqrt(M - x)
 end
@@ -172,26 +172,23 @@ function σr(d::Plummer, r::T, β::S) where {T <: Real, S <: Real}
     int_factor = r ≈ zero(T) ? one(U) : _₂F₁(-β, one(U), 4-β, -r^-2)
     return sqrt(-Φ(d, r) / (6-2β) * int_factor)
 end
-function Φ(d::Plummer{T}, r::S) where {T, S <: Real}
-    r, M, a = promote(r, Mtot(d), scale_radius(d))
-    U = float(promote_type(T,S))
-    return -U(constants.Gvelkpc) * M / sqrt(r^2 + a^2)
+function Φ(d::Plummer, r)
+    M, a = Mtot(d), scale_radius(d)
+    return -constants.Gvelkpc * M / sqrt(r^2 + a^2)
 end
-function ∇Φ(d::Plummer{T}, r::S) where {T, S <: Real}
-    r, M, a = promote(r, Mtot(d), scale_radius(d))
-    U = float(promote_type(T,S))
-    return U(constants.Gvelkpc2) * M * r / sqrt((r^2 + a^2)^3)
+function ∇Φ(d::Plummer, r)
+    M, a = Mtot(d), scale_radius(d)
+    return constants.Gvelkpc2 * M * r / sqrt((r^2 + a^2)^3)
 end
-function ∇∇Φ(d::Plummer{T}, r::S) where {T, S <: Real}
-    r, M, a = promote(r, Mtot(d), scale_radius(d))
-    U = float(promote_type(T,S))
+function ∇∇Φ(d::Plummer, r)
+    M, a = Mtot(d), scale_radius(d)
     denom = a^2 + r^2
     denom2 = denom^2
-    return U(constants.Gvelkpc2) * M * (a^2 - 2r^2) / sqrt(denom2 * denom2 * denom)
+    return constants.Gvelkpc2 * M * (a^2 - 2r^2) / sqrt(denom2 * denom2 * denom)
 end
-cdf2D(d::Plummer, r::Real) = r^2 / (scale_radius(d)^2 + r^2) # Just Mproj(d,R) / Mtot(d). 
+cdf2D(d::Plummer, r) = r^2 / (scale_radius(d)^2 + r^2) # Just Mproj(d,R) / Mtot(d). 
 # ccdf2D fallback to 1 - cdf2D(d,r) in common.jl is fine. 
-function cdf3D(d::Plummer, r::Real) # Just M(d,R) / Mtot(d). 
+function cdf3D(d::Plummer, r) # Just M(d,R) / Mtot(d). 
     a = scale_radius(d)
     return a * r^3 * sqrt(1 + (r/a)^2) / (a^2 + r^2)^2
 end
