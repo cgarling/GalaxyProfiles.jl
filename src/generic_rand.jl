@@ -10,7 +10,7 @@ function sample2D_r!(rng::AbstractRNG, d::AbstractMassProfile, x::AbstractArray{
     rand!(rng, x)
     x .= quantile2D.(d, x)
 end
-sample2D_r!(d::AbstractMassProfile, x::AbstractArray{<:Real}) = rand!(default_rng(), d, x)
+sample2D_r!(d::AbstractMassProfile, x::AbstractArray{<:Real}) = sample2D_r!(default_rng(), d, x)
 
 # Non-Mutating forms
 """
