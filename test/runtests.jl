@@ -36,4 +36,6 @@ using Test, SafeTestsets
 
     @safetestset "Unitful.jl Extension" include("unitful_tests.jl")
 
+    @safetestset "SkyCoords.jl Extension" include("skycoords_tests.jl")
+
 end
