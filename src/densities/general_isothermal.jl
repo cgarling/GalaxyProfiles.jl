@@ -69,6 +69,10 @@ end
 # ρmean
 # invρmean
 function Σ(d::GeneralIsothermal{T}, r::S) where {T, S}
+    # This is the abel integral. Because it integrates to infinite along the line of sight, the integral of Σ,
+    # e.g. quadgk(x->2π*x*Σ(d,x),0,R) will not equal M at Rmax, if you used the total mass enclosed within Rmax
+    # See Equation 2.59 in Binney Galactic Dynamics 2E, page 81 and appendix c.2 on page 798 about the factorials
+
     U = promote_type(T, S)
     ρ0, rs, α = params(d)
     ρ0, rs, α, r = promote(ρ0, rs, α, r)
