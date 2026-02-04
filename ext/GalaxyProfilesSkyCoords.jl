@@ -41,8 +41,8 @@ The function works by:
 using GalaxyProfiles, SkyCoords
 import Random
 
-# Create an NFW profile with scale radius 10 kpc
-nfw = NFW(1.0, 10.0)
+# Create a Plummer profile with scale radius 10 kpc  
+plummer = Plummer(1000.0, 10.0)
 
 # Galaxy center at RA=180°, Dec=30° (converted to radians)
 center = ICRSCoords(deg2rad(180.0), deg2rad(30.0))
@@ -51,7 +51,7 @@ center = ICRSCoords(deg2rad(180.0), deg2rad(30.0))
 distance = 10000.0
 
 # Sample 100 positions on the sky
-coords = sample2D_skycoords(nfw, center, distance; dims=100)
+coords = sample2D_skycoords(plummer, center, distance, 100)
 ```
 """
 function sample2D_skycoords end
