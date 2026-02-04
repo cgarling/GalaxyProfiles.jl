@@ -12,15 +12,15 @@ if !isdefined(Base, :get_extension)
     using Requires: @require
 end
 
-""" `AbstractMassProfile{T <: Number}`: abstract supertype for all mass profiles. """
-abstract type AbstractMassProfile{T <: Number} end
+""" `AbstractMassProfile`: abstract supertype for all mass profiles. """
+abstract type AbstractMassProfile end
 Base.Broadcast.broadcastable(m::AbstractMassProfile) = Ref(m)
 
-""" `AbstractDensity{T} <: AbstractMassProfile{T}`: abstract supertype for all 3D density profiles. """
-abstract type AbstractDensity{T} <: AbstractMassProfile{T} end
+""" `AbstractDensity <: AbstractMassProfile`: abstract supertype for all 3D density profiles. """
+abstract type AbstractDensity <: AbstractMassProfile end
 
 """ Abstract type `(<:AbstractMassProfile)` for surface density profiles for which 3D quantities are not defined. Radii for instances of `AbstractSurfaceDensity` are always 2D. """
-abstract type AbstractSurfaceDensity{T} <: AbstractMassProfile{T} end
+abstract type AbstractSurfaceDensity <: AbstractMassProfile end
 
 # mutable struct UnitDefaults{T<:u.FreeUnits{S,u.𝐋,nothing} where S, V<:u.FreeUnits{Z,u.𝐌,nothing} where Z}
 #     length::T
