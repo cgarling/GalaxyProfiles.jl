@@ -11,16 +11,15 @@ QuadGK = "1fd47b50-473d-5c70-9696-f719f8f3bcdc"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 Roots = "f2b01f46-fcfa-551c-844a-d8ac1e96c665"
+SkyCoords = "fc659fc5-75a3-5475-a2ea-3da92c065361"
 SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 
 [weakdeps]
 Requires = "ae029012-a4dd-5104-9daa-d747884805df"
-SkyCoords = "fc659fc5-75a3-5475-a2ea-3da92c065361"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 
 [extensions]
-GalaxyProfilesSkyCoords = "SkyCoords"
 GalaxyProfilesUnitfulExt = ["Unitful", "UnitfulAstro"]
 
 [compat]
@@ -41,10 +40,9 @@ julia = "1.6"
 
 [extras]
 SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
-SkyCoords = "fc659fc5-75a3-5475-a2ea-3da92c065361"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 
 [targets]
-test = ["SafeTestsets", "Test", "SkyCoords", "Unitful", "UnitfulAstro"]
+test = ["SafeTestsets", "Test", "Unitful", "UnitfulAstro"]
