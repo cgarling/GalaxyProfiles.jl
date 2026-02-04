@@ -36,16 +36,12 @@ where the core radius ``r_c`` and ``n``, which controls how shallow the core is 
 # See also
  - Constructor that uses galaxy properties, [`CoreNFWGalaxy`](@ref).
 """
-struct CoreNFW{TNFW, Trc, Tn, T} <: AbstractDensity{T}
+struct CoreNFW{TNFW, Trc, Tn} <: AbstractDensity
     # We'll save the NFW object rather than ρ0 and rs so we don't have to create it
     # every time we want to evaluate the non-cored NFW profile
     NFW::TNFW
     rc::Trc
     n::Tn
-    function CoreNFW(nfw::TNFW, rc::Trc, n::Tn) where {TNFW, Trc, Tn}
-        T = typeof(oneunit(Trc) * oneunit(Tn))
-        new{TNFW, Trc, Tn, T}(nfw, rc, n)
-    end
 end
 function CoreNFW(ρ0, rs, rc, n)
     return CoreNFW(NFW(ρ0, rs), rc, n)

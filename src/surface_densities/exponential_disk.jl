@@ -17,13 +17,9 @@ The following public methods are defined on this type:
 # See also
  - Convenience constructor [`ExponentialDiskDHI`](@ref).
 """
-struct ExponentialDisk{TΣ, Tr, T} <: AbstractSurfaceDensity{T}
+struct ExponentialDisk{TΣ, Tr} <: AbstractSurfaceDensity
     Σ0::TΣ
     rs::Tr
-    function ExponentialDisk(Σ0::TΣ, rs::Tr) where {TΣ, Tr}
-        T = typeof(oneunit(TΣ) * oneunit(Tr))
-        new{TΣ, Tr, T}(Σ0, rs)
-    end
 end
 exponential_disk_from_M(M, rs) = ExponentialDisk(M/(2*π*rs^2), rs)
 ExponentialDisk(rs; M=nothing, Σ0=nothing) = isnothing(M) ? (@assert !isnothing(Σ0); ExponentialDisk(Σ0,rs)) : exponential_disk_from_M(M, rs)

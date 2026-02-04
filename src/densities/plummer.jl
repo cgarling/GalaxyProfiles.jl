@@ -26,13 +26,9 @@ Both `M` and `a` can be plain `Real` numbers (e.g., `Float64`, `Int`) or `Unitfu
 The following public methods are defined on this type:
  - [`Mtot`](@ref), [`ρ`](@ref), [`invρ`](@ref), [`∇ρ`](@ref), [`ρmean`](@ref), [`invρmean`](@ref), [`Σ`](@ref), [`∇Σ`](@ref), [`Σmean`](@ref), [`invΣ`](@ref), [`M`](@ref), [`∇M`](@ref), [`invM`](@ref), [`Mproj`](@ref), [`∇Mproj`](@ref), [`invMproj`](@ref), [`Vcirc`](@ref), [`Vesc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), [`∇∇Φ`](@ref), [`cdf2D`](@ref), [`cdf3D`](@ref), [`ccdf2D`](@ref), [`ccdf3D`](@ref), [`quantile2D`](@ref), [`quantile3D`](@ref), [`cquantile2D`](@ref), [`cquantile3D`](@ref).
 """
-struct Plummer{TM, Ta, T} <: AbstractDensity{T}
+struct Plummer{TM, Ta} <: AbstractDensity
     M::TM
     a::Ta
-    function Plummer(M::TM, a::Ta) where {TM, Ta}
-        T = typeof(oneunit(TM) * oneunit(Ta))
-        new{TM, Ta, T}(M, a)
-    end
 end
 
 #### Parameters

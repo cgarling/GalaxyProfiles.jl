@@ -13,13 +13,9 @@ The fields of `NFW` are `ρ0, rs`. The default units of `NFW` are `[ρ0] = [Msun
 The following public methods are defined on this type:
  - [`ρ`](@ref), [`invρ`](@ref), [`∇ρ`](@ref), [`ρmean`](@ref), [`Σ`](@ref), [`M`](@ref), [`∇M`](@ref), [`invM`](@ref), [`Mproj`](@ref), [`∇Mproj`](@ref), [`Vmax`](@ref), [`Vesc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), [`∇∇Φ`](@ref)
 """
-struct NFW{Tρ, Tr, T} <: AbstractDensity{T}
+struct NFW{Tρ, Tr} <: AbstractDensity
     ρ0::Tρ
     rs::Tr
-    function NFW(ρ0::Tρ, rs::Tr) where {Tρ, Tr}
-        T = typeof(oneunit(Tρ) * oneunit(Tr))
-        new{Tρ, Tr, T}(ρ0, rs)
-    end
 end
 
 #### Parameters

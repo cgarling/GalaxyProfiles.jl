@@ -33,15 +33,11 @@ The fields of `Sersic` are `Σ0, r_e, n, q`. There are no methods defined for `S
 The following public methods are defined on this type:
  - [`Σ`](@ref), [`∇Σ`](@ref), [`invΣ`](@ref), [`Mproj`](@ref), [`∇Mproj`](@ref), [`Mtot`](@ref)
 """
-struct Sersic{TΣ, Tre, Tn, Tq, T} <: AbstractSurfaceDensity{T}
+struct Sersic{TΣ, Tre, Tn, Tq} <: AbstractSurfaceDensity
     Σ0::TΣ
     r_e::Tre
     n::Tn
     q::Tq
-    function Sersic(Σ0::TΣ, r_e::Tre, n::Tn, q::Tq) where {TΣ, Tre, Tn, Tq}
-        T = typeof(oneunit(TΣ) * oneunit(Tre))
-        new{TΣ, Tre, Tn, Tq, T}(Σ0, r_e, n, q)
-    end
 end
 
 

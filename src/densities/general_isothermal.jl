@@ -21,14 +21,10 @@ The following methods are specialized on this type:
 # See also
  - [`SIS`](@ref)
 """
-struct GeneralIsothermal{Tρ, Tr, Ta, T} <: AbstractDensity{T}
+struct GeneralIsothermal{Tρ, Tr, Ta} <: AbstractDensity
     ρ0::Tρ
     rs::Tr
     α::Ta
-    function GeneralIsothermal(ρ0::Tρ, rs::Tr, α::Ta) where {Tρ, Tr, Ta}
-        T = typeof(oneunit(Tρ) * oneunit(Tr))
-        new{Tρ, Tr, Ta, T}(ρ0, rs, α)
-    end
 end
 generalisothermal_from_M_Rmax(rs, α, M, Rmax) =
     α > 3 ?
