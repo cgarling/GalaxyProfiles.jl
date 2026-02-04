@@ -36,16 +36,19 @@ where the core radius ``r_c`` and ``n``, which controls how shallow the core is 
 # See also
  - Constructor that uses galaxy properties, [`CoreNFWGalaxy`](@ref).
 """
-struct CoreNFW{T <: Real} <: AbstractDensity{T}
+struct CoreNFW{TNFW, Trc, Tn, T} <: AbstractDensity{T}
     # We'll save the NFW object rather than ρ0 and rs so we don't have to create it
     # every time we want to evaluate the non-cored NFW profile
-    NFW::NFW{T}
-    rc::T
-    n::T
+    NFW::TNFW
+    rc::Trc
+    n::Tn
+    function CoreNFW(nfw::TNFW, rc::Trc, n::Tn) where {TNFW, Trc, Tn}
+        T = typeof(oneunit(Trc) * oneunit(Tn))
+        new{TNFW, Trc, Tn, T}(nfw, rc, n)
+    end
 end
-function CoreNFW(ρ0::Real, rs::Real, rc::Real, n::Real)
-    T = promote_type(typeof(ρ0), typeof(rs), typeof(rc), typeof(n))
-    return CoreNFW(NFW(convert(T, ρ0), convert(T, rs)), convert(T, rc), convert(T, n))
+function CoreNFW(ρ0, rs, rc, n)
+    return CoreNFW(NFW(ρ0, rs), rc, n)
 end
 """
     CoreNFWGalaxy(ρ0::Real, rs::Real, t_sf::Real, rhalf::Real;
@@ -72,9 +75,8 @@ r_c = \\eta \\, R_{h}
 
 Thus if the total star formation time and projected stellar half-mass radius are known for a galaxy, one can calculate ``n`` and ``r_c`` given the alternative parameters ``\\eta`` and ``\\kappa``. In their simulations, Read et al. find ``\\kappa=0.04`` and ``\\eta=1.75``, so these are the default values for this alternate parameterization.
 """
-function CoreNFWGalaxy(ρ0::Real, rs::Real, t_sf::Real, rhalf::Real;
-                       κ::Real=4//100, η::Real=175//100)
-    ρ0, rs, t_sf, rhalf, κ, η = promote(ρ0, rs, t_sf, rhalf, κ, η)
+function CoreNFWGalaxy(ρ0, rs, t_sf, rhalf;
+                       κ=4//100, η=175//100)
     p = NFW(ρ0, rs)
     # Circular orbital time at NFW scale radius; is this just 4x our `dynamical_time`?
     t_dyn = rs * 2 * π / GalaxyProfiles.Vcirc(p, rs)
@@ -99,7 +101,7 @@ scale_radius(d::CoreNFW) = d.NFW.rs
 
 #### Evaluation
 
-function ρ(d::CoreNFW, r::Real)
+function ρ(d::CoreNFW, r)
     rc, n = d.rc, d.n
     f = tanh(r/rc) # Equation 17, Read 2016
     fn = f^n

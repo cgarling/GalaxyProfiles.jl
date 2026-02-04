@@ -17,17 +17,16 @@ The following public methods are defined on this type:
 # See also
  - Convenience constructor [`ExponentialDiskDHI`](@ref).
 """
-struct ExponentialDisk{T <: Real} <: AbstractSurfaceDensity{T}
-    Σ0::T
-    rs::T
-    # ExponentialDisk{T}(ρ0::T,rs::T) where {T} = new{T}(μ,σ)
+struct ExponentialDisk{TΣ, Tr, T} <: AbstractSurfaceDensity{T}
+    Σ0::TΣ
+    rs::Tr
+    function ExponentialDisk(Σ0::TΣ, rs::Tr) where {TΣ, Tr}
+        T = typeof(oneunit(TΣ) * oneunit(Tr))
+        new{TΣ, Tr, T}(Σ0, rs)
+    end
 end
-ExponentialDisk(Σ0::Real, rs::Real) = ExponentialDisk(promote(Σ0,rs)...)
-# exponential_disk_from_M(M::T,rs::T) where {T<:Real} = ExponentialDisk(M/(8π*rs^3), rs)
-# exponential_disk_from_M(M::T,rs::T) where {T<:Real} = ExponentialDisk(M/(2π*rs^2), rs)
-# exponential_disk_from_M(M::Real,rs::Real) = exponential_disk_from_M(promote(M,rs)...)
-exponential_disk_from_M(M::T, rs::T) where T<:Real = ExponentialDisk(M/(2*T(π)*rs^2), rs)
-ExponentialDisk(rs::Real; M=nothing, Σ0=nothing) = isnothing(M) ? (@assert !isnothing(Σ0); ExponentialDisk(Σ0,rs)) : exponential_disk_from_M(promote(M,rs)...)
+exponential_disk_from_M(M, rs) = ExponentialDisk(M/(2*π*rs^2), rs)
+ExponentialDisk(rs; M=nothing, Σ0=nothing) = isnothing(M) ? (@assert !isnothing(Σ0); ExponentialDisk(Σ0,rs)) : exponential_disk_from_M(M, rs)
 """
     ExponentialDiskDHI(DHI::Real, MHI::Real, ΣDHI::Real=10^6)
     ExponentialDiskDHI(DHI::Unitful.Length, MHI::Unitful.Mass,
@@ -40,7 +39,7 @@ By default, `ΣDHI` is 10^6 solar masses per square kiloparsec (equivalent to on
 ## Notes
 At high masses (e.g., ``10^{10} \\ \\text{M}_\\odot < \\text{M}_{\\text{HI}}``) the numerical inversion is impossible; in this case, the exponential disk scale radius is set to `DHI/4`. 
 """
-function ExponentialDiskDHI(DHI::Real, MHI::Real, ΣDHI::Real=10^6) # DHI in kpc, M in Msun, ΣDHI in Msun/kpc^2
+function ExponentialDiskDHI(DHI, MHI, ΣDHI=10^6) # DHI in kpc, M in Msun, ΣDHI in Msun/kpc^2
     # C = -0.5 * DHI * sqrt(π * ΣDHI / (2*MHI))
     C = -1//2 * DHI * sqrt(π * ΣDHI / 2 / MHI)
     if C > -1/ℯ

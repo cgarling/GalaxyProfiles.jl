@@ -21,17 +21,20 @@ The following methods are specialized on this type:
 # See also
  - [`SIS`](@ref)
 """
-struct GeneralIsothermal{T <: Real} <: AbstractDensity{T}
-    ρ0::T
-    rs::T
-    α::T
+struct GeneralIsothermal{Tρ, Tr, Ta, T} <: AbstractDensity{T}
+    ρ0::Tρ
+    rs::Tr
+    α::Ta
+    function GeneralIsothermal(ρ0::Tρ, rs::Tr, α::Ta) where {Tρ, Tr, Ta}
+        T = typeof(oneunit(Tρ) * oneunit(Tr))
+        new{Tρ, Tr, Ta, T}(ρ0, rs, α)
+    end
 end
-GeneralIsothermal(ρ0::Real, rs::Real, α::Real) = GeneralIsothermal(promote(ρ0,rs,α)...)
-generalisothermal_from_M_Rmax(rs::T, α::T, M::T, Rmax::T) where {T<:Real} =
+generalisothermal_from_M_Rmax(rs, α, M, Rmax) =
     α > 3 ?
     throw(DomainError(α,"Enclosed mass is only finite for α<3.")) :
     GeneralIsothermal(M * (3 - α) / (rs^α * Rmax^(3-α) * 4 * π), rs, α)
-GeneralIsothermal(rs::Real, α::Real, M::Real, Rmax::Real) = generalisothermal_from_M_Rmax(promote(rs,α,M,Rmax)...)
+GeneralIsothermal(rs, α, M, Rmax) = generalisothermal_from_M_Rmax(rs, α, M, Rmax)
 
 """
     SIS(ρ0::Real, rs::Real)
@@ -41,8 +44,8 @@ GeneralIsothermal(rs::Real, α::Real, M::Real, Rmax::Real) = generalisothermal_f
 
 Convenience function to construct a singular isothermal sphere; i.e., a [`GeneralIsothermal`](@ref) with `α=2`.
 """
-SIS(ρ0::Real, rs::Real) = GeneralIsothermal(ρ0, rs, 2)
-SIS(rs::Real, M::Real, Rmax::Real) = GeneralIsothermal(rs, 2, M, Rmax)
+SIS(ρ0, rs) = GeneralIsothermal(ρ0, rs, 2)
+SIS(rs, M, Rmax) = GeneralIsothermal(rs, 2, M, Rmax)
 
 #### Parameters
 
@@ -51,7 +54,7 @@ scale_radius(d::GeneralIsothermal) = d.rs
 
 #### Evaluation
 
-function ρ(d::GeneralIsothermal, r::Real)
+function ρ(d::GeneralIsothermal, r)
     ρ0, rs, α = params(d)
     return ρ0 * (r/rs)^-α
 end
@@ -65,18 +68,14 @@ function ∇ρ(d::GeneralIsothermal,r::Real)
 end
 # ρmean
 # invρmean
-function Σ(d::GeneralIsothermal{T}, r::S) where {T, S <: Real}
-    # This is the abel integral. Because it integrates to infinite along the line of sight, the integral of Σ,
-    # e.g. quadgk(x->2π*x*Σ(d,x),0,R) will not equal 10 at Rmax, if you used the total mass enclosed within
-    # See Equation 2.59 in Binney Galactic Dynamics 2E, page 81 and appendix c.2 on page 798 about the factorials
-
+function Σ(d::GeneralIsothermal{T}, r::S) where {T, S}
     U = promote_type(T, S)
     ρ0, rs, α = params(d)
     ρ0, rs, α, r = promote(ρ0, rs, α, r)
     α>=3 && throw(DomainError(α, "Σ is only finite for α<3."))
     return sqrt(U(π)) * ρ0 * rs^α * gamma((α-1)/2) / gamma(α/2) / r^(α-1)
 end
-function ∇Σ(d::GeneralIsothermal{T}, r::S) where {T, S <: Real}
+function ∇Σ(d::GeneralIsothermal{T}, r::S) where {T, S}
     U = promote_type(T, S)
     ρ0, rs, α = params(d)
     ρ0, rs, α, r = promote(ρ0, rs, α, r)
@@ -84,7 +83,7 @@ function ∇Σ(d::GeneralIsothermal{T}, r::S) where {T, S <: Real}
     return -sqrt(U(π)) * ρ0 * rs^α * (α-1) * gamma((α-1)/2) / gamma(α/2) / r^α
 end
 # Σmean
-function invΣ(d::GeneralIsothermal{T}, x::S) where {T, S <: Real}
+function invΣ(d::GeneralIsothermal{T}, x::S) where {T, S}
     U = promote_type(T, S)
     ρ0, rs, α = params(d)
     ρ0, rs, α, x = promote(ρ0, rs, α, x)
@@ -96,38 +95,38 @@ function invΣ(d::GeneralIsothermal{T}, x::S) where {T, S <: Real}
         return (sqrt(U(π)) * ρ0 * rs^α * gamma((α-1)/2) / gamma(α/2) / x)^(α-1)
     end
 end
-function M(d::GeneralIsothermal{T}, r::S) where {T, S <: Real}
+function M(d::GeneralIsothermal{T}, r::S) where {T, S}
     ρ0, rs, α = params(d)
     α >= 3  && throw(DomainError(α, "Enclosed mass is only finite for α<3."))
     return ρ0 * rs^α * r^(3-α) * 4 * π / (3 - α)
 end
-function ∇M(d::GeneralIsothermal{T}, r::S) where {T, S <: Real}
+function ∇M(d::GeneralIsothermal{T}, r::S) where {T, S}
     ρ0, rs, α = params(d)
     α >= 3 && throw(DomainError(α,"Enclosed mass is only finite for α<3."))
     return ρ0 * rs^α * r^(2-α) * 4 * π
 end
-function invM(d::GeneralIsothermal{T}, x::S) where {T, S <: Real}
+function invM(d::GeneralIsothermal{T}, x::S) where {T, S}
     ρ0,rs,α = params(d)
     ρ0, rs, α, x = promote(ρ0, rs, α, x)
     α >= 3 && throw(DomainError(α, "Enclosed mass is only finite for α<3."))
     return (x * (3 - α) / (ρ0 * rs^α * 4 * π))^(1/(3-α))
 end
 # Mtot
-function Mproj(d::GeneralIsothermal{T}, r::S) where {T, S <: Real}
+function Mproj(d::GeneralIsothermal{T}, r::S) where {T, S}
     U = promote_type(T, S)
     ρ0, rs, α = params(d)
     ρ0, rs, α, r = promote(ρ0, rs, α, r)
     α >= 3 && throw(DomainError(α, "Mproj is only finite for α<3."))
     return 2 * U(π^(3/2)) * r^(3-α) * rs^α * ρ0 * gamma((α-1)/2) / (3-α) / gamma(α/2)
 end
-function ∇Mproj(d::GeneralIsothermal{T}, r::S) where {T, S <: Real}
+function ∇Mproj(d::GeneralIsothermal{T}, r::S) where {T, S}
     U = promote_type(T,S)
     ρ0,rs,α = params(d)
     ρ0, rs, α, r = promote(ρ0, rs, α, r)
     α >= 3 && throw(DomainError(α, "Σ is only finite for α<3."))
     return 2 * U(π^(3/2)) * r^(2-α) * rs^α * ρ0 * gamma((α-1)/2) / gamma(α/2)
 end
-function invMproj(d::GeneralIsothermal{T}, x::S) where {T, S <: Real}
+function invMproj(d::GeneralIsothermal{T}, x::S) where {T, S}
     U = promote_type(T, S)
     ρ0, rs, α = params(d)
     ρ0, rs, α, x = promote(ρ0, rs, α, x)
@@ -152,7 +151,7 @@ end
 # quantile(d::ExponentialDisk,x::Real) = cquantile(d,1-x)
 # cquantile
 # Equation 2.61 on page 81 of Binney Galactic Dynamics 2E
-function Vcirc(d::GeneralIsothermal{T}, r::S) where {T, S <: Real}
+function Vcirc(d::GeneralIsothermal{T}, r::S) where {T, S}
     U = promote_type(T, S)
     ρ0, rs, α = params(d)
     ρ0, rs, α, r = promote(ρ0, rs, α, r)
@@ -165,7 +164,7 @@ function Vcirc(d::GeneralIsothermal{T}, r::S) where {T, S <: Real}
     end
 end
 # Equation 2.63 on page 81 of Binney Galactic Dynamics 2E
-function Vesc(d::GeneralIsothermal{T} ,r::S) where {T, S <: Real}
+function Vesc(d::GeneralIsothermal{T} ,r::S) where {T, S}
     U = promote_type(T, S)
     ρ0, rs, α = params(d)
     ρ0, rs, α, r = promote(ρ0, rs, α, r)
@@ -178,7 +177,7 @@ function Vesc(d::GeneralIsothermal{T} ,r::S) where {T, S <: Real}
     end
 end
 # Equation 2.62 on page 81 of Binney Galactic Dynamics 2E
-function Φ(d::GeneralIsothermal{T}, r::S) where {T, S <: Real}
+function Φ(d::GeneralIsothermal{T}, r::S) where {T, S}
     U = promote_type(T, S)
     ρ0, rs, α = params(d)
     ρ0, rs, α, r = promote(ρ0, rs, α, r)
@@ -194,7 +193,7 @@ function Φ(d::GeneralIsothermal{T}, r::S) where {T, S <: Real}
         # 4π * constants.Gvelkpc * ρ0 * (rs^2-(rs^α * r^(2-α))) / ((3 - α)*(α-2))
     end
 end
-function ∇Φ(d::GeneralIsothermal{T}, r::S) where {T, S <: Real} # returns in km/s^2
+function ∇Φ(d::GeneralIsothermal{T}, r::S) where {T, S} # returns in km/s^2
     # (PhysicalConstants.CODATA2018.G |> ua.kpc^2*u.km/u.s^2/ua.Msun) * (ua.Msun/ua.kpc^3) * ua.kpc^2 / ua.kpc = u.km/u.s^2
     # (PhysicalConstants.CODATA2018.G |> ua.kpc*u.km^2/u.s^2/ua.Msun) * (ua.Msun/ua.kpc^3) * ua.kpc^2 / ua.kpc = u.km^2/u.s^2/ua.kpc
     U = promote_type(T, S)
@@ -211,7 +210,7 @@ function ∇Φ(d::GeneralIsothermal{T}, r::S) where {T, S <: Real} # returns in 
         return -4 * U(π) * U(constants.Gvelkpc2) * ρ0 * r^(1-α) * rs^α * (2-α) / ((3-α)*(α-2))
     end
 end
-function ∇∇Φ(d::GeneralIsothermal{T}, r::S) where {T, S <: Real} # returns in km/s^2/kpc
+function ∇∇Φ(d::GeneralIsothermal{T}, r::S) where {T, S} # returns in km/s^2/kpc
     U = promote_type(T, S)
     ρ0, rs, α = params(d)
     ρ0, rs, α, r = promote(ρ0, rs, α, r)

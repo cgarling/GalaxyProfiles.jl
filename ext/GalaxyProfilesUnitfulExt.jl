@@ -64,33 +64,39 @@ homogenize_units(x::Real) = x
 #########################################################################################
 
 # Create Unitful constructors for our various composite types
-ExponentialDisk(Σ0::SurfaceDensity, rs::u.Length) = ExponentialDisk(homogenize_units(Σ0), homogenize_units(rs))
-function ExponentialDisk(rs::u.Length; M=nothing, Σ0=nothing)
-    if isnothing(M)
-        @assert !isnothing(Σ0)
-        @assert Σ0 isa SurfaceDensity
-        ExponentialDisk(Σ0, rs)
-    else
-        @assert M isa u.Mass
-        # ExponentialDisk(M/(2π*rs^2),rs)
-        ExponentialDisk(M / rs^2 / 2 / π, rs)
-    end
-end
-ExponentialDiskDHI(DHI::u.Length, MHI::u.Mass, ΣDHI::SurfaceDensity=1*ua.Msun/ua.pc^2) = ExponentialDiskDHI(homogenize_units(DHI), homogenize_units(MHI), homogenize_units(ΣDHI))
+# ExponentialDisk constructors removed - units are now preserved in the struct directly
+#ExponentialDisk(Σ0::SurfaceDensity, rs::u.Length) = ExponentialDisk(homogenize_units(Σ0), homogenize_units(rs))
+#function ExponentialDisk(rs::u.Length; M=nothing, Σ0=nothing)
+#    if isnothing(M)
+#        @assert !isnothing(Σ0)
+#        @assert Σ0 isa SurfaceDensity
+#        ExponentialDisk(Σ0, rs)
+#    else
+#        @assert M isa u.Mass
+#        # ExponentialDisk(M/(2π*rs^2),rs)
+#        ExponentialDisk(M / rs^2 / 2 / π, rs)
+#    end
+#end
+#ExponentialDiskDHI(DHI::u.Length, MHI::u.Mass, ΣDHI::SurfaceDensity=1*ua.Msun/ua.pc^2) = ExponentialDiskDHI(homogenize_units(DHI), homogenize_units(MHI), homogenize_units(ΣDHI))
 
-Sersic(Σ0::SurfaceDensity, r_e::u.Length, n::Real, q::Real) = Sersic(homogenize_units(Σ0), homogenize_units(r_e), n, q)
+# Sersic constructor removed - units are now preserved in the struct directly
+#Sersic(Σ0::SurfaceDensity, r_e::u.Length, n::Real, q::Real) = Sersic(homogenize_units(Σ0), homogenize_units(r_e), n, q)
 
-GeneralIsothermal(ρ0::u.Density, rs::u.Length, α::Real) = GeneralIsothermal(homogenize_units(ρ0), homogenize_units(rs), α)
-GeneralIsothermal(rs::u.Length, α::Real, M::u.Mass, Rmax::u.Length) = GeneralIsothermal(homogenize_units(rs), α, homogenize_units(M), homogenize_units(Rmax))
+# GeneralIsothermal constructors removed - units are now preserved in the struct directly
+#GeneralIsothermal(ρ0::u.Density, rs::u.Length, α::Real) = GeneralIsothermal(homogenize_units(ρ0), homogenize_units(rs), α)
+#GeneralIsothermal(rs::u.Length, α::Real, M::u.Mass, Rmax::u.Length) = GeneralIsothermal(homogenize_units(rs), α, homogenize_units(M), homogenize_units(Rmax))
 
-SIS(ρ0::u.Density, rs::u.Length) = SIS(homogenize_units(ρ0), homogenize_units(rs))
-SIS(rs::u.Length, M::u.Mass, Rmax::u.Length) = SIS(homogenize_units(rs), homogenize_units(M), homogenize_units(Rmax))
+# SIS constructors removed - units are now preserved in the struct directly
+#SIS(ρ0::u.Density, rs::u.Length) = SIS(homogenize_units(ρ0), homogenize_units(rs))
+#SIS(rs::u.Length, M::u.Mass, Rmax::u.Length) = SIS(homogenize_units(rs), homogenize_units(M), homogenize_units(Rmax))
 
-NFW(ρ0::u.Density, rs::u.Length) = NFW(homogenize_units(ρ0), homogenize_units(rs))
+# NFW constructor removed - units are now preserved in the struct directly
+#NFW(ρ0::u.Density, rs::u.Length) = NFW(homogenize_units(ρ0), homogenize_units(rs))
 # Plummer constructor removed - units are now preserved in the struct directly
 #Plummer(M::u.Mass, a::u.Length) = Plummer(homogenize_units(M), homogenize_units(a))
-CoreNFW(ρ0::u.Density, rs::u.Length, rc::u.Length, n::Real) =
-    CoreNFW(homogenize_units(ρ0), homogenize_units(rs), homogenize_units(rc), n)
+# CoreNFW constructor removed - units are now preserved in the struct directly
+#CoreNFW(ρ0::u.Density, rs::u.Length, rc::u.Length, n::Real) =
+#    CoreNFW(homogenize_units(ρ0), homogenize_units(rs), homogenize_units(rc), n)
 
 #########################################################################################
 

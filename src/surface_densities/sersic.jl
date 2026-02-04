@@ -33,23 +33,25 @@ The fields of `Sersic` are `Σ0, r_e, n, q`. There are no methods defined for `S
 The following public methods are defined on this type:
  - [`Σ`](@ref), [`∇Σ`](@ref), [`invΣ`](@ref), [`Mproj`](@ref), [`∇Mproj`](@ref), [`Mtot`](@ref)
 """
-struct Sersic{T <: Real} <: AbstractSurfaceDensity{T}
-    Σ0::T
-    r_e::T
-    n::T
-    q::T
-    # Sersic{T}(μ_e::T,r_e::T,n::T,q::T) where {T} = new{T}(μ_e,r_e,n,q)
+struct Sersic{TΣ, Tre, Tn, Tq, T} <: AbstractSurfaceDensity{T}
+    Σ0::TΣ
+    r_e::Tre
+    n::Tn
+    q::Tq
+    function Sersic(Σ0::TΣ, r_e::Tre, n::Tn, q::Tq) where {TΣ, Tre, Tn, Tq}
+        T = typeof(oneunit(TΣ) * oneunit(Tre))
+        new{TΣ, Tre, Tn, Tq, T}(Σ0, r_e, n, q)
+    end
 end
-Sersic(Σ0::Real, r_e::Real, n::Real, q::Real) = Sersic(promote(Σ0,r_e,n,q)...)
 
 
 #### Parameters
 scale_radius(d::Sersic) = d.r_e
 params(d::Sersic) = (d.Σ0,d.r_e,d.n,d.q)
 
-b_n(n::T) where T<:Real = gamma_inc_inv(2n, T(1//2), T(1//2))
+b_n(n) = gamma_inc_inv(2n, 1//2, 1//2)
 b_n(d::Sersic) = b_n(d.n)
-f_n(n::Real) = (bn = b_n(n); gamma(2n) * n * exp(bn) / bn^(2n)) # this f_n from graham 2005, equation 8
+f_n(n) = (bn = b_n(n); gamma(2n) * n * exp(bn) / bn^(2n)) # this f_n from graham 2005, equation 8
 f_n(d::Sersic) = f_n(d.n) # this f_n from graham 2005, equation 8
 
 
@@ -76,7 +78,7 @@ function invΣ(d::Sersic, x::Real)
     Σ0, r_e, n, q = params(d)
     x<=0 ? throw(DomainError(x, "x must be greater 0")) : r_e * (-log(x/Σ0) / b_n(d) + 1)^n
 end
-function Mproj(d::Sersic{T}, r::S) where {T, S<:Real}
+function Mproj(d::Sersic{T}, r::S) where {T, S}
     U = promote_type(T, S)
     isinf(r) && (return U(Mtot(d)))
     Σ0, r_e, n, q = params(d)
@@ -85,7 +87,7 @@ function Mproj(d::Sersic{T}, r::S) where {T, S<:Real}
     # U(2π) * Σ0 * n * r_e^2 * exp(bn) * bn^-2n * (gamma(2n) - gamma(2n, bn*(r/r_e)^inv(n)))
     U(2π) * Σ0 * n * r_e^2 * exp(bn) * bn^-2n * gamma_inc(2n, bn*(r/r_e)^inv(n))[1] * gamma(2n)
 end
-function ∇Mproj(d::Sersic{T}, r::S) where {T, S<:Real}
+function ∇Mproj(d::Sersic{T}, r::S) where {T, S}
     U = promote_type(T, S)
     Σ0, r_e, n, q = params(d)
     U(2π) * r * Σ(d, r)

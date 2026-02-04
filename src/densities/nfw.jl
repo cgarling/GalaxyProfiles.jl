@@ -13,11 +13,14 @@ The fields of `NFW` are `ρ0, rs`. The default units of `NFW` are `[ρ0] = [Msun
 The following public methods are defined on this type:
  - [`ρ`](@ref), [`invρ`](@ref), [`∇ρ`](@ref), [`ρmean`](@ref), [`Σ`](@ref), [`M`](@ref), [`∇M`](@ref), [`invM`](@ref), [`Mproj`](@ref), [`∇Mproj`](@ref), [`Vmax`](@ref), [`Vesc`](@ref), [`Φ`](@ref), [`∇Φ`](@ref), [`∇∇Φ`](@ref)
 """
-struct NFW{T <: Real} <: AbstractDensity{T}
-    ρ0::T
-    rs::T
+struct NFW{Tρ, Tr, T} <: AbstractDensity{T}
+    ρ0::Tρ
+    rs::Tr
+    function NFW(ρ0::Tρ, rs::Tr) where {Tρ, Tr}
+        T = typeof(oneunit(Tρ) * oneunit(Tr))
+        new{Tρ, Tr, T}(ρ0, rs)
+    end
 end
-NFW(ρ0::Real, rs::Real) = NFW(promote(ρ0,rs)...)
 
 #### Parameters
 
@@ -31,7 +34,7 @@ NFWmu(r, rs) = NFWmu(r/rs)
 
 #### Evaluation
 
-function ρ(d::NFW, r::Real)
+function ρ(d::NFW, r)
     ρ0,rs = params(d)
     x = r/rs
     return ρ0 / x / (1+x)^2
@@ -51,7 +54,7 @@ function ρmean(d::NFW, r::Real)
         (r^3 * (r+rs))
 end
 # invρmean fallback to common.jl is fine
-function Σ(d::NFW{T}, r::S) where {T, S<:Real}
+function Σ(d::NFW{T}, r::S) where {T, S}
     U = promote_type(T, S)
     ρ0, rs = params(d)
     x = r/rs
@@ -116,7 +119,7 @@ function Vmax(d::NFW{T}) where T
     return Vcirc(d,r), r
 end
 # Roughly 2x faster than generic fallback
-function σr(d::NFW{T}, r::S, β::S) where {T, S <: Real}
+function σr(d::NFW{T}, r::S, β::S) where {T, S}
     U = promote_type(T, S)
     ρ0, rs = params(d)
     x = r / rs
@@ -124,17 +127,17 @@ function σr(d::NFW{T}, r::S, β::S) where {T, S <: Real}
     return sqrt(Φ0 * quadgk(x->x^(2β-3) * NFWmu(x) / (1+x)^2, x, utilities.get_inf(x))[1] /
         x^(2β-1) * (1+x)^2)
 end
-function Φ(d::NFW{T}, r::S) where {T, S <: Real}
+function Φ(d::NFW{T}, r::S) where {T, S}
     U = promote_type(T, S)
     ρ0, rs = params(d)
     return U(constants.Gvelkpc) * ρ0 * rs^3 * 4 * π * (log(rs) - log(r+rs)) / r
 end
-function ∇Φ(d::NFW{T}, r::S) where {T, S <: Real}
+function ∇Φ(d::NFW{T}, r::S) where {T, S}
     U = promote_type(T, S)
     ρ0, rs = params(d)
     return U(constants.Gvelkpc2) * rs^3 * ρ0 * 4 * π * (log(r+rs) - log(rs) - r/(r+rs)) / r^2
 end
-function ∇∇Φ(d::NFW{T}, r::S) where {T, S <: Real}
+function ∇∇Φ(d::NFW{T}, r::S) where {T, S}
     U = promote_type(T, S)
     ρ0, rs = params(d)
     return U(constants.Gvelkpc2) * rs^3 * ρ0 * 4 * π * (2*log(rs) - 2*log(r+rs) + (3*r^2 + 2*rs*r)/(r+rs)^2) / r^3
