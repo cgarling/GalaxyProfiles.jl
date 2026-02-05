@@ -6,7 +6,7 @@ using Random: AbstractRNG, rand, rand!, default_rng
 using Roots: find_zero
 using LambertW: lambertw
 using SpecialFunctions: gamma, gamma_inc, gamma_inc_inv
-using SkyCoords: AbstractSkyCoords, ICRSCoords, offset
+using SkyCoords: AbstractSkyCoords, offset
 using QuadGK: quadgk
 # This symbol is only defined on Julia versions that support extensions
 if !isdefined(Base, :get_extension)
@@ -42,7 +42,6 @@ function __init__()
         @require Unitful="1986cc42-f94f-5a68-af5c-568840ba703d" begin
             @require UnitfulAstro="6112ee07-acf9-5e0f-b108-d242c714bf9f" include("../ext/GalaxyProfilesUnitfulExt.jl")
         end
-        @require SkyCoords="fc659fc5-75a3-5475-a2ea-3da92c065361" include("../ext/GalaxyProfilesSkyCoords.jl")
     end
 end
 
