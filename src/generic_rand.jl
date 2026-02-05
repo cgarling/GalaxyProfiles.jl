@@ -54,7 +54,6 @@ The function works by:
 # Example
 ```julia
 using GalaxyProfiles, SkyCoords
-import Random
 
 # Create a Plummer profile with scale radius 500 pc  
 plummer = Plummer(1000.0, 0.5)
