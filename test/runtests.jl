@@ -34,6 +34,7 @@ using Test, SafeTestsets
 
     end
 
+    @safetestset "Random Sampling" include("sampling_tests.jl")
     @safetestset "Unitful.jl Extension" include("unitful_tests.jl")
 
 end

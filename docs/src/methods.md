@@ -51,6 +51,7 @@ GalaxyProfiles.plummer_angular_avalue
 The following sampling methods for drawing positions from instantiated mass profiles are provided.
 
 ```@docs
+sample2D
 sample2D_r!
 sample2D_r
 sample3D_r!

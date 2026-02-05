@@ -2,10 +2,11 @@ module GalaxyProfiles
 
 using FastPow: @fastpow
 using HypergeometricFunctions: _₂F₁ # For Plummer σr
-using Random: AbstractRNG,rand,rand!,default_rng
+using Random: AbstractRNG, rand, rand!, default_rng
 using Roots: find_zero
 using LambertW: lambertw
 using SpecialFunctions: gamma, gamma_inc, gamma_inc_inv
+using SkyCoords: AbstractSkyCoords, offset
 using QuadGK: quadgk
 # This symbol is only defined on Julia versions that support extensions
 if !isdefined(Base, :get_extension)
@@ -47,5 +48,5 @@ end
 export ExponentialDisk, ExponentialDiskDHI, Sersic  # Exports from surface_densities/*
 export GeneralIsothermal, SIS, NFW, CoreNFW, CoreNFWGalaxy, Plummer # Exports from densities/*
 export params, scale_radius, ρ, ρmean, invρmean, ∇ρ, invρ, Σ, invΣ, ∇Σ, Σmean, M, ∇M, invM, Mtot, Mproj, ∇Mproj, invMproj, dynamical_time, cdf2D, cdf3D, ccdf2D, ccdf3D, quantile2D, quantile3D, cquantile2D, cquantile3D, Vcirc, Vesc, Vmax, σr, σlos, Φ, ∇Φ, ∇∇Φ  # Exports from common.jl
-export sample2D_r!, sample3D_r!, sample2D_r, sample3D_r # Exports from generic_rand.jl.
+export sample2D, sample2D_r!, sample3D_r!, sample2D_r, sample3D_r # Exports from generic_rand.jl.
 end # module
